@@ -1,0 +1,116 @@
+            c.restore();
+            }
+
+            // Seconde couronne : donne plus de profondeur et un aspect de vraie fleur.
+            int[] inner={Color.argb(224,82,217,223),Color.argb(218,111,197,236),Color.argb(212,156,131,226)};
+            for(int i=0;i<6;i++){
+                c.save(); c.rotate(30f+i*60f);
+                p.setColor(inner[i%inner.length]);
+                RectF petal=new RectF(-radius*.31f,-radius*1.02f,radius*.31f,-radius*.10f);
+                c.drawOval(petal,p);
+                c.restore();
+            }
+
+            // Coeur nacré aux couleurs de Mon Oxygène.
+            p.setColor(Color.argb(246,248,252,253)); c.drawCircle(0,0,radius*.40f,p);
+            LinearGradient heart=new LinearGradient(-radius*.22f,-radius*.22f,radius*.22f,radius*.22f,
+                    new int[]{Color.rgb(83,214,221),Color.rgb(118,185,234),Color.rgb(159,132,225)},null,Shader.TileMode.CLAMP);
+            p.setShader(heart); c.drawCircle(0,0,radius*.23f,p); p.setShader(null);
+            p.setColor(Color.argb(220,255,255,255)); c.drawCircle(-radius*.080f,-radius*.080f,radius*.060f,p);
+
+            p.setStyle(Paint.Style.STROKE);
+            p.setStrokeWidth(Math.max(1.4f,radius*.060f));
+            p.setColor(Color.argb(110,255,255,255)); c.drawCircle(0,0,radius*1.56f,p);
+            p.setStyle(Paint.Style.FILL);
+            c.restore();
+        }
+
+        void drawTinyFlower(Canvas c,float cx,float cy,float radius,float scale){
+            c.save(); c.translate(cx,cy); c.scale(scale,scale);
+            int[] colors={Color.argb(150,73,200,211),Color.argb(145,105,181,224),Color.argb(145,149,124,215)};
+            for(int i=0;i<6;i++){
+                c.save(); c.rotate(i*60f); p.setColor(colors[i%3]);
+                c.drawOval(new RectF(-radius*.28f,-radius*.9f,radius*.28f,-radius*.15f),p); c.restore();
+            }
+            p.setColor(Color.argb(200,255,255,255)); c.drawCircle(0,0,radius*.24f,p); c.restore();
+        }
+
+        void drawRemoteButton(Canvas c,RectF r,int mode){
+            p.setColor(Color.argb(105,250,253,255)); c.drawOval(r,p);
+            p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(1.5f); p.setColor(Color.argb(95,255,255,255)); c.drawOval(r,p); p.setStyle(Paint.Style.FILL);
+            float cx=r.centerX(),cy=r.centerY(),h=getHeight();
+            p.setColor(Color.argb(245,255,255,255));
+            if(mode==0){
+                float barW=h*.006f,barH=h*.026f,gap=h*.006f;
+                c.drawRoundRect(cx-gap-barW,cy-barH,cx-gap,cy+barH,4,4,p);
+                c.drawRoundRect(cx+gap,cy-barH,cx+gap+barW,cy+barH,4,4,p);
+            }else if(mode==1){
+                Path tri=new Path(); tri.moveTo(cx-h*.010f,cy-h*.021f); tri.lineTo(cx+h*.023f,cy); tri.lineTo(cx-h*.010f,cy+h*.021f); tri.close(); c.drawPath(tri,p);
+            }else{
+                float s=h*.020f; c.drawRoundRect(cx-s,cy-s,cx+s,cy+s,5,5,p);
+            }
+        }
+
+        boolean isInhaleAt(double t){
+            double cycle=inhaleSec+exhaleSec;
+            double m=mod(t,cycle);
+            if(startWithInhale) return m<inhaleSec;
+            return !(m<exhaleSec);
+        }
+
+        double phaseRemaining(double t){
+            double cycle=inhaleSec+exhaleSec;
+            double m=mod(t,cycle);
+            if(startWithInhale){ return m<inhaleSec ? inhaleSec-m : cycle-m; }
+            return m<exhaleSec ? exhaleSec-m : cycle-m;
+        }
+
+        double waveAt(double t){
+            double cycle=inhaleSec+exhaleSec;
+            double m=mod(t,cycle);
+            if(startWithInhale){
+                if(m<inhaleSec){ double q=m/inhaleSec; return -Math.cos(Math.PI*q); }
+                double q=(m-inhaleSec)/exhaleSec; return Math.cos(Math.PI*q);
+            }else{
+                if(m<exhaleSec){ double q=m/exhaleSec; return Math.cos(Math.PI*q); }
+                double q=(m-exhaleSec)/inhaleSec; return -Math.cos(Math.PI*q);
+            }
+        }
+
+        double mod(double a,double b){ double m=a%b; return m<0?m+b:m; }
+
+        void navButton(Canvas c,RectF r,String s,boolean primary){
+            if(primary){
+                LinearGradient g=new LinearGradient(r.left,0,r.right,0,new int[]{Color.rgb(70,180,194),Color.rgb(112,147,211)},null,Shader.TileMode.CLAMP);
+                p.setShader(g); c.drawRoundRect(r,30,30,p); p.setShader(null);
+            }else{
+                p.setColor(Color.argb(100,255,255,255)); c.drawRoundRect(r,30,30,p);
+            }
+            textFace(c,s,r.centerX(),r.centerY()+getHeight()*.007f,getHeight()*.0205f,primary?Color.WHITE:Color.rgb(69,96,112),Paint.Align.CENTER,mediumFace);
+        }
+
+        float wrappedTextFace(Canvas c,String s,float x,float y,float maxW,float size,int color,float spacing,Typeface face){
+            p.setTextSize(size); p.setTypeface(face); p.setColor(color); p.setTextAlign(Paint.Align.LEFT); p.setShader(null);
+            float lineH=size*spacing;
+            String[] paras=s.split("\\n",-1);
+            for(String para:paras){
+                if(para.length()==0){ y+=lineH*.60f; continue; }
+                String[] words=para.split(" "); String line="";
+                for(String word:words){
+                    String test=line.length()==0?word:line+" "+word;
+                    if(p.measureText(test)>maxW && line.length()>0){ c.drawText(line,x,y,p); y+=lineH; line=word; }
+                    else line=test;
+                }
+                if(line.length()>0){ c.drawText(line,x,y,p); y+=lineH; }
+            }
+            return y;
+        }
+
+        void textFace(Canvas c,String s,float x,float y,float size,int color,Paint.Align align,Typeface face){
+            p.setShader(null); p.setColor(color); p.setTextSize(size); p.setTextAlign(align); p.setTypeface(face);
+            String[] lines=s.split("\\n");
+            for(int i=0;i<lines.length;i++) c.drawText(lines[i],x,y+i*size*1.28f,p);
+        }
+
+        @Override public boolean onTouchEvent(MotionEvent e){
+            if(e.getAction()!=MotionEvent.ACTION_UP) return 
