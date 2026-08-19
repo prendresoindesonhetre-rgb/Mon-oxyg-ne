@@ -29,11 +29,13 @@ jobs:
         run: python3 scripts/apply_v9.py
       - name: Apply Mon Oxygène v10 visual breathing cues
         run: python3 scripts/apply_v10.py
+      - name: Apply Mon Oxygène v11 lower curve and larger guidance
+        run: python3 scripts/apply_v11.py
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v10
+          name: Mon-Oxygene-APK-v11
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
