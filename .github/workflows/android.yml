@@ -23,11 +23,13 @@ jobs:
         run: cat app/src/main/v6source/*.part > app/src/main/java/fr/prendresoindesonhetre/monoxygene/MainActivity.java
       - name: Apply Mon Oxygène v7 refinements
         run: python3 scripts/apply_v7.py
+      - name: Apply Mon Oxygène v8 lotus and readability
+        run: python3 scripts/apply_v8.py
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK
+          name: Mon-Oxygene-APK-v8
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
