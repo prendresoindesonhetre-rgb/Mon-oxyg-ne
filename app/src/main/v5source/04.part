@@ -1,0 +1,112 @@
+i*60f); p.setColor(colors[i%3]);
+                c.drawOval(new RectF(-radius*.28f,-radius*.9f,radius*.28f,-radius*.15f),p); c.restore();
+            }
+            p.setColor(Color.argb(200,255,255,255)); c.drawCircle(0,0,radius*.24f,p); c.restore();
+        }
+
+        void drawRemoteButton(Canvas c,RectF r,int mode){
+            p.setColor(Color.argb(105,250,253,255)); c.drawOval(r,p);
+            p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(1.5f); p.setColor(Color.argb(95,255,255,255)); c.drawOval(r,p); p.setStyle(Paint.Style.FILL);
+            float cx=r.centerX(),cy=r.centerY(),h=getHeight();
+            p.setColor(Color.argb(245,255,255,255));
+            if(mode==0){
+                float barW=h*.006f,barH=h*.026f,gap=h*.006f;
+                c.drawRoundRect(cx-gap-barW,cy-barH,cx-gap,cy+barH,4,4,p);
+                c.drawRoundRect(cx+gap,cy-barH,cx+gap+barW,cy+barH,4,4,p);
+            }else if(mode==1){
+                Path tri=new Path(); tri.moveTo(cx-h*.010f,cy-h*.021f); tri.lineTo(cx+h*.023f,cy); tri.lineTo(cx-h*.010f,cy+h*.021f); tri.close(); c.drawPath(tri,p);
+            }else{
+                float s=h*.020f; c.drawRoundRect(cx-s,cy-s,cx+s,cy+s,5,5,p);
+            }
+        }
+
+        boolean isInhaleAt(double t){
+            double cycle=inhaleSec+exhaleSec;
+            double m=mod(t,cycle);
+            if(startWithInhale) return m<inhaleSec;
+            return !(m<exhaleSec);
+        }
+
+        double phaseRemaining(double t){
+            double cycle=inhaleSec+exhaleSec;
+            double m=mod(t,cycle);
+            if(startWithInhale){ return m<inhaleSec ? inhaleSec-m : cycle-m; }
+            return m<exhaleSec ? exhaleSec-m : cycle-m;
+        }
+
+        double waveAt(double t){
+            double cycle=inhaleSec+exhaleSec;
+            double m=mod(t,cycle);
+            if(startWithInhale){
+                if(m<inhaleSec){ double q=m/inhaleSec; return -Math.cos(Math.PI*q); }
+                double q=(m-inhaleSec)/exhaleSec; return Math.cos(Math.PI*q);
+            }else{
+                if(m<exhaleSec){ double q=m/exhaleSec; return Math.cos(Math.PI*q); }
+                double q=(m-exhaleSec)/inhaleSec; return -Math.cos(Math.PI*q);
+            }
+        }
+
+        double mod(double a,double b){ double m=a%b; return m<0?m+b:m; }
+
+        void navButton(Canvas c,RectF r,String s,boolean primary){
+            if(primary){
+                LinearGradient g=new LinearGradient(r.left,0,r.right,0,new int[]{Color.rgb(70,180,194),Color.rgb(112,147,211)},null,Shader.TileMode.CLAMP);
+                p.setShader(g); c.drawRoundRect(r,30,30,p); p.setShader(null);
+            }else{
+                p.setColor(Color.argb(100,255,255,255)); c.drawRoundRect(r,30,30,p);
+            }
+            textFace(c,s,r.centerX(),r.centerY()+getHeight()*.007f,getHeight()*.0205f,primary?Color.WHITE:Color.rgb(69,96,112),Paint.Align.CENTER,mediumFace);
+        }
+
+        float wrappedTextFace(Canvas c,String s,float x,float y,float maxW,float size,int color,float spacing,Typeface face){
+            p.setTextSize(size); p.setTypeface(face); p.setColor(color); p.setTextAlign(Paint.Align.LEFT); p.setShader(null);
+            float lineH=size*spacing;
+            String[] paras=s.split("\\n",-1);
+            for(String para:paras){
+                if(para.length()==0){ y+=lineH*.60f; continue; }
+                String[] words=para.split(" "); String line="";
+                for(String word:words){
+                    String test=line.length()==0?word:line+" "+word;
+                    if(p.measureText(test)>maxW && line.length()>0){ c.drawText(line,x,y,p); y+=lineH; line=word; }
+                    else line=test;
+                }
+                if(line.length()>0){ c.drawText(line,x,y,p); y+=lineH; }
+            }
+            return y;
+        }
+
+        void textFace(Canvas c,String s,float x,float y,float size,int color,Paint.Align align,Typeface face){
+            p.setShader(null); p.setColor(color); p.setTextSize(size); p.setTextAlign(align); p.setTypeface(face);
+            String[] lines=s.split("\\n");
+            for(int i=0;i<lines.length;i++) c.drawText(lines[i],x,y+i*size*1.28f,p);
+        }
+
+        @Override public boolean onTouchEvent(MotionEvent e){
+            if(e.getAction()!=MotionEvent.ACTION_UP) return true;
+            float x=e.getX(),y=e.getY();
+            if(screen==INTRO){
+                if(skipBtn.contains(x,y)){ screen=SETTINGS; }
+                else if(introPage>0 && backBtn.contains(x,y)){ introPage--; }
+                else if(nextBtn.contains(x,y)){
+                    if(introPage<introTitles.length-1) introPage++;
+                    else screen=SETTINGS;
+                }
+            } else if(screen==SETTINGS){
+                if(infoBtn.contains(x,y)){ screen=INTRO; introPage=0; }
+                else if(minusDur.contains(x,y)) durationMin=Math.max(1,durationMin-1);
+                else if(plusDur.contains(x,y)) durationMin=Math.min(20,durationMin+1);
+                else if(minusIn.contains(x,y)) inhaleSec=Math.max(2,inhaleSec-1);
+                else if(plusIn.contains(x,y)) inhaleSec=Math.min(10,inhaleSec+1);
+                else if(minusOut.contains(x,y)) exhaleSec=Math.max(2,exhaleSec-1);
+                else if(plusOut.contains(x,y)) exhaleSec=Math.min(10,exhaleSec+1);
+                else if(inhaleFirstBtn.contains(x,y)) startWithInhale=true;
+                else if(exhaleFirstBtn.contains(x,y)) startWithInhale=false;
+                else if(presetEq.contains(x,y)){ inhaleSec=5; exhaleSec=5; }
+                else if(presetSlow.contains(x,y)){ inhaleSec=4; exhaleSec=6; }
+                else if(presetMove.contains(x,y)){ inhaleSec=6; exhaleSec=4; }
+                else if(startBtn.contains(x,y)){
+                    screen=SESSION; paused=false; pausedTotal=0; startMs=SystemClock.elapsedRealtime();
+                }
+            } else {
+                if(pauseBtn.contains(x,y)){
+                    if(!paused){ paused=true; pausedAt=SystemClock.ela
