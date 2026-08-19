@@ -1,0 +1,86 @@
+Style.STROKE); p.setStrokeWidth(1.5f); p.setColor(Color.argb(65,74,120,143)); c.drawRoundRect(r,28,28,p); p.setStyle(Paint.Style.FILL); }
+            textFace(c,s,r.centerX(),r.centerY()+getHeight()*.008f,getHeight()*.021f,selected?Color.WHITE:Color.rgb(63,91,108),Paint.Align.CENTER,mediumFace);
+        }
+
+        void chipTwoLine(Canvas c,RectF r,String name,String ratio,int accent){
+            p.setColor(Color.argb(130,255,255,255)); c.drawRoundRect(r,25,25,p);
+            p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(1.2f); p.setColor(Color.argb(70,Color.red(accent),Color.green(accent),Color.blue(accent))); c.drawRoundRect(r,25,25,p); p.setStyle(Paint.Style.FILL);
+            textFace(c,name,r.centerX(),r.top+getHeight()*.027f,getHeight()*.0175f,accent,Paint.Align.CENTER,mediumFace);
+            textFace(c,ratio,r.centerX(),r.top+getHeight()*.052f,getHeight()*.0185f,Color.rgb(65,89,104),Paint.Align.CENTER,bodyFace);
+        }
+
+        void drawSession(Canvas c){
+            int w=getWidth(),h=getHeight();
+            drawBitmapCover(c,curveBg);
+            p.setColor(Color.argb(15,22,47,66)); c.drawRect(0,0,w,h,p);
+
+            long now=paused?pausedAt:SystemClock.elapsedRealtime();
+            double elapsed=(now-startMs-pausedTotal)/1000.0;
+            double total=durationMin*60.0;
+            double remain=Math.max(0,total-elapsed);
+            if(remain<=0){ screen=SETTINGS; paused=false; invalidate(); return; }
+
+            boolean inhale=isInhaleAt(elapsed);
+            textFace(c,inhale?"Inspirez":"Expirez",w*.50f,h*.135f,h*.052f,Color.WHITE,Paint.Align.CENTER,titleFace);
+            double phaseRemain=phaseRemaining(elapsed);
+            textFace(c,String.format(Locale.FRANCE,"%.1f s",phaseRemain),w*.50f,h*.177f,h*.022f,Color.argb(225,255,255,255),Paint.Align.CENTER,bodyFace);
+            int sec=(int)Math.ceil(remain); String time=String.format(Locale.FRANCE,"%d:%02d",sec/60,sec%60);
+            RectF timePill=new RectF(w*.835f,h*.055f,w*.965f,h*.125f);
+            p.setColor(Color.argb(150,255,255,255)); c.drawRoundRect(timePill,34,34,p);
+            p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(Math.max(1.5f,w*.0011f)); p.setColor(Color.argb(125,100,183,208)); c.drawRoundRect(timePill,34,34,p); p.setStyle(Paint.Style.FILL);
+            textFace(c,time,timePill.centerX(),timePill.centerY()+h*.012f,h*.036f,Color.rgb(47,84,111),Paint.Align.CENTER,mediumFace);
+            textFace(c,"Mon Oxygène",w*.055f,h*.092f,h*.024f,Color.WHITE,Paint.Align.LEFT,titleFace);
+
+            float top=h*.265f,bottom=h*.705f,mid=(top+bottom)/2f,amp=(bottom-top)*.40f;
+            Path path=new Path();
+            double cycle=inhaleSec+exhaleSec;
+            double visibleSpan=cycle*4.65;
+            for(int i=0;i<=760;i++){
+                float x=(float)i/760*w;
+                double t=elapsed+(x/w-.5)*visibleSpan;
+                float y=(float)(mid-amp*waveAt(t));
+                if(i==0) path.moveTo(x,y); else path.lineTo(x,y);
+            }
+
+            LinearGradient glowGrad=new LinearGradient(w*.06f,0,w*.94f,0,
+                    new int[]{Color.argb(80,69,213,221),Color.argb(70,100,187,235),Color.argb(70,157,126,225)},null,Shader.TileMode.CLAMP);
+            glow.setShader(glowGrad); glow.setStrokeCap(Paint.Cap.ROUND); glow.setStrokeWidth(Math.max(10,w*.008f)); c.drawPath(path,glow); glow.setShader(null);
+            LinearGradient curveGrad=new LinearGradient(w*.06f,0,w*.94f,0,
+                    new int[]{Color.rgb(72,211,220),Color.rgb(105,190,235),Color.rgb(158,128,226)},null,Shader.TileMode.CLAMP);
+            stroke.setShader(curveGrad); stroke.setStrokeCap(Paint.Cap.ROUND); stroke.setStrokeWidth(Math.max(4,w*.0032f)); c.drawPath(path,stroke); stroke.setShader(null);
+
+            float flowerX=w*.50f; float flowerY=(float)(mid-amp*waveAt(elapsed));
+            float breatheScale=(float)(0.96+0.07*(waveAt(elapsed)+1.0)/2.0);
+            drawBreathingFlower(c,flowerX,flowerY,h*.031f,breatheScale);
+
+            float progress=(float)(elapsed/total);
+            float progL=w*.105f,progR=w*.735f,progY=h*.927f;
+            p.setColor(Color.argb(120,255,255,255)); c.drawRoundRect(progL,progY-h*.004f,progR,progY+h*.016f,16,16,p);
+            p.setColor(Color.argb(60,90,202,224)); c.drawRoundRect(progL,progY-h*.008f,progL+(progR-progL)*progress,progY+h*.020f,18,18,p);
+            LinearGradient progGrad=new LinearGradient(progL,0,progR,0,new int[]{Color.rgb(73,207,216),Color.rgb(118,179,229),Color.rgb(150,127,217)},null,Shader.TileMode.CLAMP);
+            p.setShader(progGrad); c.drawRoundRect(progL,progY,progL+(progR-progL)*progress,progY+h*.012f,14,14,p); p.setShader(null);
+            textFace(c,"Inspire "+inhaleSec+" s   ·   Expire "+exhaleSec+" s",progL,h*.895f,h*.0185f,Color.argb(235,255,255,255),Paint.Align.LEFT,bodyFace);
+
+            float btnCy=h*.905f, rr=h*.036f;
+            pauseBtn.set(w*.825f-rr,btnCy-rr,w*.825f+rr,btnCy+rr);
+            stopBtn.set(w*.905f-rr,btnCy-rr,w*.905f+rr,btnCy+rr);
+            drawRemoteButton(c,pauseBtn,paused?1:0);
+            drawRemoteButton(c,stopBtn,2);
+        }
+
+        void drawBreathingFlower(Canvas c,float cx,float cy,float radius,float scale){
+            c.save(); c.translate(cx,cy); c.scale(scale,scale);
+            p.setStyle(Paint.Style.FILL);
+
+            // Halo doux, discret et lumineux.
+            p.setColor(Color.argb(36,92,208,226)); c.drawCircle(0,0,radius*1.62f,p);
+            p.setColor(Color.argb(28,153,131,224)); c.drawCircle(0,0,radius*1.40f,p);
+
+            // Première couronne : pétales fins, légèrement transparents.
+            int[] outer={Color.argb(175,70,214,221),Color.argb(170,101,192,235),Color.argb(166,151,128,226),Color.argb(170,91,203,225)};
+            for(int i=0;i<10;i++){
+                c.save(); c.rotate(i*36f);
+                p.setColor(outer[i%outer.length]);
+                RectF petal=new RectF(-radius*.27f,-radius*1.52f,radius*.27f,-radius*.20f);
+                c.drawOval(petal,p);
+    
