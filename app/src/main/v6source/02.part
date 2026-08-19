@@ -1,0 +1,80 @@
+soutenir l’énergie et la mise en mouvement."};
+            int[] colors={Color.rgb(78,174,190),Color.rgb(84,157,188),Color.rgb(142,112,207)};
+            for(int i=0;i<3;i++){
+                RectF card=new RectF(left,y+i*(cardH+gap),right,y+i*(cardH+gap)+cardH);
+                softCard(c,card,colors[i]);
+                textFace(c,names[i],left+h*.020f,card.top+h*.035f,h*.0240f,colors[i],Paint.Align.LEFT,mediumFace);
+                textFace(c,ratios[i],right-h*.020f,card.top+h*.035f,h*.0220f,colors[i],Paint.Align.RIGHT,mediumFace);
+                wrappedTextFace(c,desc[i],left+h*.020f,card.top+h*.072f,right-left-h*.040f,h*.0200f,Color.rgb(68,86,99),1.28f,bodyFace);
+            }
+            wrappedTextFace(c,"Il n’existe pas de bon rythme universel. Il y a seulement celui dans lequel ta respiration reste fluide et confortable.",left,y+h*.415f,right-left,h*.0225f,Color.rgb(58,123,139),1.36f,accentFace);
+        }
+
+        void softCard(Canvas c,RectF r,int accent){
+            p.setColor(Color.argb(112,255,255,255)); c.drawRoundRect(r,28,28,p);
+            p.setColor(Color.argb(42,Color.red(accent),Color.green(accent),Color.blue(accent))); c.drawRoundRect(r.left,r.top,r.left+getWidth()*.0055f,r.bottom,12,12,p);
+        }
+
+        void drawSettings(Canvas c){
+            int w=getWidth(),h=getHeight();
+            drawBitmapCover(c,settingsBg);
+            LinearGradient veil=new LinearGradient(w*.43f,0,w,0,new int[]{Color.argb(0,255,255,255),Color.argb(38,246,250,255),Color.argb(70,246,250,255)},null,Shader.TileMode.CLAMP);
+            p.setShader(veil); c.drawRect(w*.38f,0,w,h,p); p.setShader(null);
+
+            float l=w*.525f,t=h*.040f,r=w*.968f,b=h*.960f;
+            p.setColor(Color.argb(205,251,253,255)); c.drawRoundRect(l,t,r,b,42,42,p);
+            p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(Math.max(1.5f,w*.001f)); p.setColor(Color.argb(70,112,170,191)); c.drawRoundRect(l+w*.007f,t+h*.010f,r-w*.007f,b-h*.010f,36,36,p); p.setStyle(Paint.Style.FILL);
+            float cx=(l+r)/2f;
+            textFace(c,"Mon Oxygène",cx,h*.112f,h*.048f,Color.rgb(43,75,102),Paint.Align.CENTER,titleFace);
+            textFace(c,"Choisis le rythme qui te semble juste aujourd’hui",cx,h*.157f,h*.0215f,Color.rgb(89,111,125),Paint.Align.CENTER,bodyFace);
+
+            float x=l+w*.033f;
+            drawStepper(c,"Durée de la séance",null,durationMin+" min",x,h*.225f,minusDur,plusDur);
+            drawStepper(c,"Inspiration","dynamiser",inhaleSec+" s",x,h*.350f,minusIn,plusIn);
+            drawStepper(c,"Expiration","récupérer",exhaleSec+" s",x,h*.475f,minusOut,plusOut);
+
+            textFace(c,"Commencer par",x,h*.595f,h*.023f,Color.rgb(60,85,101),Paint.Align.LEFT,mediumFace);
+            inhaleFirstBtn.set(x,h*.620f,x+w*.162f,h*.674f);
+            exhaleFirstBtn.set(x+w*.178f,h*.620f,x+w*.340f,h*.674f);
+            toggleButton(c,inhaleFirstBtn,"Inspirer",startWithInhale);
+            toggleButton(c,exhaleFirstBtn,"Expirer",!startWithInhale);
+
+            textFace(c,"Rythmes proposés",x,h*.730f,h*.020f,Color.rgb(91,110,121),Paint.Align.LEFT,bodyFace);
+            float chipGap=w*.008f, chipW=(r-l-w*.066f-2*chipGap)/3f;
+            presetEq.set(x,h*.750f,x+chipW,h*.818f);
+            presetSlow.set(x+chipW+chipGap,h*.750f,x+2*chipW+chipGap,h*.818f);
+            presetMove.set(x+2*chipW+2*chipGap,h*.750f,r-w*.033f,h*.818f);
+            chipTwoLine(c,presetEq,"Équilibre","5 / 5",Color.rgb(72,172,187));
+            chipTwoLine(c,presetSlow,"Ralentir","4 / 6",Color.rgb(73,148,185));
+            chipTwoLine(c,presetMove,"Dynamiser","6 / 4",Color.rgb(136,111,203));
+
+            startBtn.set(l+w*.085f,h*.858f,r-w*.085f,h*.925f);
+            LinearGradient startGrad=new LinearGradient(startBtn.left,0,startBtn.right,0,new int[]{Color.rgb(69,183,195),Color.rgb(91,174,210),Color.rgb(137,119,207)},null,Shader.TileMode.CLAMP);
+            p.setShader(startGrad); c.drawRoundRect(startBtn,38,38,p); p.setShader(null);
+            textFace(c,"Commencer la séance",startBtn.centerX(),startBtn.centerY()+h*.009f,h*.025f,Color.WHITE,Paint.Align.CENTER,mediumFace);
+
+            infoBtn.set(r-w*.072f,t+h*.015f,r-w*.022f,t+h*.065f);
+            p.setColor(Color.argb(120,255,255,255)); c.drawOval(infoBtn,p);
+            textFace(c,"i",infoBtn.centerX(),infoBtn.centerY()+h*.010f,h*.026f,Color.rgb(80,110,126),Paint.Align.CENTER,titleFace);
+        }
+
+        void drawStepper(Canvas c,String main,String parenthetical,String value,float x,float y,RectF minus,RectF plus){
+            int w=getWidth(),h=getHeight();
+            textFace(c,main,x,y,h*.024f,Color.rgb(55,82,101),Paint.Align.LEFT,mediumFace);
+            if(parenthetical!=null){
+                p.setTextSize(h*.024f); p.setTypeface(mediumFace); float mainW=p.measureText(main);
+                textFace(c,"("+parenthetical+")",x+mainW+w*.007f,y,h*.019f,Color.rgb(90,140,154),Paint.Align.LEFT,accentFace);
+            }
+            float cy=y+h*.046f;
+            minus.set(x,cy-h*.025f,x+w*.047f,cy+h*.025f);
+            plus.set(x+w*.230f,cy-h*.025f,x+w*.277f,cy+h*.025f);
+            p.setColor(Color.argb(145,255,255,255)); c.drawRoundRect(minus,22,22,p); c.drawRoundRect(plus,22,22,p);
+            p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(1.5f); p.setColor(Color.argb(80,82,133,153)); c.drawRoundRect(minus,22,22,p); c.drawRoundRect(plus,22,22,p); p.setStyle(Paint.Style.FILL);
+            textFace(c,"−",minus.centerX(),minus.centerY()+h*.013f,h*.038f,Color.rgb(65,105,126),Paint.Align.CENTER,bodyFace);
+            textFace(c,"+",plus.centerX(),plus.centerY()+h*.012f,h*.035f,Color.rgb(65,105,126),Paint.Align.CENTER,bodyFace);
+            textFace(c,value,x+w*.139f,cy+h*.010f,h*.031f,Color.rgb(48,77,98),Paint.Align.CENTER,mediumFace);
+        }
+
+        void toggleButton(Canvas c,RectF r,String s,boolean selected){
+            p.setColor(selected?Color.rgb(82,181,194):Color.argb(128,255,255,255)); c.drawRoundRect(r,28,28,p);
+            if(!selected){ p.setStyle(Paint.
