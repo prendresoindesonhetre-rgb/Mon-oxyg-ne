@@ -1,0 +1,113 @@
+package fr.prendresoindesonhetre.monoxygene;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.graphics.*;
+import android.view.*;
+import android.content.*;
+import android.util.Base64;
+import java.util.*;
+
+public class MainActivity extends Activity {
+    @Override public void onCreate(Bundle b){
+        super.onCreate(b);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(5894 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        setContentView(new BreathingView(this));
+    }
+
+    static class BreathingView extends View {
+        static final int INTRO=0, SETTINGS=1, SESSION=2;
+        final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        final Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
+        final Paint glow = new Paint(Paint.ANTI_ALIAS_FLAG);
+        final Typeface titleFace = Typeface.create("serif", Typeface.ITALIC);
+        final Typeface bodyFace = Typeface.create("sans-serif-light", Typeface.NORMAL);
+        final Typeface mediumFace = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+        final Typeface accentFace = Typeface.create("serif", Typeface.ITALIC);
+
+        Bitmap settingsBg, curveBg;
+        int screen = INTRO;
+        int introPage = 0;
+        int durationMin = 5;
+        int inhaleSec = 5;
+        int exhaleSec = 5;
+        boolean startWithInhale = true;
+        boolean paused = false;
+        long startMs, pausedAt, pausedTotal;
+
+        final RectF nextBtn=new RectF(), backBtn=new RectF(), skipBtn=new RectF();
+        final RectF minusDur=new RectF(), plusDur=new RectF();
+        final RectF minusIn=new RectF(), plusIn=new RectF();
+        final RectF minusOut=new RectF(), plusOut=new RectF();
+        final RectF inhaleFirstBtn=new RectF(), exhaleFirstBtn=new RectF();
+        final RectF presetEq=new RectF(), presetSlow=new RectF(), presetMove=new RectF();
+        final RectF startBtn=new RectF(), pauseBtn=new RectF(), stopBtn=new RectF(), infoBtn=new RectF();
+
+        final String[] introKickers = new String[]{
+                "RESPIRER EN CONSCIENCE",
+                "RETROUVER SA MARGE DE CHOIX",
+                "CRÉER UN ESPACE INTÉRIEUR",
+                "LAISSER LE SOUFFLE CIRCULER",
+                "ÉCOUTER SON BESOIN DU MOMENT",
+                "D’UN OUTIL VERS UNE RESSOURCE"
+        };
+
+        final String[] introTitles = new String[]{
+                "Mon Oxygène",
+                "Ce que l’on ne contrôle pas",
+                "La respiration crée un espace de retour à soi",
+                "Inspire & Expire",
+                "Choisir son juste rythme",
+                "Avec le temps"
+        };
+
+        final String[] introBodies = new String[]{
+                "Respirer c’est bien… en conscience et en y mettant du sens, c’est mieux.\n\nMon Oxygène est une application de respiration guidée pensée comme un espace intérieur. Un moment pour accueillir ce qui est là, et laisser un peu plus de place à ce que l’on ressent.",
+                "Nous ne contrôlons pas ce qui nous entoure.\n\nMais nous pouvons contrôler deux choses : nos actions… et nos réactions.",
+                "Respirer ne cherche pas à effacer ce que l’on ressent.\n\nC’est une façon de revenir doucement à soi, de prendre un peu de recul, et de laisser les choses se poser.\n\nCela permet d’accueillir ce qui est là, sans se juger, et de lui redonner sa juste place.",
+                "",
+                "",
+                "Petit à petit, la respiration devient un repère naturel.\nUn espace intérieur que tu sauras retrouver plus facilement.\n\nUne manière de prendre soin de son Hêtre : revenir à soi avec douceur, s’écouter, et accueillir ce qui est là.\n\nLa respiration ne change pas forcément ce qui se passe autour de nous."
+        };
+
+        final String[] introAccents = new String[]{
+                "Respirer partout, simplement… mais surtout en y mettant du sens.",
+                "On ne respire pas pour changer le monde, mais pour retrouver un peu plus de liberté dans la manière d’y répondre.",
+                "Dans les moments d’inconfort, la respiration devient un chemin simple pour revenir à soi et retrouver un peu de sécurité intérieure.",
+                "",
+                "",
+                "Mais elle peut changer la manière dont nous le traversons et le percevons.\n\nPour cela, tu n’as rien à réussir, rien à forcer. Laisse simplement faire, de la manière la plus juste et la plus confortable pour toi, en faisant confiance à tes ressentis."
+        };
+
+        BreathingView(Context c){
+            super(c);
+            stroke.setStyle(Paint.Style.STROKE);
+            glow.setStyle(Paint.Style.STROKE);
+            setKeepScreenOn(true);
+            settingsBg = decodeAssetChunks(c,"settings_exact",13);
+            if(settingsBg==null) settingsBg = decode(BackgroundAssets.SETTINGS);
+            curveBg = decode(BackgroundAssets.CURVE);
+        }
+
+        Bitmap decode(String[] chunks){
+            StringBuilder sb=new StringBuilder();
+            for(String s:chunks) sb.append(s);
+            byte[] data=Base64.decode(sb.toString(),Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(data,0,data.length);
+        }
+
+        Bitmap decodeAssetChunks(Context c,String dir,int count){
+            try{
+                StringBuilder sb=new StringBuilder();
+                byte[] buf=new byte[8192];
+                for(int i=1;i<=count;i++){
+                    String name=String.format(Locale.US,"%s/%02d.txt",dir,i);
+                    java.io.InputStream in=c.getAssets().open(name);
+                    int n;
+                    while((n=in.read(buf))>0){
+                        sb.append(new String(buf,0,n,java.nio.charset.StandardCharsets.US_ASCII));
+                    }
+                    in.close();
+           

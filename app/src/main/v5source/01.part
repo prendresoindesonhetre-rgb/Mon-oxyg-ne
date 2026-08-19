@@ -1,0 +1,100 @@
+      }
+                byte[] data=Base64.decode(sb.toString(),Base64.DEFAULT);
+                return BitmapFactory.decodeByteArray(data,0,data.length);
+            }catch(Exception e){
+                return null;
+            }
+        }
+
+        @Override protected void onDraw(Canvas c){
+            super.onDraw(c);
+            if(screen==INTRO) drawIntro(c);
+            else if(screen==SETTINGS) drawSettings(c);
+            else drawSession(c);
+            if(screen==SESSION && !paused) postInvalidateOnAnimation();
+        }
+
+        void drawBitmapCover(Canvas c, Bitmap bmp){
+            if(bmp==null){ c.drawColor(Color.rgb(217,231,242)); return; }
+            int vw=getWidth(), vh=getHeight(), bw=bmp.getWidth(), bh=bmp.getHeight();
+            float viewRatio=(float)vw/vh, bmpRatio=(float)bw/bh;
+            Rect src=new Rect();
+            if(bmpRatio>viewRatio){
+                int cropW=Math.round(bh*viewRatio); int left=(bw-cropW)/2;
+                src.set(left,0,left+cropW,bh);
+            }else{
+                int cropH=Math.round(bw/viewRatio); int top=(bh-cropH)/2;
+                src.set(0,top,bw,top+cropH);
+            }
+            c.drawBitmap(bmp,src,new Rect(0,0,vw,vh),p);
+        }
+
+        void drawIntro(Canvas c){
+            int w=getWidth(),h=getHeight();
+            drawBitmapCover(c,settingsBg);
+            LinearGradient veil=new LinearGradient(w*.38f,0,w,0,
+                    new int[]{Color.argb(8,255,255,255),Color.argb(50,245,250,255),Color.argb(95,245,249,255)},
+                    null,Shader.TileMode.CLAMP);
+            p.setShader(veil); c.drawRect(w*.32f,0,w,h,p); p.setShader(null);
+
+            float l=w*.505f,t=h*.055f,r=w*.958f,b=h*.945f;
+            p.setColor(Color.argb(202,251,253,255)); c.drawRoundRect(l,t,r,b,42,42,p);
+            p.setStyle(Paint.Style.STROKE); p.setStrokeWidth(Math.max(1.5f,w*.0012f));
+            p.setColor(Color.argb(75,125,177,197)); c.drawRoundRect(l+w*.008f,t+h*.012f,r-w*.008f,b-h*.012f,36,36,p); p.setStyle(Paint.Style.FILL);
+
+            float left=l+w*.038f, right=r-w*.038f;
+            textFace(c,introKickers[introPage],left,h*.122f,h*.0185f,Color.rgb(87,137,154),Paint.Align.LEFT,mediumFace);
+            drawTinyFlower(c,right-w*.012f,h*.112f,h*.014f,0.88f);
+
+            float titleSize=introPage==2?h*.039f:h*.047f;
+            textFace(c,introTitles[introPage],left,h*.185f,titleSize,Color.rgb(46,75,101),Paint.Align.LEFT,titleFace);
+            p.setColor(Color.argb(90,81,184,198)); c.drawRoundRect(left,h*.218f,left+w*.060f,h*.222f,4,4,p);
+
+            if(introPage==3) drawIntroBreath(c,left,right,h*.275f);
+            else if(introPage==4) drawIntroRhythms(c,left,right,h*.265f);
+            else {
+                float bodySize=introPage==5?h*.024f:h*.026f;
+                float y=h*.278f;
+                y=wrappedTextFace(c,introBodies[introPage],left,y,right-left,bodySize,Color.rgb(61,83,99),1.48f,bodyFace);
+                y+=h*.028f;
+                wrappedTextFace(c,introAccents[introPage],left,y,right-left,bodySize*1.04f,Color.rgb(57,126,142),1.40f,accentFace);
+            }
+
+            backBtn.set(l+w*.030f,h*.855f,l+w*.132f,h*.916f);
+            nextBtn.set(r-w*.170f,h*.855f,r-w*.030f,h*.916f);
+            skipBtn.set(r-w*.115f,t+h*.020f,r-w*.025f,t+h*.063f);
+            if(introPage>0) navButton(c,backBtn,"‹",false);
+            navButton(c,nextBtn,introPage==introTitles.length-1?"Choisir":"Suivant",true);
+            textFace(c,"Passer",skipBtn.centerX(),skipBtn.centerY()+h*.006f,h*.020f,Color.rgb(106,125,137),Paint.Align.CENTER,bodyFace);
+
+            float dotY=h*.814f; float spacing=w*.014f; float start=(l+r)/2f-spacing*(introTitles.length-1)/2f;
+            for(int i=0;i<introTitles.length;i++){
+                p.setColor(i==introPage?Color.rgb(76,187,201):Color.argb(80,74,112,130));
+                c.drawCircle(start+i*spacing,dotY,h*(i==introPage?.0062f:.0038f),p);
+            }
+        }
+
+        void drawIntroBreath(Canvas c,float left,float right,float y){
+            int h=getHeight(); float gap=h*.018f;
+            RectF inCard=new RectF(left,y,right,y+h*.205f);
+            RectF outCard=new RectF(left,y+h*.205f+gap,right,y+h*.410f+gap);
+            softCard(c,inCard,Color.rgb(86,197,211));
+            softCard(c,outCard,Color.rgb(145,119,214));
+
+            textFace(c,"À l’inspiration",left+h*.025f,y+h*.048f,h*.026f,Color.rgb(54,132,149),Paint.Align.LEFT,mediumFace);
+            wrappedTextFace(c,"Inspire doucement par le nez. Laisse le ventre se gonfler naturellement.",left+h*.025f,y+h*.088f,right-left-h*.050f,h*.0215f,Color.rgb(65,84,98),1.35f,bodyFace);
+            textFace(c,"Imagine, si tu le souhaites, une lumière douce qui entre avec ton souffle.",left+h*.025f,y+h*.175f,h*.020f,Color.rgb(62,135,151),Paint.Align.LEFT,accentFace);
+
+            float y2=outCard.top;
+            textFace(c,"À l’expiration",left+h*.025f,y2+h*.048f,h*.026f,Color.rgb(111,88,176),Paint.Align.LEFT,mediumFace);
+            wrappedTextFace(c,"Expire doucement par la bouche. Le ventre redescend sans effort.",left+h*.025f,y2+h*.088f,right-left-h*.050f,h*.0215f,Color.rgb(65,84,98),1.35f,bodyFace);
+            textFace(c,"Laisse partir ce dont tu ne souhaites plus t’encombrer, sans rien forcer.",left+h*.025f,y2+h*.175f,h*.020f,Color.rgb(111,88,176),Paint.Align.LEFT,accentFace);
+
+            textFace(c,"Inspire ce qui te fait du bien  •  Expire ce qui ne te convient plus",(left+right)/2f,y2+h*.245f,h*.0205f,Color.rgb(58,115,134),Paint.Align.CENTER,accentFace);
+        }
+
+        void drawIntroRhythms(Canvas c,float left,float right,float y){
+            int h=getHeight(); float cardH=h*.115f, gap=h*.018f;
+            String[] names={"Retrouver l’équilibre","Ralentir  (récupérer)","Dynamiser  (mise en mouvement)"};
+            String[] ratios={"5 / 5","4 / 6  ou  3 / 5","6 / 4  ou  5 / 3"};
+            String[] desc={"Un rythme simple et régulier pour revenir à soi.","Une expiration plus longue po

@@ -1,0 +1,8 @@
+psedRealtime(); }
+                    else { paused=false; pausedTotal += SystemClock.elapsedRealtime()-pausedAt; }
+                } else if(stopBtn.contains(x,y)){ screen=SETTINGS; paused=false; }
+            }
+            invalidate(); return true;
+        }
+    }
+}
