@@ -51,11 +51,13 @@ jobs:
         run: python3 scripts/apply_v20.py
       - name: Apply Mon Oxygène v21 stronger controls
         run: python3 scripts/apply_v21.py
+      - name: Apply Mon Oxygène v22 tablet layout
+        run: python3 scripts/apply_v22_tablet.py
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v21
+          name: Mon-Oxygene-APK-v22
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
