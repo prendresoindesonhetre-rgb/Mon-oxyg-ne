@@ -43,11 +43,13 @@ jobs:
         run: python3 scripts/apply_v16.py
       - name: Apply Mon Oxygène v17 smaller lotus at exhale end
         run: python3 scripts/apply_v17.py
+      - name: Apply Mon Oxygène v18 stronger progress bar
+        run: python3 scripts/apply_v18.py
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v17
+          name: Mon-Oxygene-APK-v18
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
