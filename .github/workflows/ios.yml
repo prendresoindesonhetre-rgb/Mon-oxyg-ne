@@ -64,15 +64,15 @@ jobs:
           rm -rf Payload
           mkdir -p Payload
           cp -R "build-device/Build/Products/Release-iphoneos/Mon Oxygène.app" Payload/
-          /usr/bin/zip -qry Mon_Oxygene_iOS_v1_unsigned.ipa Payload
-          /usr/bin/zip -qry Mon_Oxygene_iOS_v1_Project.zip MonOxygene.xcodeproj MonOxygene project.yml
+          /usr/bin/zip -qry Mon_Oxygene_iOS_v2_unsigned.ipa Payload
+          /usr/bin/zip -qry Mon_Oxygene_iOS_v2_Project.zip MonOxygene.xcodeproj MonOxygene project.yml
 
       - name: Upload iOS artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-iOS-v1
+          name: Mon-Oxygene-iOS-v2
           path: |
-            ios/Mon_Oxygene_iOS_v1_unsigned.ipa
-            ios/Mon_Oxygene_iOS_v1_Project.zip
+            ios/Mon_Oxygene_iOS_v2_unsigned.ipa
+            ios/Mon_Oxygene_iOS_v2_Project.zip
             ios/build-simulator/Build/Products/Release-iphonesimulator/Mon Oxygène.app
           if-no-files-found: error
