@@ -1,0 +1,1 @@
+validate v19 stop-pause alignment
