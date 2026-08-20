@@ -47,6 +47,7 @@ jobs:
       - name: Validate PWA source
         run: |
           node --check pwa/www/app.js
+          node --check pwa/www/orientation.js
           node --check pwa/www/sw.js
           python - <<'PY'
           import json
@@ -55,11 +56,12 @@ jobs:
           manifest = json.loads((root/'manifest.webmanifest').read_text(encoding='utf-8'))
           assert manifest['display'] == 'standalone'
           assert manifest['start_url'] == './'
-          for name in ['index.html','styles.css','app.js','sw.js','manifest.webmanifest']:
+          assert manifest['orientation'] == 'landscape'
+          for name in ['index.html','styles.css','landscape-force.css','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA validée')
+          print('PWA paysage validée')
           PY
 
       - name: Prepare static site
@@ -72,7 +74,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v1
+          name: Mon-Oxygene-PWA-v3-landscape
           path: pwa-dist
           if-no-files-found: error
 
