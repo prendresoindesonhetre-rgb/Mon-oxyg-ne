@@ -9,6 +9,7 @@ on:
       - 'app/src/main/java/fr/prendresoindesonhetre/monoxygene/AssetCurve*.java'
       - 'app/src/main/res/drawable/lotus_breathing.webp'
       - '.github/workflows/pwa.yml'
+      - 'scripts/apply_seconds_labels.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -17,6 +18,7 @@ on:
       - 'app/src/main/java/fr/prendresoindesonhetre/monoxygene/AssetCurve*.java'
       - 'app/src/main/res/drawable/lotus_breathing.webp'
       - '.github/workflows/pwa.yml'
+      - 'scripts/apply_seconds_labels.py'
   workflow_dispatch:
 
 permissions:
@@ -44,6 +46,9 @@ jobs:
       - name: Prepare exact Mon Oxygène assets
         run: python pwa/scripts/prepare_assets.py
 
+      - name: Add seconds to breathing rhythm labels
+        run: python scripts/apply_seconds_labels.py pwa
+
       - name: Validate PWA source
         run: |
           node --check pwa/www/app.js
@@ -57,11 +62,14 @@ jobs:
           assert manifest['display'] == 'standalone'
           assert manifest['start_url'] == './'
           assert manifest['orientation'] == 'landscape'
+          app_js = (root/'app.js').read_text(encoding='utf-8')
+          for label in ['5s/5s', '4s/6s', '3s/5s', '6s/4s', '5s/3s']:
+              assert label in app_js, label
           for name in ['index.html','styles.css','landscape-force.css','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA paysage validée')
+          print('PWA paysage validée avec les secondes affichées')
           PY
 
       - name: Prepare static site
@@ -74,7 +82,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v3-landscape
+          name: Mon-Oxygene-PWA-v4-seconds
           path: pwa-dist
           if-no-files-found: error
 
