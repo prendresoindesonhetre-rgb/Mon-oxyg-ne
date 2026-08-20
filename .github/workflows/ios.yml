@@ -1,0 +1,78 @@
+name: Build iOS App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          python3 -m venv .venv-ios
+          .venv-ios/bin/python -m pip install --upgrade pip
+          .venv-ios/bin/python -m pip install pillow
+          brew install xcodegen
+
+      - name: Prepare exact Mon Oxygène assets
+        run: .venv-ios/bin/python ios/scripts/prepare_assets.py
+
+      - name: Apply Swift source fixes
+        run: .venv-ios/bin/python ios/scripts/fix_swift_source.py
+
+      - name: Generate Xcode project
+        run: |
+          cd ios
+          xcodegen generate
+
+      - name: Build for iPhone Simulator
+        run: |
+          cd ios
+          xcodebuild \
+            -project MonOxygene.xcodeproj \
+            -scheme MonOxygene \
+            -configuration Release \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            -derivedDataPath build-simulator \
+            build
+
+      - name: Build unsigned iPhone app
+        run: |
+          cd ios
+          xcodebuild \
+            -project MonOxygene.xcodeproj \
+            -scheme MonOxygene \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            -derivedDataPath build-device \
+            build
+
+      - name: Package unsigned IPA and Xcode project
+        run: |
+          cd ios
+          rm -rf Payload
+          mkdir -p Payload
+          cp -R "build-device/Build/Products/Release-iphoneos/Mon Oxygène.app" Payload/
+          /usr/bin/zip -qry Mon_Oxygene_iOS_v1_unsigned.ipa Payload
+          /usr/bin/zip -qry Mon_Oxygene_iOS_v1_Project.zip MonOxygene.xcodeproj MonOxygene project.yml
+
+      - name: Upload iOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mon-Oxygene-iOS-v1
+          path: |
+            ios/Mon_Oxygene_iOS_v1_unsigned.ipa
+            ios/Mon_Oxygene_iOS_v1_Project.zip
+            ios/build-simulator/Build/Products/Release-iphonesimulator/Mon Oxygène.app
+          if-no-files-found: error

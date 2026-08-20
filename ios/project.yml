@@ -1,0 +1,39 @@
+name: MonOxygene
+options:
+  bundleIdPrefix: fr.prendresoindesonhetre
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    PRODUCT_BUNDLE_IDENTIFIER: fr.prendresoindesonhetre.monoxygene
+    MARKETING_VERSION: 1.0
+    CURRENT_PROJECT_VERSION: 1
+    SWIFT_VERSION: 5.0
+    TARGETED_DEVICE_FAMILY: "1"
+    INFOPLIST_FILE: MonOxygene/Info.plist
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    CODE_SIGN_STYLE: Automatic
+targets:
+  MonOxygene:
+    type: application
+    platform: iOS
+    sources:
+      - path: MonOxygene
+        excludes:
+          - Resources
+          - Info.plist
+    resources:
+      - path: MonOxygene/Resources
+    settings:
+      base:
+        PRODUCT_NAME: "Mon Oxygène"
+        GENERATE_INFOPLIST_FILE: NO
+schemes:
+  MonOxygene:
+    build:
+      targets:
+        MonOxygene: all
+    run:
+      config: Debug
+    archive:
+      config: Release
