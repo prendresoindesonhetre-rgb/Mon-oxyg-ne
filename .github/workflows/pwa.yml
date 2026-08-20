@@ -12,6 +12,7 @@ on:
       - 'scripts/apply_seconds_labels.py'
       - 'scripts/apply_v24_lotus_scale.py'
       - 'scripts/apply_v25_lotus_balance.py'
+      - 'scripts/apply_v26_lotus_slightly_larger.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -23,6 +24,7 @@ on:
       - 'scripts/apply_seconds_labels.py'
       - 'scripts/apply_v24_lotus_scale.py'
       - 'scripts/apply_v25_lotus_balance.py'
+      - 'scripts/apply_v26_lotus_slightly_larger.py'
   workflow_dispatch:
 
 permissions:
@@ -59,6 +61,9 @@ jobs:
       - name: Apply balanced lotus breathing scale
         run: python scripts/apply_v25_lotus_balance.py pwa
 
+      - name: Apply slightly larger lotus breathing scale
+        run: python scripts/apply_v26_lotus_slightly_larger.py pwa
+
       - name: Validate PWA source
         run: |
           node --check pwa/www/app.js
@@ -75,13 +80,13 @@ jobs:
           app_js = (root/'app.js').read_text(encoding='utf-8')
           for label in ['5s/5s', '4s/6s', '3s/5s', '6s/4s', '5s/3s']:
               assert label in app_js, label
-          assert 'const scale = 0.64 + 0.48 * breathEase(elapsed);' in app_js
-          assert "mon-oxygene-pwa-v6-lotus-balanced" in (root/'sw.js').read_text(encoding='utf-8')
+          assert 'const scale = 0.66 + 0.48 * breathEase(elapsed);' in app_js
+          assert "mon-oxygene-pwa-v7-lotus-slightly-larger" in (root/'sw.js').read_text(encoding='utf-8')
           for name in ['index.html','styles.css','landscape-force.css','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA paysage validée avec lotus équilibré')
+          print('PWA paysage validée avec lotus légèrement agrandi')
           PY
 
       - name: Prepare static site
@@ -94,7 +99,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v6-lotus-balanced
+          name: Mon-Oxygene-PWA-v7-lotus-slightly-larger
           path: pwa-dist
           if-no-files-found: error
 
