@@ -65,11 +65,13 @@ jobs:
         run: python3 scripts/apply_v27_thinner_sinusoid.py android
       - name: Apply Mon Oxygène v28 thinner line only
         run: python3 scripts/apply_v28_thinner_line_only.py android
+      - name: Apply Mon Oxygène v29 final thinner line
+        run: python3 scripts/apply_v29_final_thinner_line.py android
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v28
+          name: Mon-Oxygene-APK-v29
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
