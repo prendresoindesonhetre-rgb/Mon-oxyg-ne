@@ -119,3 +119,5 @@ jobs:
             git commit -m "Record live Mon Oxygène PWA URL"
             git push origin main
           fi
+
+# Trigger publication check
