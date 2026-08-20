@@ -61,11 +61,13 @@ jobs:
         run: python3 scripts/apply_v25_lotus_balance.py android
       - name: Apply Mon Oxygène v26 slightly larger lotus
         run: python3 scripts/apply_v26_lotus_slightly_larger.py android
+      - name: Apply Mon Oxygène v27 thinner sinusoid
+        run: python3 scripts/apply_v27_thinner_sinusoid.py android
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v26
+          name: Mon-Oxygene-APK-v27
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
