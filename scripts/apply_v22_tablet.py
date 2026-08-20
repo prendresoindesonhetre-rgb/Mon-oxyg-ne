@@ -17,14 +17,14 @@ insert = r'''        boolean isTabletLayout(){
             return getResources().getConfiguration().smallestScreenWidthDp >= 600;
         }
 
-        float measureWrappedHeight(String s,float maxW,float size,float spacing,boolean bold){
+        float measureWrappedHeightFace(String s,float maxW,float size,float spacing,Typeface face){
             p.setTextSize(size);
-            p.setTypeface(bold?Typeface.create("sans",Typeface.BOLD):Typeface.create("sans",Typeface.NORMAL));
+            p.setTypeface(face);
             float lineH=size*spacing;
             float height=0f;
             String[] paras=s.split("\\n",-1);
             for(String para:paras){
-                if(para.length()==0){ height+=lineH*.52f; continue; }
+                if(para.length()==0){ height+=lineH*.60f; continue; }
                 String[] words=para.split(" ");
                 String line="";
                 int lines=0;
@@ -33,10 +33,10 @@ insert = r'''        boolean isTabletLayout(){
                     if(p.measureText(test)>maxW && line.length()>0){
                         lines++;
                         line=word;
-                    } else line=test;
+                    }else line=test;
                 }
                 if(line.length()>0) lines++;
-                height += lines*lineH;
+                height+=lines*lineH;
             }
             return height;
         }
@@ -44,57 +44,76 @@ insert = r'''        boolean isTabletLayout(){
         void drawIntroTablet(Canvas c){
             int w=getWidth(),h=getHeight();
             drawBitmapCover(c,settingsBg);
-            p.setColor(Color.argb(28,28,62,80)); c.drawRect(0,0,w,h,p);
 
-            // Tablette uniquement : carte plus large et zone de lecture plus confortable.
-            float l=w*.355f,t=h*.035f,r=w*.978f,b=h*.965f;
-            p.setColor(Color.argb(224,250,252,255)); c.drawRoundRect(l,t,r,b,42,42,p);
-            p.setColor(Color.argb(72,255,255,255)); c.drawRoundRect(l+w*.010f,t+h*.014f,r-w*.010f,b-h*.014f,34,34,p);
+            LinearGradient veil=new LinearGradient(w*.28f,0,w,0,
+                    new int[]{Color.argb(5,255,255,255),Color.argb(48,245,250,255),Color.argb(92,245,249,255)},
+                    null,Shader.TileMode.CLAMP);
+            p.setShader(veil); c.drawRect(w*.25f,0,w,h,p); p.setShader(null);
+
+            // Cette branche n'est utilisée que sur les tablettes (>= 600 dp).
+            // Le dessin téléphone v21 reste donc strictement inchangé.
+            float l=w*.345f,t=h*.035f,r=w*.978f,b=h*.965f;
+            p.setColor(Color.argb(210,251,253,255)); c.drawRoundRect(l,t,r,b,44,44,p);
+            p.setStyle(Paint.Style.STROKE);
+            p.setStrokeWidth(Math.max(1.5f,w*.0012f));
+            p.setColor(Color.argb(78,125,177,197));
+            c.drawRoundRect(l+w*.008f,t+h*.012f,r-w*.008f,b-h*.012f,38,38,p);
+            p.setStyle(Paint.Style.FILL);
 
             float left=l+w*.034f, right=r-w*.032f;
             float maxW=right-left;
 
-            skipBtn.set(r-w*.145f,t+h*.018f,r-w*.028f,t+h*.070f);
-            text(c,"Passer",skipBtn.centerX(),skipBtn.centerY()+h*.008f,h*.021f,Color.rgb(75,104,123),Paint.Align.CENTER,false);
+            textFace(c,introKickers[introPage],left,h*.105f,h*.0195f,Color.rgb(87,137,154),Paint.Align.LEFT,mediumFace);
+            drawTinyFlower(c,right-w*.010f,h*.098f,h*.0135f,.88f);
 
-            float titleSize=h*.043f;
-            float titleY=h*.125f;
-            float afterTitle=wrappedText(c,introTitles[introPage],left,titleY,maxW,titleSize,Color.rgb(43,78,105),1.10f,true);
-            float y=afterTitle+h*.015f;
+            skipBtn.set(r-w*.125f,t+h*.016f,r-w*.020f,t+h*.064f);
+            textFace(c,"Passer",skipBtn.centerX(),skipBtn.centerY()+h*.006f,h*.0205f,Color.rgb(106,125,137),Paint.Align.CENTER,bodyFace);
 
-            // On réserve toujours le bas de la carte pour la pagination et les boutons.
-            float contentBottom=h*.775f;
-            float bodySize = introPage==3 ? h*.0240f : (introPage==4 ? h*.0250f : (introPage==5 ? h*.0243f : h*.0260f));
-            float minSize=h*.0185f;
-            float gap=h*.016f;
-            while(bodySize>minSize){
-                float need=measureWrappedHeight(introBodies[introPage],maxW,bodySize,1.28f,false)
-                        + gap
-                        + measureWrappedHeight(introAccents[introPage],maxW,bodySize*1.01f,1.27f,true);
-                if(y+need<=contentBottom) break;
-                bodySize-=h*.00055f;
+            float titleSize=introPage==2?h*.0385f:h*.0435f;
+            float titleY=h*.155f;
+            float afterTitle=wrappedTextFace(c,introTitles[introPage],left,titleY,maxW,titleSize,Color.rgb(46,75,101),1.10f,titleFace);
+            float underlineY=afterTitle-h*.010f;
+            p.setColor(Color.argb(90,81,184,198));
+            c.drawRoundRect(left,underlineY,left+w*.060f,underlineY+h*.004f,4,4,p);
+
+            float contentY=underlineY+h*.043f;
+            if(introPage==3){
+                drawIntroBreath(c,left,right,contentY);
+            }else if(introPage==4){
+                drawIntroRhythms(c,left,right,contentY-h*.008f);
+            }else{
+                float contentBottom=h*.780f;
+                float gap=h*.021f;
+                float bodySize=introPage==5?h*.0245f:h*.0260f;
+                float minSize=h*.0190f;
+                while(bodySize>minSize){
+                    float need=measureWrappedHeightFace(introBodies[introPage],maxW,bodySize,1.34f,bodyFace)
+                            +gap
+                            +measureWrappedHeightFace(introAccents[introPage],maxW,bodySize*1.01f,1.30f,accentFace);
+                    if(contentY+need<=contentBottom) break;
+                    bodySize-=h*.0005f;
+                }
+                float y=wrappedTextFace(c,introBodies[introPage],left,contentY,maxW,bodySize,Color.rgb(61,83,99),1.34f,bodyFace);
+                y+=gap;
+                wrappedTextFace(c,introAccents[introPage],left,y,maxW,bodySize*1.01f,Color.rgb(57,126,142),1.30f,accentFace);
             }
 
-            y=wrappedText(c,introBodies[introPage],left,y,maxW,bodySize,Color.rgb(48,75,96),1.28f,false);
-            y+=gap;
-            wrappedText(c,introAccents[introPage],left,y,maxW,bodySize*1.01f,Color.rgb(51,121,139),1.27f,true);
-
-            float dotY=h*.817f;
+            float dotY=h*.818f;
             float spacing=Math.min(w*.018f,h*.030f);
             float center=(l+r)/2f;
             float start=center-spacing*(introTitles.length-1)/2f;
             for(int i=0;i<introTitles.length;i++){
-                p.setColor(i==introPage?Color.rgb(74,177,190):Color.argb(110,70,105,125));
-                c.drawCircle(start+i*spacing,dotY,h*(i==introPage?.0075f:.0052f),p);
+                p.setColor(i==introPage?Color.rgb(76,187,201):Color.argb(80,74,112,130));
+                c.drawCircle(start+i*spacing,dotY,h*(i==introPage?.0065f:.0041f),p);
             }
 
-            backBtn.set(l+w*.030f,h*.858f,l+w*.155f,h*.930f);
-            nextBtn.set(r-w*.205f,h*.858f,r-w*.030f,h*.930f);
-            if(introPage>0) softButton(c,backBtn,"Précédent",false);
-            softButton(c,nextBtn,introPage==introTitles.length-1?"Choisir mon rythme":"Suivant",true);
+            backBtn.set(l+w*.026f,h*.858f,l+w*.135f,h*.928f);
+            nextBtn.set(r-w*.170f,h*.858f,r-w*.026f,h*.928f);
+            if(introPage>0) navButton(c,backBtn,"‹",false);
+            navButton(c,nextBtn,introPage==introTitles.length-1?"Choisir":"Suivant",true);
         }
 
 '''
 s = s.replace(marker, insert + marker, 1)
 path.write_text(s, encoding="utf-8")
-print("Mon Oxygène v22 : mise en page tablette ajoutée, interface téléphone inchangée")
+print("Mon Oxygène v22 : mise en page tablette ajoutée, interface téléphone v21 inchangée")
