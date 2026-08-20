@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -79,6 +79,8 @@ jobs:
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload GitHub Pages artifact
         if: github.event_name != 'pull_request'
@@ -97,3 +99,23 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Record live PWA URL
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Save live URL in repository
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          printf '%s\n' "$PAGE_URL" > PWA_LIVE_URL.txt
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PWA_LIVE_URL.txt
+          if git diff --cached --quiet; then
+            echo "URL déjà enregistrée"
+          else
+            git commit -m "Record live Mon Oxygène PWA URL"
+            git push origin main
+          fi
