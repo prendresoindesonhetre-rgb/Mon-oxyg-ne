@@ -14,6 +14,7 @@ on:
       - 'scripts/apply_v25_lotus_balance.py'
       - 'scripts/apply_v26_lotus_slightly_larger.py'
       - 'scripts/apply_v27_thinner_sinusoid.py'
+      - 'scripts/apply_v28_thinner_line_only.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -27,6 +28,7 @@ on:
       - 'scripts/apply_v25_lotus_balance.py'
       - 'scripts/apply_v26_lotus_slightly_larger.py'
       - 'scripts/apply_v27_thinner_sinusoid.py'
+      - 'scripts/apply_v28_thinner_line_only.py'
   workflow_dispatch:
 
 permissions:
@@ -69,6 +71,9 @@ jobs:
       - name: Apply slightly thinner sinusoid
         run: python scripts/apply_v27_thinner_sinusoid.py pwa
 
+      - name: Apply thinner sinusoid line only
+        run: python scripts/apply_v28_thinner_line_only.py pwa
+
       - name: Validate PWA source
         run: |
           node --check pwa/www/app.js
@@ -88,13 +93,13 @@ jobs:
           assert 'const scale = 0.66 + 0.48 * breathEase(elapsed);' in app_js
           css = (root/'styles.css').read_text(encoding='utf-8')
           assert 'stroke-width:12' in css
-          assert 'stroke-width:4.4' in css
-          assert "mon-oxygene-pwa-v8-thinner-sinusoid" in (root/'sw.js').read_text(encoding='utf-8')
+          assert 'stroke-width:4.0' in css
+          assert "mon-oxygene-pwa-v9-thinner-line-only" in (root/'sw.js').read_text(encoding='utf-8')
           for name in ['index.html','styles.css','landscape-force.css','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA paysage validée avec sinusoïde légèrement affinée')
+          print('PWA paysage validée : trait principal plus fin, halo inchangé')
           PY
 
       - name: Prepare static site
@@ -107,7 +112,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v8-thinner-sinusoid
+          name: Mon-Oxygene-PWA-v9-thinner-line-only
           path: pwa-dist
           if-no-files-found: error
 
