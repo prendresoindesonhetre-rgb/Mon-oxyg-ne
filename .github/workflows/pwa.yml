@@ -1,0 +1,99 @@
+name: Build and Deploy PWA
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'pwa/**'
+      - 'app/src/main/assets/settings_exact/**'
+      - 'app/src/main/java/fr/prendresoindesonhetre/monoxygene/AssetCurve*.java'
+      - 'app/src/main/res/drawable/lotus_breathing.webp'
+      - '.github/workflows/pwa.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'pwa/**'
+      - 'app/src/main/assets/settings_exact/**'
+      - 'app/src/main/java/fr/prendresoindesonhetre/monoxygene/AssetCurve*.java'
+      - 'app/src/main/res/drawable/lotus_breathing.webp'
+      - '.github/workflows/pwa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install image tools
+        run: python -m pip install pillow
+
+      - name: Prepare exact Mon Oxygène assets
+        run: python pwa/scripts/prepare_assets.py
+
+      - name: Validate PWA source
+        run: |
+          node --check pwa/www/app.js
+          node --check pwa/www/sw.js
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('pwa/www')
+          manifest = json.loads((root/'manifest.webmanifest').read_text(encoding='utf-8'))
+          assert manifest['display'] == 'standalone'
+          assert manifest['start_url'] == './'
+          for name in ['index.html','styles.css','app.js','sw.js','manifest.webmanifest']:
+              assert (root/name).exists(), name
+          for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
+              assert (root/'assets'/name).exists(), name
+          print('PWA validée')
+          PY
+
+      - name: Prepare static site
+        run: |
+          rm -rf pwa-dist
+          mkdir pwa-dist
+          cp -R pwa/www/. pwa-dist/
+          touch pwa-dist/.nojekyll
+
+      - name: Upload PWA build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mon-Oxygene-PWA-v1
+          path: pwa-dist
+          if-no-files-found: error
+
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pwa-dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
