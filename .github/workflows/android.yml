@@ -55,11 +55,13 @@ jobs:
         run: python3 scripts/apply_v22_tablet.py
       - name: Add seconds to breathing rhythm labels
         run: python3 scripts/apply_seconds_labels.py android
+      - name: Apply Mon Oxygène v24 smaller lotus scale
+        run: python3 scripts/apply_v24_lotus_scale.py android
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v23
+          name: Mon-Oxygene-APK-v24
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
