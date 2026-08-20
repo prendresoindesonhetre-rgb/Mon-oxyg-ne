@@ -78,9 +78,7 @@ jobs:
 
       - name: Configure GitHub Pages
         if: github.event_name != 'pull_request'
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
+        uses: actions/configure-pages@v6
 
       - name: Upload GitHub Pages artifact
         if: github.event_name != 'pull_request'
@@ -119,5 +117,3 @@ jobs:
             git commit -m "Record live Mon Oxygène PWA URL"
             git push origin main
           fi
-
-# Trigger publication check
