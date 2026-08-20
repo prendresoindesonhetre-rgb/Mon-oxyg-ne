@@ -23,6 +23,9 @@ jobs:
       - name: Prepare exact Mon Oxygène assets
         run: .venv-ios/bin/python ios/scripts/prepare_assets.py
 
+      - name: Apply Swift source fixes
+        run: .venv-ios/bin/python ios/scripts/fix_swift_source.py
+
       - name: Generate Xcode project
         run: |
           cd ios
