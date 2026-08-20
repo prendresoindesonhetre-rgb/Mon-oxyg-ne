@@ -1,12 +1,8 @@
 from pathlib import Path
+import re
 import sys
 
 MODE = sys.argv[1] if len(sys.argv) > 1 else "all"
-
-ANDROID_GLOW_OLD = 'glow.setStrokeCap(Paint.Cap.ROUND); glow.setStrokeWidth(Math.max(10,w*.008f));'
-ANDROID_GLOW_NEW = 'glow.setStrokeCap(Paint.Cap.ROUND); glow.setStrokeWidth(Math.max(9f,w*.0074f));'
-ANDROID_LINE_OLD = 'stroke.setStrokeCap(Paint.Cap.ROUND); stroke.setStrokeWidth(Math.max(4,w*.0033f));'
-ANDROID_LINE_NEW = 'stroke.setStrokeCap(Paint.Cap.ROUND); stroke.setStrokeWidth(Math.max(3.6f,w*.0030f));'
 
 PWA_GLOW_OLD = '.wave-glow{fill:none;stroke:url(#waveGradient);stroke-width:13;opacity:.24;stroke-linecap:round;filter:blur(2px)}'
 PWA_GLOW_NEW = '.wave-glow{fill:none;stroke:url(#waveGradient);stroke-width:12;opacity:.24;stroke-linecap:round;filter:blur(2px)}'
@@ -17,10 +13,22 @@ PWA_LINE_NEW = '.wave-line{fill:none;stroke:url(#waveGradient);stroke-width:4.4;
 def patch_android():
     path = Path('app/src/main/java/fr/prendresoindesonhetre/monoxygene/MainActivity.java')
     s = path.read_text(encoding='utf-8')
-    if ANDROID_GLOW_OLD not in s or ANDROID_LINE_OLD not in s:
-        raise SystemExit('Épaisseur de sinusoïde Android v26 introuvable')
-    s = s.replace(ANDROID_GLOW_OLD, ANDROID_GLOW_NEW, 1)
-    s = s.replace(ANDROID_LINE_OLD, ANDROID_LINE_NEW, 1)
+
+    s, glow_count = re.subn(
+        r'glow\.setStrokeCap\(Paint\.Cap\.ROUND\);\s*glow\.setStrokeWidth\([^;]+\);',
+        'glow.setStrokeCap(Paint.Cap.ROUND); glow.setStrokeWidth(Math.max(9f,w*.0074f));',
+        s,
+        count=1,
+    )
+    s, line_count = re.subn(
+        r'stroke\.setStrokeCap\(Paint\.Cap\.ROUND\);\s*stroke\.setStrokeWidth\([^;]+\);',
+        'stroke.setStrokeCap(Paint.Cap.ROUND); stroke.setStrokeWidth(Math.max(3.6f,w*.0030f));',
+        s,
+        count=1,
+    )
+    if glow_count != 1 or line_count != 1:
+        raise SystemExit(f'Épaisseur de sinusoïde Android introuvable (glow={glow_count}, line={line_count})')
+
     path.write_text(s, encoding='utf-8')
     print('Android: sinusoïde légèrement affinée, forme et rythme inchangés')
 
