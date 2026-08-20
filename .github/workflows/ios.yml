@@ -15,11 +15,13 @@ jobs:
 
       - name: Install build tools
         run: |
-          python3 -m pip install --user pillow
+          python3 -m venv .venv-ios
+          .venv-ios/bin/python -m pip install --upgrade pip
+          .venv-ios/bin/python -m pip install pillow
           brew install xcodegen
 
       - name: Prepare exact Mon Oxygène assets
-        run: python3 ios/scripts/prepare_assets.py
+        run: .venv-ios/bin/python ios/scripts/prepare_assets.py
 
       - name: Generate Xcode project
         run: |
