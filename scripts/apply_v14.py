@@ -4,22 +4,25 @@ import re
 path = Path('app/src/main/java/fr/prendresoindesonhetre/monoxygene/MainActivity.java')
 s = path.read_text(encoding='utf-8')
 
-# Respiration du lotus : mouvement doux uniquement, sans halo ni effet autour.
+# Respiration du lotus : un simple gonflement/repli doux.
 s = s.replace(
     'float breatheScale=(float)(0.86+0.24*(waveAt(elapsed)+1.0)/2.0);',
     'float breatheScale=(float)(0.92+0.14*(waveAt(elapsed)+1.0)/2.0);'
 )
 
-# Supprimer les effets ajoutés autour du lotus pendant les cycles de visualisation.
-s = re.sub(
-    r'''int visualCycle=\(int\)Math\.floor\(elapsed/\(inhaleSec\+exhaleSec\)\);\n            boolean showVisual=visualCycle<4 && \(visualCycle%2\)==1;\n            if\(showVisual\)\{\n                if\(inhale\)\{.*?\n            \}\n            ''',
-    '',
+# Supprimer entièrement le halo lumineux / nuage qui était dessiné autour du lotus.
+# On conserve uniquement l'appel au lotus lui-même.
+s, visual_count = re.subn(
+    r'int visualCycle=\(int\)Math\.floor\(elapsed/\(inhaleSec\+exhaleSec\)\);.*?drawBreathingFlower\(c,flowerX,flowerY,h\*\.0275f,breatheScale\);',
+    'drawBreathingFlower(c,flowerX,flowerY,h*.0275f,breatheScale);',
     s,
     flags=re.S
 )
+if visual_count != 1:
+    raise SystemExit(f'visual effect removal count={visual_count}')
 
-# Remplacer le rendu du lotus par l'image seule, qui se gonfle à l'inspiration
-# et se dégonfle à l'expiration. Aucun cercle, halo, contour ou aura n'est dessiné.
+# Remplacer le rendu du lotus par l'image seule.
+# Aucun cercle, halo, aura, contour animé ou effet diffus n'est ajouté.
 replacement = '''void drawBreathingFlower(Canvas c,float cx,float cy,float radius,float scale){
             if(lotusBmp==null){
                 p.setStyle(Paint.Style.FILL);
@@ -39,13 +42,13 @@ replacement = '''void drawBreathingFlower(Canvas c,float cx,float cy,float radiu
 
         void drawTinyFlower'''
 
-s, n = re.subn(
+s, lotus_count = re.subn(
     r'void drawBreathingFlower\(Canvas c,float cx,float cy,float radius,float scale\)\{.*?\n        \}\n\n        void drawTinyFlower',
     replacement,
     s,
     flags=re.S
 )
-if n != 1:
-    raise SystemExit(f'lotus replacement count={n}')
+if lotus_count != 1:
+    raise SystemExit(f'lotus replacement count={lotus_count}')
 
 path.write_text(s, encoding='utf-8')
