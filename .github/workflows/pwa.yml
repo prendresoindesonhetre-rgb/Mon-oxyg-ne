@@ -16,6 +16,7 @@ on:
       - 'scripts/apply_v27_thinner_sinusoid.py'
       - 'scripts/apply_v28_thinner_line_only.py'
       - 'scripts/apply_v29_final_thinner_line.py'
+      - 'scripts/apply_v31_lotus_slightly_smaller.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -31,6 +32,7 @@ on:
       - 'scripts/apply_v27_thinner_sinusoid.py'
       - 'scripts/apply_v28_thinner_line_only.py'
       - 'scripts/apply_v29_final_thinner_line.py'
+      - 'scripts/apply_v31_lotus_slightly_smaller.py'
   workflow_dispatch:
 
 permissions:
@@ -79,6 +81,9 @@ jobs:
       - name: Apply final thinner sinusoid line
         run: python scripts/apply_v29_final_thinner_line.py pwa
 
+      - name: Apply slightly smaller lotus
+        run: python scripts/apply_v31_lotus_slightly_smaller.py pwa
+
       - name: Validate PWA source
         run: |
           node --check pwa/www/app.js
@@ -95,16 +100,16 @@ jobs:
           app_js = (root/'app.js').read_text(encoding='utf-8')
           for label in ['5s/5s', '4s/6s', '3s/5s', '6s/4s', '5s/3s']:
               assert label in app_js, label
-          assert 'const scale = 0.66 + 0.48 * breathEase(elapsed);' in app_js
+          assert 'const scale = 0.65 + 0.48 * breathEase(elapsed);' in app_js
           css = (root/'styles.css').read_text(encoding='utf-8')
           assert 'stroke-width:12' in css
           assert 'stroke-width:3.7' in css
-          assert "mon-oxygene-pwa-v10-final-thinner-line" in (root/'sw.js').read_text(encoding='utf-8')
+          assert "mon-oxygene-pwa-v11-lotus-slightly-smaller" in (root/'sw.js').read_text(encoding='utf-8')
           for name in ['index.html','styles.css','landscape-force.css','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA paysage validée : trait principal très légèrement affiné, halo inchangé')
+          print('PWA paysage validée : lotus très légèrement réduit, sinusoïde inchangée')
           PY
 
       - name: Prepare static site
@@ -117,7 +122,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v10-final-thinner-line
+          name: Mon-Oxygene-PWA-v11-lotus-slightly-smaller
           path: pwa-dist
           if-no-files-found: error
 
