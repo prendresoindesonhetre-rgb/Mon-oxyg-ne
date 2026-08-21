@@ -1,0 +1,1 @@
+Ce build APK reprend la version responsive actuelle de Mon Oxygène sans modifier son design ni ses fonctions.
