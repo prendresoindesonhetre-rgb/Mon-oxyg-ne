@@ -1,0 +1,4 @@
+Mon Oxygène v37
+- APK : nouvel identifiant Android pour éviter les conflits de signature avec d'anciennes APK.
+- PWA : nouveau chemin /v37/ avec un nouveau scope de service worker et cache indépendant.
+- Petits écrans : règles CSS de secours pour éviter les chevauchements de texte, y compris sur anciens navigateurs.
