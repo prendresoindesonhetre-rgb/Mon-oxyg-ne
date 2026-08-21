@@ -1,21 +1,17 @@
 (() => {
-  const standalone = () =>
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone === true;
+  'use strict';
 
-  async function forceLandscape() {
-    if (!standalone()) return;
-    try {
-      if (screen.orientation && typeof screen.orientation.lock === 'function') {
-        await screen.orientation.lock('landscape');
-      }
-    } catch (_) {
-      // iOS peut refuser l'API : landscape-force.css garde alors
-      // exactement la mise en page paysage en secours.
-    }
+  // v38 : aucune rotation ni verrouillage artificiel.
+  // Le navigateur conserve l'orientation réelle de l'appareil et le CSS
+  // réorganise l'interface automatiquement en portrait ou en paysage.
+  function refreshViewport() {
+    window.dispatchEvent(new Event('resize'));
   }
 
-  window.addEventListener('load', forceLandscape);
-  window.addEventListener('pageshow', forceLandscape);
-  document.addEventListener('pointerdown', forceLandscape, { once: true, passive: true });
+  window.addEventListener('load', refreshViewport);
+  window.addEventListener('pageshow', refreshViewport);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(refreshViewport, 60);
+    setTimeout(refreshViewport, 260);
+  });
 })();
