@@ -21,6 +21,7 @@ on:
       - 'scripts/apply_v33_thinner_sinusoid_all.py'
       - 'scripts/apply_v34_wide_compat.py'
       - 'scripts/apply_v35_responsive_layout.py'
+      - 'scripts/apply_v37_install_and_fresh_link.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -41,6 +42,7 @@ on:
       - 'scripts/apply_v33_thinner_sinusoid_all.py'
       - 'scripts/apply_v34_wide_compat.py'
       - 'scripts/apply_v35_responsive_layout.py'
+      - 'scripts/apply_v37_install_and_fresh_link.py'
   workflow_dispatch:
 
 permissions:
@@ -108,6 +110,9 @@ jobs:
       - name: Apply automatic responsive layout
         run: python scripts/apply_v35_responsive_layout.py pwa
 
+      - name: Apply fresh mobile link and small-screen fixes
+        run: python scripts/apply_v37_install_and_fresh_link.py pwa
+
       - name: Build legacy-compatible JavaScript
         run: |
           npm install --no-save --package-lock=false @babel/core@7 @babel/cli@7 @babel/preset-env@7 core-js-bundle@3
@@ -145,30 +150,34 @@ jobs:
           assert 'stroke-width:3.4' in css
           responsive = (root/'responsive.js').read_text(encoding='utf-8')
           assert '--ui-panel-width' in responsive
-          assert 'squareBlend' in responsive
           responsive_css = (root/'responsive.css').read_text(encoding='utf-8')
-          assert 'var(--ui-panel-width)' in responsive_css
           assert '.ui-compact' in responsive_css
+          fixes = (root/'v37-fixes.css').read_text(encoding='utf-8')
+          assert '-webkit-text-size-adjust:100%' in fixes
+          assert 'width:72%!important' in fixes
           sw = (root/'sw.js').read_text(encoding='utf-8')
-          assert 'mon-oxygene-pwa-v15-responsive-auto' in sw
-          for name in ['index.html','styles.css','landscape-force.css','legacy.css','responsive.css','compat-init.js','responsive.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
+          assert 'mon-oxygene-pwa-v16-fresh-mobile' in sw
+          assert './v37-fixes.css' in sw
+          for name in ['index.html','styles.css','landscape-force.css','legacy.css','responsive.css','v37-fixes.css','compat-init.js','responsive.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA validée : adaptation automatique continue à toutes les tailles d’écran')
+          print('PWA v37 validée : nouveau cache + petit écran + nouveau chemin /v37/')
           PY
 
-      - name: Prepare static site
+      - name: Prepare static site and clean v37 path
         run: |
           rm -rf pwa-dist
-          mkdir pwa-dist
+          mkdir -p pwa-dist/v37
           cp -R pwa/www/. pwa-dist/
+          cp -R pwa/www/. pwa-dist/v37/
           touch pwa-dist/.nojekyll
+          touch pwa-dist/v37/.nojekyll
 
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v15-responsive-auto
+          name: Mon-Oxygene-PWA-v16-fresh-mobile
           path: pwa-dist
           if-no-files-found: error
 
