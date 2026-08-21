@@ -1,4 +1,4 @@
-/* Mon Oxygène v35 — adaptation continue à la taille réelle de l'écran.
+/* Mon Oxygène v36 — adaptation continue à la taille réelle de l'écran.
    responsive.js calcule la largeur idéale des panneaux. Les tailles restantes
    utilisent vmin/vmax : elles suivent automatiquement le petit et le grand côté. */
 
@@ -119,22 +119,55 @@
   font-size:clamp(20px,5.1vmin,34px);
 }
 
-/* Petits écrans anciens : compacter uniquement les zones secondaires. */
+/* Petits écrans : compacter davantage les réglages pour éviter tout chevauchement. */
 .ui-compact .intro-panel,
 .ui-compact .settings-panel,
-.ui-compact .install-panel{height:calc(100% - 10px);margin:5px;}
-.ui-compact .intro-panel{padding:14px 18px;}
-.ui-compact .settings-panel{padding:12px 16px;}
-.ui-compact .install-panel{padding:16px 20px;}
-.ui-compact .slide-body{line-height:1.42;}
-.ui-compact .slide-body .two-cols{gap:8px;}
-.ui-compact .mini-card{padding:10px 11px;}
-.ui-compact .rhythm-grid{gap:7px;}
-.ui-compact .rhythm-card{padding:9px;}
-.ui-compact .settings-sub{margin-bottom:7px;}
-.ui-compact .preset-title{margin-top:7px;margin-bottom:5px;}
-.ui-compact .settings-bottom{padding-top:6px;}
-.ui-compact .safety{line-height:1.3;margin-bottom:6px;}
+.ui-compact .install-panel{height:calc(100% - 8px);margin:4px;}
+.ui-compact .intro-panel{padding:12px 16px;}
+.ui-compact .settings-panel{
+  width:min(58vmax,460px);
+  max-width:calc(100% - 8px);
+  padding:8px 12px;
+  overflow-y:auto;
+}
+.ui-compact .install-panel{padding:14px 18px;}
+.ui-compact .slide-body{line-height:1.36;}
+.ui-compact .slide-body .two-cols{gap:7px;}
+.ui-compact .mini-card{padding:9px 10px;}
+.ui-compact .rhythm-grid{gap:6px;}
+.ui-compact .rhythm-card{padding:8px;}
+.ui-compact .settings-title{font-size:22px;line-height:1;margin-bottom:2px;}
+.ui-compact .settings-sub{font-size:10px;line-height:1.15;margin-bottom:3px;}
+.ui-compact .setting-row{gap:6px;padding:3px 0;}
+.ui-compact .setting-label strong{font-size:11px;line-height:1.08;}
+.ui-compact .setting-label span{display:none;}
+.ui-compact .stepper{gap:3px;padding:2px;}
+.ui-compact .stepper button{width:28px;height:28px;font-size:16px;}
+.ui-compact .stepper-value{min-width:44px;font-size:11px;}
+.ui-compact .start-toggle{gap:4px;}
+.ui-compact .pill-choice{padding:5px 8px;font-size:11px;}
+.ui-compact .preset-title{font-size:9px;margin:4px 0 3px;}
+.ui-compact .preset-grid{gap:4px;}
+.ui-compact .preset{padding:5px 4px;border-radius:12px;}
+.ui-compact .preset strong{font-size:10px;margin-bottom:1px;}
+.ui-compact .preset span{font-size:9px;}
+.ui-compact .settings-bottom{padding-top:4px;}
+.ui-compact .safety{font-size:8.5px;line-height:1.15;margin-bottom:3px;}
+.ui-compact .start-session{min-height:36px;font-size:12px;}
+
+/* Très petits téléphones : priorité à la lisibilité et à l'absence de chevauchement. */
+.ui-tiny .settings-panel{width:min(64vmax,500px);padding:6px 10px;}
+.ui-tiny .settings-title{font-size:20px;}
+.ui-tiny .settings-sub{display:none;}
+.ui-tiny .setting-row{padding:2px 0;gap:4px;}
+.ui-tiny .setting-label strong{font-size:10.5px;}
+.ui-tiny .stepper button{width:26px;height:26px;}
+.ui-tiny .stepper-value{min-width:40px;font-size:10.5px;}
+.ui-tiny .pill-choice{padding:4px 7px;font-size:10.5px;}
+.ui-tiny .preset-title{margin:3px 0 2px;}
+.ui-tiny .preset{padding:4px 3px;}
+.ui-tiny .safety{font-size:8px;line-height:1.08;}
+.ui-tiny .start-session{min-height:34px;}
 
 /* Très grands écrans : empêcher les panneaux de devenir démesurés. */
 .ui-roomy .intro-panel,
@@ -145,4 +178,6 @@
 @media (orientation:portrait){
   .install-panel,.intro-panel{width:var(--ui-panel-width);}
   .settings-panel{width:var(--ui-settings-width);}
+  .ui-compact .settings-panel{width:min(58vmax,460px);}
+  .ui-tiny .settings-panel{width:min(64vmax,500px);}
 }

@@ -1,3 +1,4 @@
+// PWA refresh v36 — force le navigateur à détecter la nouvelle version.
 const CACHE_NAME = 'mon-oxygene-pwa-v3-landscape';
 const CORE = [
   './',
