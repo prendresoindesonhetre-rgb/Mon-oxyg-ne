@@ -1,0 +1,148 @@
+/* Mon Oxygène v35 — adaptation continue à la taille réelle de l'écran.
+   responsive.js calcule la largeur idéale des panneaux. Les tailles restantes
+   utilisent vmin/vmax : elles suivent automatiquement le petit et le grand côté. */
+
+:root{
+  --ui-panel-width:49vw;
+  --ui-settings-width:48vw;
+}
+
+.install-panel,
+.intro-panel{
+  width:var(--ui-panel-width);
+  max-width:calc(100% - 18px);
+  border-radius:clamp(22px,4.6vmin,38px);
+}
+.settings-panel{
+  width:var(--ui-settings-width);
+  max-width:calc(100% - 18px);
+  border-radius:clamp(22px,4.6vmin,38px);
+}
+
+.install-panel{padding:clamp(20px,7.1vmin,64px);}
+.intro-panel{padding:clamp(20px,6.1vmin,56px);}
+.settings-panel{padding:clamp(16px,4.6vmin,42px);}
+
+.install-kicker,.kicker{font-size:clamp(10px,2.25vmin,15px);}
+.install-title{font-size:clamp(30px,8.5vmin,64px);}
+.install-copy{font-size:clamp(14px,3.25vmin,22px);}
+.install-tip{font-size:clamp(12px,2.55vmin,15px);}
+.primary,.secondary{
+  min-height:clamp(46px,10.5vmin,58px);
+  padding-left:clamp(18px,2.1vmax,26px);
+  padding-right:clamp(18px,2.1vmax,26px);
+}
+
+.slide-title{font-size:clamp(26px,6.8vmin,50px);}
+.slide-body{font-size:clamp(13px,2.75vmin,20px);}
+.intro-nav{gap:clamp(8px,1.8vmin,14px);}
+.nav-btn{
+  min-width:clamp(92px,10.5vmax,132px);
+  min-height:clamp(42px,8.8vmin,50px);
+  padding-left:clamp(12px,1.6vmax,20px);
+  padding-right:clamp(12px,1.6vmax,20px);
+}
+
+.settings-logo{
+  left:calc(var(--safe-left) + clamp(18px,2.8vmax,34px));
+  top:calc(var(--safe-top) + clamp(12px,3.2vmin,24px));
+  font-size:clamp(21px,5.1vmin,38px);
+}
+.settings-title{font-size:clamp(26px,6.4vmin,46px);}
+.settings-sub{
+  font-size:clamp(12px,2.45vmin,17px);
+  margin-bottom:clamp(10px,2.8vmin,18px);
+}
+.setting-row{
+  gap:clamp(9px,1.4vmax,18px);
+  padding:clamp(7px,1.7vmin,13px) 0;
+}
+.setting-label strong{font-size:clamp(13px,2.55vmin,17px);}
+.setting-label span{font-size:clamp(10px,2vmin,12px);}
+.stepper{
+  gap:clamp(6px,1.5vmin,11px);
+  padding:clamp(4px,.8vmin,7px);
+}
+.stepper button{
+  width:clamp(31px,7.3vmin,38px);
+  height:clamp(31px,7.3vmin,38px);
+}
+.stepper-value{min-width:clamp(52px,6.4vmax,68px);}
+.start-toggle{gap:clamp(5px,1.2vmin,9px);}
+.pill-choice{padding:clamp(8px,1.7vmin,11px) clamp(10px,1.35vmax,15px);}
+.preset-title{margin-top:clamp(10px,2.5vmin,18px);}
+.preset-grid{gap:clamp(5px,.75vmax,10px);}
+.preset{padding:clamp(8px,1.7vmin,13px) clamp(7px,.8vmax,11px);}
+.settings-bottom{padding-top:clamp(8px,1.8vmin,16px);}
+.safety{font-size:clamp(10px,1.9vmin,12px);}
+.start-session{min-height:clamp(46px,10vmin,54px);}
+
+/* Séance : les contrôles et le lotus suivent surtout le petit côté, afin
+   d'éviter qu'un écran très large les agrandisse de manière disproportionnée. */
+.session-brand{
+  left:calc(var(--safe-left) + clamp(20px,4.5vmax,76px));
+  top:calc(var(--safe-top) + clamp(10px,2.3vmin,24px));
+  font-size:clamp(18px,4.1vmin,30px);
+}
+.session-controls{
+  top:calc(var(--safe-top) + clamp(8px,1.7vmin,18px));
+  right:calc(var(--safe-right) + clamp(12px,2.8vmax,46px));
+  gap:clamp(8px,1.8vmin,14px);
+}
+.remote{
+  width:clamp(48px,10.2vmin,76px);
+  height:clamp(48px,10.2vmin,76px);
+}
+.phase-wrap{top:8.5%;width:min(78%,900px);}
+.phase-title{font-size:clamp(30px,7.6vmin,58px);}
+.phase-guide{font-size:clamp(14px,3.6vmin,28px);}
+.phase-count{font-size:clamp(11px,2.35vmin,19px);}
+.wave-stage{top:29%;bottom:13%;}
+.flower{
+  width:clamp(48px,10.5vmin,80px);
+  height:clamp(48px,10.5vmin,80px);
+}
+.progress-zone{
+  left:10.5%;
+  right:3.5%;
+  bottom:calc(var(--safe-bottom) + clamp(10px,2.5vmin,24px));
+  grid-template-columns:minmax(0,1fr) minmax(96px,17%);
+  gap:clamp(10px,2.1vmax,30px);
+}
+.rhythm-label{
+  font-size:clamp(10px,2vmin,15px);
+  margin-bottom:clamp(5px,1.3vmin,10px);
+}
+.progress-track{height:clamp(13px,3vmin,22px);}
+.time-pill{
+  height:clamp(46px,10.5vmin,70px);
+  font-size:clamp(20px,5.1vmin,34px);
+}
+
+/* Petits écrans anciens : compacter uniquement les zones secondaires. */
+.ui-compact .intro-panel,
+.ui-compact .settings-panel,
+.ui-compact .install-panel{height:calc(100% - 10px);margin:5px;}
+.ui-compact .intro-panel{padding:14px 18px;}
+.ui-compact .settings-panel{padding:12px 16px;}
+.ui-compact .install-panel{padding:16px 20px;}
+.ui-compact .slide-body{line-height:1.42;}
+.ui-compact .slide-body .two-cols{gap:8px;}
+.ui-compact .mini-card{padding:10px 11px;}
+.ui-compact .rhythm-grid{gap:7px;}
+.ui-compact .rhythm-card{padding:9px;}
+.ui-compact .settings-sub{margin-bottom:7px;}
+.ui-compact .preset-title{margin-top:7px;margin-bottom:5px;}
+.ui-compact .settings-bottom{padding-top:6px;}
+.ui-compact .safety{line-height:1.3;margin-bottom:6px;}
+
+/* Très grands écrans : empêcher les panneaux de devenir démesurés. */
+.ui-roomy .intro-panel,
+.ui-roomy .settings-panel,
+.ui-roomy .install-panel{max-height:960px;align-self:center;}
+
+/* En portrait simulé, responsive.js raisonne en grand/petit côté avant la rotation. */
+@media (orientation:portrait){
+  .install-panel,.intro-panel{width:var(--ui-panel-width);}
+  .settings-panel{width:var(--ui-settings-width);}
+}
