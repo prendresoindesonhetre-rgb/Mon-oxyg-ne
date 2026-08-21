@@ -79,6 +79,8 @@ jobs:
         run: python3 scripts/apply_v34_wide_compat.py android
       - name: Apply Mon Oxygène v35 automatic responsive layout
         run: python3 scripts/apply_v35_responsive_layout.py android
+      - name: Mark Mon Oxygène v36 final responsive build
+        run: python3 scripts/apply_v36_release_marker.py
       - name: Check Android 4.4 compatibility
         run: gradle :app:lintDebug --stacktrace
       - name: Build debug APK
@@ -86,6 +88,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v35
+          name: Mon-Oxygene-APK-v36
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
