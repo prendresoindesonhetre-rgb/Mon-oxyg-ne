@@ -32,10 +32,12 @@
     root.style.setProperty('--ui-settings-width', settingsWidth + 'px');
     root.style.setProperty('--ui-aspect', aspect.toFixed(4));
 
-    var compact = shortSide < 390;
+    var compact = shortSide < 410;
+    var tiny = shortSide < 345;
     var roomy = shortSide > 700;
-    var classes = root.className.replace(/\bui-compact\b|\bui-roomy\b/g, '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
+    var classes = root.className.replace(/\bui-compact\b|\bui-tiny\b|\bui-roomy\b/g, '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
     if (compact) classes += (classes ? ' ' : '') + 'ui-compact';
+    if (tiny) classes += (classes ? ' ' : '') + 'ui-tiny';
     if (roomy) classes += (classes ? ' ' : '') + 'ui-roomy';
     root.className = classes;
   }
