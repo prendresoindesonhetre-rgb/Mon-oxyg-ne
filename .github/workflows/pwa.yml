@@ -23,6 +23,7 @@ on:
       - 'scripts/apply_v35_responsive_layout.py'
       - 'scripts/apply_v37_install_and_fresh_link.py'
       - 'scripts/apply_v38_true_responsive.py'
+      - 'scripts/apply_v39_sideways_fit.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -45,6 +46,7 @@ on:
       - 'scripts/apply_v35_responsive_layout.py'
       - 'scripts/apply_v37_install_and_fresh_link.py'
       - 'scripts/apply_v38_true_responsive.py'
+      - 'scripts/apply_v39_sideways_fit.py'
   workflow_dispatch:
 
 permissions:
@@ -115,8 +117,11 @@ jobs:
       - name: Apply fresh mobile link and small-screen fixes
         run: python scripts/apply_v37_install_and_fresh_link.py pwa
 
-      - name: Apply true portrait and landscape responsive layout
+      - name: Apply v38 responsive foundation
         run: python scripts/apply_v38_true_responsive.py pwa
+
+      - name: Apply permanent landscape fit
+        run: python scripts/apply_v39_sideways_fit.py pwa
 
       - name: Build legacy-compatible JavaScript
         run: |
@@ -143,7 +148,7 @@ jobs:
           manifest = json.loads((root/'manifest.webmanifest').read_text(encoding='utf-8'))
           assert manifest['display'] == 'standalone'
           assert manifest['start_url'] == './'
-          assert manifest['orientation'] == 'any'
+          assert manifest['orientation'] == 'landscape'
           app_js = (root/'app.js').read_text(encoding='utf-8')
           for label in ['5s/5s', '4s/6s', '3s/5s', '6s/4s', '5s/3s']:
               assert label in app_js, label
@@ -159,36 +164,40 @@ jobs:
           assert '.ui-compact' in responsive_css
           v37 = (root/'v37-fixes.css').read_text(encoding='utf-8')
           assert '-webkit-text-size-adjust:100%' in v37
-          v38 = (root/'v38-responsive.css').read_text(encoding='utf-8')
-          assert 'transform: none !important' in v38
-          assert '@media (orientation: portrait)' in v38
+          v39 = (root/'v39-landscape-fit.css').read_text(encoding='utf-8')
+          assert '--landscape-width' in v39
+          assert 'rotate(90deg)' in v39
           orientation = (root/'orientation.js').read_text(encoding='utf-8')
-          assert 'screen.orientation.lock' not in orientation
+          assert 'visualViewport' in orientation
+          assert 'landscape-width' in orientation
+          assert 'rotate(90deg)' in orientation
           sw = (root/'sw.js').read_text(encoding='utf-8')
-          assert 'mon-oxygene-pwa-v17-true-responsive' in sw
-          assert './v38-responsive.css' in sw
-          for name in ['index.html','styles.css','landscape-force.css','legacy.css','responsive.css','v37-fixes.css','v38-responsive.css','compat-init.js','responsive.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
+          assert 'mon-oxygene-pwa-v18-sideways-fit' in sw
+          assert './v39-landscape-fit.css' in sw
+          for name in ['index.html','styles.css','landscape-force.css','legacy.css','responsive.css','v37-fixes.css','v38-responsive.css','v39-landscape-fit.css','compat-init.js','responsive.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA v38 validée : vrai responsive portrait/paysage sans rotation artificielle')
+          print('PWA v39 validée : toujours en paysage et ajustée au viewport visible')
           PY
 
-      - name: Prepare static site and v38 path
+      - name: Prepare static site and v39 path
         run: |
           rm -rf pwa-dist
-          mkdir -p pwa-dist/v37 pwa-dist/v38
+          mkdir -p pwa-dist/v37 pwa-dist/v38 pwa-dist/v39
           cp -R pwa/www/. pwa-dist/
           cp -R pwa/www/. pwa-dist/v37/
           cp -R pwa/www/. pwa-dist/v38/
+          cp -R pwa/www/. pwa-dist/v39/
           touch pwa-dist/.nojekyll
           touch pwa-dist/v37/.nojekyll
           touch pwa-dist/v38/.nojekyll
+          touch pwa-dist/v39/.nojekyll
 
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v17-true-responsive
+          name: Mon-Oxygene-PWA-v18-sideways-fit
           path: pwa-dist
           if-no-files-found: error
 
