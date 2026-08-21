@@ -18,6 +18,7 @@ on:
       - 'scripts/apply_v29_final_thinner_line.py'
       - 'scripts/apply_v31_lotus_slightly_smaller.py'
       - 'scripts/apply_v32_lotus_slightly_larger.py'
+      - 'scripts/apply_v33_thinner_sinusoid_all.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -35,6 +36,7 @@ on:
       - 'scripts/apply_v29_final_thinner_line.py'
       - 'scripts/apply_v31_lotus_slightly_smaller.py'
       - 'scripts/apply_v32_lotus_slightly_larger.py'
+      - 'scripts/apply_v33_thinner_sinusoid_all.py'
   workflow_dispatch:
 
 permissions:
@@ -89,6 +91,9 @@ jobs:
       - name: Apply slightly larger lotus
         run: python scripts/apply_v32_lotus_slightly_larger.py pwa
 
+      - name: Apply thinner sinusoid everywhere
+        run: python scripts/apply_v33_thinner_sinusoid_all.py pwa
+
       - name: Validate PWA source
         run: |
           node --check pwa/www/app.js
@@ -108,13 +113,13 @@ jobs:
           assert 'const scale = 0.655 + 0.48 * breathEase(elapsed);' in app_js
           css = (root/'styles.css').read_text(encoding='utf-8')
           assert 'stroke-width:12' in css
-          assert 'stroke-width:3.7' in css
-          assert "mon-oxygene-pwa-v12-lotus-slightly-larger" in (root/'sw.js').read_text(encoding='utf-8')
+          assert 'stroke-width:3.4' in css
+          assert "mon-oxygene-pwa-v13-thinner-sinusoid-all" in (root/'sw.js').read_text(encoding='utf-8')
           for name in ['index.html','styles.css','landscape-force.css','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA paysage validée : lotus très légèrement augmenté, sinusoïde inchangée')
+          print('PWA paysage validée : trait principal affiné, halo et lotus inchangés')
           PY
 
       - name: Prepare static site
@@ -127,7 +132,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v12-lotus-slightly-larger
+          name: Mon-Oxygene-PWA-v13-thinner-sinusoid-all
           path: pwa-dist
           if-no-files-found: error
 
