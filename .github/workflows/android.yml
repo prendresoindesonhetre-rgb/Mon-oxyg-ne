@@ -75,11 +75,15 @@ jobs:
         run: python3 scripts/apply_v32_lotus_slightly_larger.py android
       - name: Apply Mon Oxygène v33 thinner sinusoid everywhere
         run: python3 scripts/apply_v33_thinner_sinusoid_all.py android
+      - name: Apply Mon Oxygène v34 wide Android compatibility
+        run: python3 scripts/apply_v34_wide_compat.py android
+      - name: Check Android 4.4 compatibility
+        run: gradle :app:lintDebug --stacktrace
       - name: Build debug APK
         run: gradle :app:assembleDebug --stacktrace
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v33
+          name: Mon-Oxygene-APK-v34
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error

@@ -19,6 +19,7 @@ on:
       - 'scripts/apply_v31_lotus_slightly_smaller.py'
       - 'scripts/apply_v32_lotus_slightly_larger.py'
       - 'scripts/apply_v33_thinner_sinusoid_all.py'
+      - 'scripts/apply_v34_wide_compat.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -37,6 +38,7 @@ on:
       - 'scripts/apply_v31_lotus_slightly_smaller.py'
       - 'scripts/apply_v32_lotus_slightly_larger.py'
       - 'scripts/apply_v33_thinner_sinusoid_all.py'
+      - 'scripts/apply_v34_wide_compat.py'
   workflow_dispatch:
 
 permissions:
@@ -57,6 +59,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Install image tools
         run: python -m pip install pillow
@@ -94,11 +100,26 @@ jobs:
       - name: Apply thinner sinusoid everywhere
         run: python scripts/apply_v33_thinner_sinusoid_all.py pwa
 
+      - name: Apply wide PWA compatibility
+        run: python scripts/apply_v34_wide_compat.py pwa
+
+      - name: Build legacy-compatible JavaScript
+        run: |
+          npm install --no-save --package-lock=false @babel/core@7 @babel/cli@7 @babel/preset-env@7 core-js-bundle@3
+          npx babel pwa/www/app.js --out-file /tmp/app.js --presets=@babel/preset-env
+          mv /tmp/app.js pwa/www/app.js
+          npx babel pwa/www/orientation.js --out-file /tmp/orientation.js --presets=@babel/preset-env
+          mv /tmp/orientation.js pwa/www/orientation.js
+          npx babel pwa/www/sw.js --out-file /tmp/sw.js --presets=@babel/preset-env
+          mv /tmp/sw.js pwa/www/sw.js
+          cp node_modules/core-js-bundle/minified.js pwa/www/polyfills.js
+
       - name: Validate PWA source
         run: |
           node --check pwa/www/app.js
           node --check pwa/www/orientation.js
           node --check pwa/www/sw.js
+          node --check pwa/www/compat-init.js
           python - <<'PY'
           import json
           from pathlib import Path
@@ -110,16 +131,19 @@ jobs:
           app_js = (root/'app.js').read_text(encoding='utf-8')
           for label in ['5s/5s', '4s/6s', '3s/5s', '6s/4s', '5s/3s']:
               assert label in app_js, label
-          assert 'const scale = 0.655 + 0.48 * breathEase(elapsed);' in app_js
+          assert '0.655 + 0.48 * breathEase(elapsed)' in app_js
+          assert '=>' not in app_js
+          assert 'async function' not in app_js
           css = (root/'styles.css').read_text(encoding='utf-8')
           assert 'stroke-width:12' in css
           assert 'stroke-width:3.4' in css
-          assert "mon-oxygene-pwa-v13-thinner-sinusoid-all" in (root/'sw.js').read_text(encoding='utf-8')
-          for name in ['index.html','styles.css','landscape-force.css','orientation.js','app.js','sw.js','manifest.webmanifest']:
+          sw = (root/'sw.js').read_text(encoding='utf-8')
+          assert 'mon-oxygene-pwa-v14-wide-compat' in sw
+          for name in ['index.html','styles.css','landscape-force.css','legacy.css','compat-init.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA paysage validée : trait principal affiné, halo et lotus inchangés')
+          print('PWA validée : rendu actuel conservé + compatibilité navigateurs anciens')
           PY
 
       - name: Prepare static site
@@ -132,7 +156,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v13-thinner-sinusoid-all
+          name: Mon-Oxygene-PWA-v14-wide-compat
           path: pwa-dist
           if-no-files-found: error
 

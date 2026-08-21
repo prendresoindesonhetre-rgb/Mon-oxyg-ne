@@ -1,0 +1,55 @@
+.legacy-browser body{color:#3f5c6c}
+.legacy-browser .install-shell,
+.legacy-browser .intro-shell,
+.legacy-browser .settings-shell{padding:14px}
+.legacy-browser .install-panel{width:46vw;max-width:700px;padding:36px}
+.legacy-browser .intro-panel{width:49vw;max-width:760px;padding:32px}
+.legacy-browser .settings-panel{width:48vw;max-width:735px;padding:28px}
+.legacy-browser .install-kicker,
+.legacy-browser .kicker{font-size:13px}
+.legacy-browser .install-title{font-size:46px}
+.legacy-browser .install-copy{font-size:18px}
+.legacy-browser .slide-title{font-size:36px}
+.legacy-browser .slide-body{font-size:16px}
+.legacy-browser .settings-logo{top:34px;left:44px;font-size:30px}
+.legacy-browser .settings-title{font-size:36px}
+.legacy-browser .settings-sub{font-size:15px}
+.legacy-browser .setting-label strong{font-size:15px}
+.legacy-browser .slide-body .two-cols,
+.legacy-browser .rhythm-grid,
+.legacy-browser .preset-grid,
+.legacy-browser .setting-row,
+.legacy-browser .progress-zone{display:flex}
+.legacy-browser .slide-body .two-cols,
+.legacy-browser .rhythm-grid,
+.legacy-browser .preset-grid{justify-content:space-between}
+.legacy-browser .slide-body .two-cols>.mini-card{width:48%}
+.legacy-browser .rhythm-grid>.rhythm-card,
+.legacy-browser .preset-grid>.preset{width:32%}
+.legacy-browser .setting-row{justify-content:space-between;align-items:center}
+.legacy-browser .remote,
+.legacy-browser .time-pill{display:flex;align-items:center;justify-content:center}
+.legacy-browser .session-brand{left:5vw;top:3vh;font-size:24px}
+.legacy-browser .session-controls{top:2vh;right:3vw}
+.legacy-browser .remote{width:60px;height:60px}
+.legacy-browser .phase-wrap{width:70vw;max-width:900px}
+.legacy-browser .phase-title{font-size:44px}
+.legacy-browser .phase-guide{font-size:20px}
+.legacy-browser .phase-count{font-size:15px}
+.legacy-browser .flower{width:64px;height:64px}
+.legacy-browser .progress-zone{left:10.5%;right:3.5%;bottom:18px;align-items:center}
+.legacy-browser .progress-left{flex:1;margin-right:22px}
+.legacy-browser .rhythm-label{font-size:13px}
+.legacy-browser .progress-track{height:18px}
+.legacy-browser .progress-marker{width:16px;height:16px}
+.legacy-browser .time-pill{width:17vw;min-width:116px;height:58px;font-size:26px}
+.legacy-browser .end-card{width:520px;max-width:86vw}
+
+@media (orientation:portrait){
+  .legacy-browser #app{position:fixed;left:50%;top:50%;width:100vh;height:100vw;transform:translate(-50%,-50%) rotate(90deg);transform-origin:center center;overflow:hidden}
+  .legacy-browser .install-panel{width:46vh;padding:32px}
+  .legacy-browser .intro-panel{width:49vh;padding:28px}
+  .legacy-browser .settings-panel{width:48vh;padding:24px}
+  .legacy-browser .phase-wrap{width:70vh}
+  .legacy-browser .progress-zone{bottom:18px}
+}
