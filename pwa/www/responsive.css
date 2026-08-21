@@ -1,0 +1,217 @@
+/* Mon Oxygène v35 — adaptation continue à la taille réelle de l'écran.
+   Les variables sont calculées par responsive.js en fonction du petit côté,
+   du grand côté et du rapport largeur/hauteur. */
+
+:root{
+  --ui-u:4.5px;
+  --ui-lu:8px;
+  --ui-panel-width:49vw;
+  --ui-settings-width:48vw;
+}
+
+.install-panel,
+.intro-panel{
+  width:var(--ui-panel-width);
+  max-width:calc(100% - 18px);
+  border-radius:clamp(22px,calc(var(--ui-u) * 4.6),38px);
+}
+
+.settings-panel{
+  width:var(--ui-settings-width);
+  max-width:calc(100% - 18px);
+  border-radius:clamp(22px,calc(var(--ui-u) * 4.6),38px);
+}
+
+.install-panel{
+  padding:clamp(20px,calc(var(--ui-u) * 7.1),64px);
+}
+.intro-panel{
+  padding:clamp(20px,calc(var(--ui-u) * 6.1),56px);
+}
+.settings-panel{
+  padding:clamp(16px,calc(var(--ui-u) * 4.6),42px);
+}
+
+.install-kicker,.kicker{
+  font-size:clamp(10px,calc(var(--ui-u) * 2.25),15px);
+}
+.install-title{
+  font-size:clamp(30px,calc(var(--ui-u) * 8.5),64px);
+}
+.install-copy{
+  font-size:clamp(14px,calc(var(--ui-u) * 3.25),22px);
+}
+.install-tip{
+  font-size:clamp(12px,calc(var(--ui-u) * 2.55),15px);
+}
+.primary,.secondary{
+  min-height:clamp(46px,calc(var(--ui-u) * 10.5),58px);
+  padding-left:clamp(18px,calc(var(--ui-lu) * 2.1),26px);
+  padding-right:clamp(18px,calc(var(--ui-lu) * 2.1),26px);
+}
+
+.slide-title{
+  font-size:clamp(26px,calc(var(--ui-u) * 6.8),50px);
+}
+.slide-body{
+  font-size:clamp(13px,calc(var(--ui-u) * 2.75),20px);
+}
+.intro-nav{
+  gap:clamp(8px,calc(var(--ui-u) * 1.8),14px);
+}
+.nav-btn{
+  min-width:clamp(92px,calc(var(--ui-lu) * 10.5),132px);
+  min-height:clamp(42px,calc(var(--ui-u) * 8.8),50px);
+  padding-left:clamp(12px,calc(var(--ui-lu) * 1.6),20px);
+  padding-right:clamp(12px,calc(var(--ui-lu) * 1.6),20px);
+}
+
+.settings-logo{
+  left:calc(var(--safe-left) + clamp(18px,calc(var(--ui-lu) * 2.8),34px));
+  top:calc(var(--safe-top) + clamp(12px,calc(var(--ui-u) * 3.2),24px));
+  font-size:clamp(21px,calc(var(--ui-u) * 5.1),38px);
+}
+.settings-title{
+  font-size:clamp(26px,calc(var(--ui-u) * 6.4),46px);
+}
+.settings-sub{
+  font-size:clamp(12px,calc(var(--ui-u) * 2.45),17px);
+  margin-bottom:clamp(10px,calc(var(--ui-u) * 2.8),18px);
+}
+.setting-row{
+  gap:clamp(9px,calc(var(--ui-lu) * 1.4),18px);
+  padding:clamp(7px,calc(var(--ui-u) * 1.7),13px) 0;
+}
+.setting-label strong{
+  font-size:clamp(13px,calc(var(--ui-u) * 2.55),17px);
+}
+.setting-label span{
+  font-size:clamp(10px,calc(var(--ui-u) * 2.0),12px);
+}
+.stepper{
+  gap:clamp(6px,calc(var(--ui-u) * 1.5),11px);
+  padding:clamp(4px,calc(var(--ui-u) * .8),7px);
+}
+.stepper button{
+  width:clamp(31px,calc(var(--ui-u) * 7.3),38px);
+  height:clamp(31px,calc(var(--ui-u) * 7.3),38px);
+}
+.stepper-value{
+  min-width:clamp(52px,calc(var(--ui-lu) * 6.4),68px);
+}
+.start-toggle{
+  gap:clamp(5px,calc(var(--ui-u) * 1.2),9px);
+}
+.pill-choice{
+  padding:clamp(8px,calc(var(--ui-u) * 1.7),11px) clamp(10px,calc(var(--ui-lu) * 1.35),15px);
+}
+.preset-title{
+  margin-top:clamp(10px,calc(var(--ui-u) * 2.5),18px);
+}
+.preset-grid{
+  gap:clamp(5px,calc(var(--ui-lu) * .75),10px);
+}
+.preset{
+  padding:clamp(8px,calc(var(--ui-u) * 1.7),13px) clamp(7px,calc(var(--ui-lu) * .8),11px);
+}
+.settings-bottom{
+  padding-top:clamp(8px,calc(var(--ui-u) * 1.8),16px);
+}
+.safety{
+  font-size:clamp(10px,calc(var(--ui-u) * 1.9),12px);
+}
+.start-session{
+  min-height:clamp(46px,calc(var(--ui-u) * 10),54px);
+}
+
+/* Séance : tout est lié au petit côté, ce qui évite qu'une tablette
+   ou un téléphone très large grossisse certains éléments de façon isolée. */
+.session-brand{
+  left:calc(var(--safe-left) + clamp(20px,calc(var(--ui-lu) * 4.5),76px));
+  top:calc(var(--safe-top) + clamp(10px,calc(var(--ui-u) * 2.3),24px));
+  font-size:clamp(18px,calc(var(--ui-u) * 4.1),30px);
+}
+.session-controls{
+  top:calc(var(--safe-top) + clamp(8px,calc(var(--ui-u) * 1.7),18px));
+  right:calc(var(--safe-right) + clamp(12px,calc(var(--ui-lu) * 2.8),46px));
+  gap:clamp(8px,calc(var(--ui-u) * 1.8),14px);
+}
+.remote{
+  width:clamp(48px,calc(var(--ui-u) * 10.2),76px);
+  height:clamp(48px,calc(var(--ui-u) * 10.2),76px);
+}
+.phase-wrap{
+  top:clamp(6.5%,calc(var(--ui-u) * 1.8),9%);
+  width:min(78%,900px);
+}
+.phase-title{
+  font-size:clamp(30px,calc(var(--ui-u) * 7.6),58px);
+}
+.phase-guide{
+  font-size:clamp(14px,calc(var(--ui-u) * 3.6),28px);
+}
+.phase-count{
+  font-size:clamp(11px,calc(var(--ui-u) * 2.35),19px);
+}
+.wave-stage{
+  top:clamp(25%,calc(29% - (var(--ui-u) - 4.5px) * .35),30%);
+  bottom:clamp(12%,14%,16%);
+}
+.flower{
+  width:clamp(48px,calc(var(--ui-u) * 10.5),80px);
+  height:clamp(48px,calc(var(--ui-u) * 10.5),80px);
+}
+.progress-zone{
+  left:clamp(5%,10.5%,11%);
+  right:clamp(2.5%,3.5%,5%);
+  bottom:calc(var(--safe-bottom) + clamp(10px,calc(var(--ui-u) * 2.5),24px));
+  grid-template-columns:minmax(0,1fr) minmax(clamp(96px,calc(var(--ui-lu) * 12),128px),clamp(14%,17%,19%));
+  gap:clamp(10px,calc(var(--ui-lu) * 2.1),30px);
+}
+.rhythm-label{
+  font-size:clamp(10px,calc(var(--ui-u) * 2.0),15px);
+  margin-bottom:clamp(5px,calc(var(--ui-u) * 1.3),10px);
+}
+.progress-track{
+  height:clamp(13px,calc(var(--ui-u) * 3.0),22px);
+}
+.time-pill{
+  height:clamp(46px,calc(var(--ui-u) * 10.5),70px);
+  font-size:clamp(20px,calc(var(--ui-u) * 5.1),34px);
+}
+
+/* Petits écrans anciens : on conserve toutes les fonctions, mais on compacte
+   légèrement les zones secondaires pour éviter tout chevauchement. */
+.ui-compact .intro-panel,
+.ui-compact .settings-panel,
+.ui-compact .install-panel{
+  height:calc(100% - 10px);
+  margin:5px;
+}
+.ui-compact .intro-panel{padding:14px 18px;}
+.ui-compact .settings-panel{padding:12px 16px;}
+.ui-compact .install-panel{padding:16px 20px;}
+.ui-compact .slide-body{line-height:1.42;}
+.ui-compact .slide-body .two-cols{gap:8px;}
+.ui-compact .mini-card{padding:10px 11px;}
+.ui-compact .rhythm-grid{gap:7px;}
+.ui-compact .rhythm-card{padding:9px 9px;}
+.ui-compact .settings-sub{margin-bottom:7px;}
+.ui-compact .preset-title{margin-top:7px;margin-bottom:5px;}
+.ui-compact .settings-bottom{padding-top:6px;}
+.ui-compact .safety{line-height:1.3;margin-bottom:6px;}
+
+/* Très grands écrans : on évite que le contenu devienne démesuré. */
+.ui-roomy .intro-panel,
+.ui-roomy .settings-panel,
+.ui-roomy .install-panel{
+  max-height:960px;
+  align-self:center;
+}
+
+/* En portrait simulé, responsive.js raisonne déjà en grand/petit côté.
+   Ces règles remplacent les largeurs vh fixes de l'ancien secours paysage. */
+@media (orientation:portrait){
+  .install-panel,.intro-panel{width:var(--ui-panel-width);}
+  .settings-panel{width:var(--ui-settings-width);}
+}
