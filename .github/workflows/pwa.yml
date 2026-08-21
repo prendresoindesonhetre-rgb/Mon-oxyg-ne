@@ -20,6 +20,7 @@ on:
       - 'scripts/apply_v32_lotus_slightly_larger.py'
       - 'scripts/apply_v33_thinner_sinusoid_all.py'
       - 'scripts/apply_v34_wide_compat.py'
+      - 'scripts/apply_v35_responsive_layout.py'
   pull_request:
     branches: [ main ]
     paths:
@@ -39,6 +40,7 @@ on:
       - 'scripts/apply_v32_lotus_slightly_larger.py'
       - 'scripts/apply_v33_thinner_sinusoid_all.py'
       - 'scripts/apply_v34_wide_compat.py'
+      - 'scripts/apply_v35_responsive_layout.py'
   workflow_dispatch:
 
 permissions:
@@ -103,6 +105,9 @@ jobs:
       - name: Apply wide PWA compatibility
         run: python scripts/apply_v34_wide_compat.py pwa
 
+      - name: Apply automatic responsive layout
+        run: python scripts/apply_v35_responsive_layout.py pwa
+
       - name: Build legacy-compatible JavaScript
         run: |
           npm install --no-save --package-lock=false @babel/core@7 @babel/cli@7 @babel/preset-env@7 core-js-bundle@3
@@ -118,6 +123,7 @@ jobs:
         run: |
           node --check pwa/www/app.js
           node --check pwa/www/orientation.js
+          node --check pwa/www/responsive.js
           node --check pwa/www/sw.js
           node --check pwa/www/compat-init.js
           python - <<'PY'
@@ -137,13 +143,19 @@ jobs:
           css = (root/'styles.css').read_text(encoding='utf-8')
           assert 'stroke-width:12' in css
           assert 'stroke-width:3.4' in css
+          responsive = (root/'responsive.js').read_text(encoding='utf-8')
+          assert '--ui-panel-width' in responsive
+          assert 'squareBlend' in responsive
+          responsive_css = (root/'responsive.css').read_text(encoding='utf-8')
+          assert 'var(--ui-panel-width)' in responsive_css
+          assert '.ui-compact' in responsive_css
           sw = (root/'sw.js').read_text(encoding='utf-8')
-          assert 'mon-oxygene-pwa-v14-wide-compat' in sw
-          for name in ['index.html','styles.css','landscape-force.css','legacy.css','compat-init.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
+          assert 'mon-oxygene-pwa-v15-responsive-auto' in sw
+          for name in ['index.html','styles.css','landscape-force.css','legacy.css','responsive.css','compat-init.js','responsive.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
               assert (root/name).exists(), name
           for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
               assert (root/'assets'/name).exists(), name
-          print('PWA validée : rendu actuel conservé + compatibilité navigateurs anciens')
+          print('PWA validée : adaptation automatique continue à toutes les tailles d’écran')
           PY
 
       - name: Prepare static site
@@ -156,7 +168,7 @@ jobs:
       - name: Upload PWA build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-PWA-v14-wide-compat
+          name: Mon-Oxygene-PWA-v15-responsive-auto
           path: pwa-dist
           if-no-files-found: error
 
