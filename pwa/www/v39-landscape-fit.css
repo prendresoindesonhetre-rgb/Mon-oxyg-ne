@@ -1,0 +1,143 @@
+/* Mon Oxygène v39 — toujours en paysage, ajusté au viewport réellement visible. */
+
+/* En portrait physique, #app devient un vrai viewport paysage de dimensions
+   hauteur x largeur, puis il est tourné. orientation.js renseigne ces variables
+   à partir de visualViewport afin de tenir compte des barres du navigateur. */
+@media (orientation: portrait) {
+  html,body{
+    width:100%!important;
+    height:100%!important;
+    margin:0!important;
+    overflow:hidden!important;
+    overscroll-behavior:none;
+  }
+
+  #app,
+  .legacy-browser #app{
+    position:fixed!important;
+    left:50%!important;
+    top:50%!important;
+    width:var(--landscape-width,100vh)!important;
+    height:var(--landscape-height,100vw)!important;
+    max-width:none!important;
+    max-height:none!important;
+    transform:translate(-50%,-50%) rotate(90deg)!important;
+    transform-origin:center center!important;
+    overflow:hidden!important;
+  }
+
+  #app>.screen,
+  .legacy-browser #app>.screen,
+  .screen{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:hidden!important;
+  }
+
+  /* On réutilise exactement la mise en page paysage responsive. */
+  .install-shell,.intro-shell,.settings-shell,
+  .legacy-browser .install-shell,.legacy-browser .intro-shell,.legacy-browser .settings-shell{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+
+  .install-panel,
+  .intro-panel,
+  .legacy-browser .install-panel,
+  .legacy-browser .intro-panel{
+    width:var(--ui-panel-width)!important;
+    max-width:calc(100% - 14px)!important;
+    height:auto!important;
+    max-height:calc(100% - 12px)!important;
+    margin:6px!important;
+    overflow:auto!important;
+  }
+
+  .settings-panel,
+  .legacy-browser .settings-panel{
+    width:var(--ui-settings-width)!important;
+    max-width:calc(100% - 14px)!important;
+    height:auto!important;
+    max-height:calc(100% - 12px)!important;
+    margin:6px!important;
+    padding:clamp(12px,4.6vmin,42px)!important;
+    overflow:auto!important;
+    border-radius:clamp(20px,4.6vmin,38px)!important;
+  }
+
+  .settings-logo{
+    display:block!important;
+    left:calc(var(--safe-left) + clamp(18px,2.8vmax,34px))!important;
+    top:calc(var(--safe-top) + clamp(12px,3.2vmin,24px))!important;
+    font-size:clamp(21px,5.1vmin,38px)!important;
+  }
+
+  .settings-title,.legacy-browser .settings-title{
+    font-size:clamp(26px,6.4vmin,46px)!important;
+    line-height:normal!important;
+    margin:0 0 4px!important;
+  }
+  .settings-sub,.legacy-browser .settings-sub{
+    display:block!important;
+    font-size:clamp(12px,2.45vmin,17px)!important;
+    line-height:1.3!important;
+    margin-bottom:clamp(8px,2.4vmin,16px)!important;
+  }
+  .setting-row,.legacy-browser .setting-row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:clamp(7px,1.2vmax,16px)!important;
+    padding:clamp(5px,1.35vmin,11px) 0!important;
+    min-height:0!important;
+  }
+  .setting-label strong,.legacy-browser .setting-label strong{
+    font-size:clamp(12px,2.35vmin,16px)!important;
+    line-height:1.1!important;
+  }
+  .setting-label span,.legacy-browser .setting-label span{
+    display:block!important;
+    font-size:clamp(9px,1.8vmin,12px)!important;
+    line-height:1.15!important;
+  }
+  .stepper,.legacy-browser .stepper{display:flex!important;gap:clamp(4px,1vmin,8px)!important;padding:clamp(2px,.6vmin,5px)!important;}
+  .stepper button,.legacy-browser .stepper button{width:clamp(27px,6.3vmin,36px)!important;height:clamp(27px,6.3vmin,36px)!important;min-width:0!important;}
+  .stepper-value,.legacy-browser .stepper-value{min-width:clamp(42px,5.5vmax,62px)!important;font-size:clamp(10px,2vmin,13px)!important;}
+  .pill-choice{padding:clamp(5px,1.3vmin,9px) clamp(8px,1.1vmax,13px)!important;font-size:clamp(10px,2vmin,13px)!important;}
+  .preset-title{font-size:clamp(9px,1.8vmin,12px)!important;margin:clamp(5px,1.5vmin,10px) 0 4px!important;}
+  .preset-grid,.legacy-browser .preset-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:clamp(4px,.65vmax,8px)!important;}
+  .preset,.legacy-browser .preset{width:auto!important;padding:clamp(5px,1.2vmin,9px) 4px!important;}
+  .preset strong{font-size:clamp(9px,1.9vmin,12px)!important;}
+  .preset span{display:block!important;font-size:clamp(8px,1.7vmin,11px)!important;white-space:nowrap!important;}
+  .settings-bottom{padding-top:clamp(4px,1.2vmin,9px)!important;}
+  .safety{display:block!important;font-size:clamp(8px,1.55vmin,10.5px)!important;line-height:1.15!important;margin:0 0 4px!important;}
+  .start-session{min-height:clamp(34px,7.5vmin,46px)!important;font-size:clamp(11px,2.2vmin,14px)!important;}
+
+  .slide-title,.legacy-browser .slide-title{font-size:clamp(26px,6.2vmin,46px)!important;}
+  .slide-body,.legacy-browser .slide-body{font-size:clamp(12px,2.5vmin,18px)!important;line-height:1.4!important;}
+  .slide-body .two-cols,.rhythm-grid,.legacy-browser .slide-body .two-cols,.legacy-browser .rhythm-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  .rhythm-grid,.legacy-browser .rhythm-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+  .slide-body .two-cols>.mini-card,.rhythm-grid>.rhythm-card,.legacy-browser .slide-body .two-cols>.mini-card,.legacy-browser .rhythm-grid>.rhythm-card{width:auto!important;}
+
+  /* Séance : on garde la composition paysage, sans version portrait. */
+  .session{overflow:hidden!important;}
+  .session-brand{left:calc(var(--safe-left) + clamp(20px,4.5vmax,76px))!important;top:calc(var(--safe-top) + clamp(10px,2.3vmin,24px))!important;font-size:clamp(18px,4.1vmin,30px)!important;}
+  .session-controls{top:calc(var(--safe-top) + clamp(8px,1.7vmin,18px))!important;right:calc(var(--safe-right) + clamp(12px,2.8vmax,46px))!important;gap:clamp(8px,1.8vmin,14px)!important;}
+  .remote{width:clamp(48px,10.2vmin,76px)!important;height:clamp(48px,10.2vmin,76px)!important;}
+  .phase-wrap{top:8.5%!important;width:min(78%,900px)!important;max-width:900px!important;}
+  .phase-title{font-size:clamp(30px,7.6vmin,58px)!important;}
+  .phase-guide{font-size:clamp(14px,3.6vmin,28px)!important;}
+  .phase-count{font-size:clamp(11px,2.35vmin,19px)!important;}
+  .wave-stage{top:29%!important;bottom:13%!important;}
+  .flower{width:clamp(48px,10.5vmin,80px)!important;height:clamp(48px,10.5vmin,80px)!important;}
+  .progress-zone,.legacy-browser .progress-zone{left:10.5%!important;right:3.5%!important;bottom:calc(var(--safe-bottom) + clamp(10px,2.5vmin,24px))!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(96px,17%)!important;gap:clamp(10px,2.1vmax,30px)!important;}
+  .legacy-browser .progress-left{margin-right:0!important;}
+  .time-pill,.legacy-browser .time-pill{width:auto!important;min-width:96px!important;height:clamp(46px,10.5vmin,70px)!important;font-size:clamp(20px,5.1vmin,34px)!important;}
+
+  .toast{display:none!important;}
+}
