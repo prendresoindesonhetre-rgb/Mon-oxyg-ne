@@ -81,6 +81,13 @@ jobs:
         run: python3 scripts/apply_v35_responsive_layout.py android
       - name: Mark Mon Oxygène v36 final responsive build
         run: python3 scripts/apply_v36_release_marker.py
+      - name: Apply Mon Oxygène v37 clean-install compatibility
+        run: python3 scripts/apply_v37_install_and_fresh_link.py android
+      - name: Verify v37 package identity
+        run: |
+          grep -q "applicationId 'fr.prendresoindesonhetre.monoxygene.finalapp'" app/build.gradle
+          grep -q "versionCode 37" app/build.gradle
+          grep -q "versionName '1.0.37'" app/build.gradle
       - name: Check Android 4.4 compatibility
         run: gradle :app:lintDebug --stacktrace
       - name: Build debug APK
@@ -88,6 +95,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-APK-v36
+          name: Mon-Oxygene-APK-v37-clean-install
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
