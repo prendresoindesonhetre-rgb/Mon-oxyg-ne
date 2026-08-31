@@ -32,15 +32,22 @@ jobs:
 
       - name: Apply V6 clean source
         working-directory: ChronoMeditation
-        run: python3 v6_patch.py
+        run: |
+          python3 v6_patch.py
+          python3 v6_launch_fix.py
 
       - name: Build debug APK
         working-directory: ChronoMeditation
         run: gradle assembleDebug --no-daemon
 
+      - name: Verify launcher class in APK
+        working-directory: ChronoMeditation
+        run: |
+          unzip -p app/build/outputs/apk/debug/app-debug.apk classes.dex | strings | grep -q 'fr/prendresoindesonhetre/chronomeditation/MainActivity' || exit 1
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MesMeditations-Hetre-V6
+          name: MesMeditations-Hetre-V6-fixed
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
