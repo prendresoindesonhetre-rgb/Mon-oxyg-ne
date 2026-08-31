@@ -48,9 +48,38 @@ jobs:
           grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v6'" /tmp/badging.txt
           grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Launch smoke test on Android
+        uses: ReactiveCircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -gpu swiftshader_indirect
+          script: |
+            adb install -r ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
+            adb logcat -c
+            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v6
+            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v6/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
+            grep -F "Status: ok" /tmp/start.txt
+            sleep 3
+            adb shell dumpsys activity activities | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
+            adb logcat -d > /tmp/logcat.txt
+            if grep -A30 -B5 -F "FATAL EXCEPTION" /tmp/logcat.txt | grep -F "fr.prendresoindesonhetre.meditationshetre.v6"; then
+              echo "Application crashed during smoke test"
+              exit 1
+            fi
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MesMeditations-Hetre-V6-fixed
+          name: MesMeditations-Hetre-V6-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
