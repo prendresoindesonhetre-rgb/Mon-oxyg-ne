@@ -40,10 +40,13 @@ jobs:
         working-directory: ChronoMeditation
         run: gradle assembleDebug --no-daemon
 
-      - name: Verify launcher class in APK
+      - name: Verify Android launcher
         working-directory: ChronoMeditation
         run: |
-          unzip -p app/build/outputs/apk/debug/app-debug.apk classes.dex | strings | grep -q 'fr/prendresoindesonhetre/chronomeditation/MainActivity' || exit 1
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee /tmp/badging.txt
+          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v6'" /tmp/badging.txt
+          grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
