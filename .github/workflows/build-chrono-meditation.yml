@@ -32,7 +32,9 @@ jobs:
 
       - name: Apply V4 complete rebuild
         working-directory: ChronoMeditation
-        run: python3 v4_patch.py
+        run: |
+          python3 v4_patch.py
+          python3 v4_fix.py
 
       - name: Build debug APK
         working-directory: ChronoMeditation
