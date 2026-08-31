@@ -30,17 +30,86 @@ jobs:
       - name: Install Android 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Finalize meditation companion source
+      - name: Build unmistakable V3 interface
         working-directory: ChronoMeditation
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p = Path('app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java')
           s = p.read_text()
+
+          def must(old, new, count=1):
+              global s
+              if old not in s:
+                  raise SystemExit('Patch target not found: ' + old[:100])
+              s = s.replace(old, new, count)
+
+          # Keep the source compilable and the default session at 90 minutes.
           s = s.replace('Color.argb(70,turq)', 'Color.argb(70,Color.red(turq),Color.green(turq),Color.blue(turq))')
           s = s.replace('Color.argb(55,sky)', 'Color.argb(55,Color.red(sky),Color.green(sky),Color.blue(sky))')
           s = s.replace('Color.argb(45,violet)', 'Color.argb(45,Color.red(violet),Color.green(violet),Color.blue(violet))')
           s = s.replace('new Phase("Troisième temps — musique",20,', 'new Phase("Troisième temps — musique",15,')
+
+          # Make the new interface visually unmistakable.
+          must('private TextView sayText, doText, breathState, inhaleValue, exhaleValue;',
+               'private TextView sayText, doText, breathState, directionState, inhaleValue, exhaleValue;')
+
+          must('TextView h=tv("Mes Méditations",30,true);h.setTextColor(VIOLET);hero.addView(h);spacer(hero,8);',
+               'TextView badge=pill("V3 • NOUVELLE INTERFACE",Color.rgb(231,244,243),TURQ);hero.addView(badge);spacer(hero,10);TextView h=tv("Mes Méditations",32,true);h.setTextColor(VIOLET);hero.addView(h);spacer(hero,8);')
+
+          must('TextView sub=tv("Prépare ta séance, garde ton texte lisible et laisse l’application porter le rythme avec toi.",16,false);',
+               'TextView sub=tv("Un compagnon de séance pensé pour lire, guider et laisser le bâton de pluie porter le rythme.",17,false);')
+
+          # Bigger, fixed rainstick guide. Only the text below scrolls.
+          must('TextView rt=tv("BÂTON DE PLUIE • LE RYTHME",12,true);rt.setTextColor(BROWN);rainCard.addView(rt);spacer(rainCard,6);breathState=tv("",26,true);breathState.setGravity(Gravity.CENTER);breathState.setTextColor(VIOLET);rainCard.addView(breathState);spacer(rainCard,6);',
+               'TextView rt=tv("BÂTON DE PLUIE • GUIDE PRINCIPAL",13,true);rt.setTextColor(BROWN);rt.setGravity(Gravity.CENTER);rainCard.addView(rt);spacer(rainCard,8);breathState=tv("",40,true);breathState.setGravity(Gravity.CENTER);breathState.setTextColor(VIOLET);rainCard.addView(breathState);spacer(rainCard,2);directionState=tv("",15,true);directionState.setGravity(Gravity.CENTER);directionState.setTextColor(BROWN);rainCard.addView(directionState);spacer(rainCard,8);')
+
+          must('rainCard.addView(rainstickView,new LinearLayout.LayoutParams(MATCH,dp(160)));',
+               'rainCard.addView(rainstickView,new LinearLayout.LayoutParams(MATCH,dp(275)));')
+
+          must('body.addView(rainCard);spacer(body,12);',
+               'root.removeView(scroll);root.addView(rainCard);spacer(root,8);root.addView(scroll,new LinearLayout.LayoutParams(MATCH,0,1));')
+
+          # Stronger visual separation and real texture strips for what is said vs done.
+          old_card = '''    private LinearLayout styledTextCard(String label,boolean say){LinearLayout c=card();c.setBackground(gradient(say?SAY_A:DO_A,say?SAY_B:DO_B,22));TextView l=tv(label,12,true);l.setTextColor(say?VIOLET:TURQ);c.addView(l);TextView txt=tv("",say?20:17,false);txt.setLineSpacing(dp(3),1.28f);txt.setPadding(0,dp(12),0,dp(8));c.addView(txt);return c;}'''
+          new_card = '''    private LinearLayout styledTextCard(String label,boolean say){
+        LinearLayout c=card();c.setPadding(dp(22),dp(18),dp(22),dp(22));
+        c.setBackground(gradient(say?Color.rgb(255,252,250):Color.rgb(236,249,247),say?Color.rgb(244,236,248):Color.rgb(232,243,250),26));
+        TextureView texture=new TextureView(this,say,say?VIOLET:TURQ,say?Color.rgb(244,236,248):Color.rgb(232,243,250));
+        c.addView(texture,new LinearLayout.LayoutParams(MATCH,dp(18)));spacer(c,12);
+        TextView l=tv(label,say?14:13,true);l.setTextColor(say?VIOLET:TURQ);c.addView(l);
+        TextView txt=tv("",say?22:18,false);txt.setLineSpacing(dp(5),1.34f);txt.setPadding(0,dp(14),0,dp(10));c.addView(txt);return c;
+    }'''
+          must(old_card, new_card)
+
+          # Clear direction of the physical tilt.
+          old_rain = '''    private void updateRainstick(Phase p){
+        long in=p.inhaleSeconds*1000L, ex=p.exhaleSeconds*1000L, cycle=in+ex;long pos=cycle==0?0:phaseElapsedMs%cycle;boolean inhale=pos<in;long part=inhale?pos:pos-in;long partDur=inhale?in:ex;float progress=partDur==0?0:(float)part/(float)partDur;long left=Math.max(0,partDur-part);breathState.setText((inhale?"INSPIRE":"EXPIRE")+"  •  "+String.format(Locale.FRANCE,"%.1f s",left/1000f));breathState.setTextColor(inhale?TURQ:VIOLET);breathProgress.setMax((int)partDur);breathProgress.setProgress((int)part);rainstickView.setBreath(inhale,progress,p.reverse);rainstickView.invalidate();
+    }'''
+          new_rain = '''    private void updateRainstick(Phase p){
+        long in=p.inhaleSeconds*1000L, ex=p.exhaleSeconds*1000L, cycle=in+ex;long pos=cycle==0?0:phaseElapsedMs%cycle;boolean inhale=pos<in;long part=inhale?pos:pos-in;long partDur=inhale?in:ex;float progress=partDur==0?0:(float)part/(float)partDur;long left=Math.max(0,partDur-part);
+        breathState.setText((inhale?"INSPIRE":"EXPIRE")+"   "+String.format(Locale.FRANCE,"%.1f s",left/1000f));breathState.setTextColor(inhale?TURQ:VIOLET);
+        boolean towardRight=inhale!=p.reverse;directionState.setText(towardRight?"BASCULE  GAUCHE  →  DROITE":"BASCULE  DROITE  →  GAUCHE");
+        breathProgress.setMax((int)partDur);breathProgress.setProgress((int)part);rainstickView.setBreath(inhale,progress,p.reverse);rainstickView.invalidate();
+    }'''
+          must(old_rain, new_rain)
+
+          # Much wider tilt: the movement itself becomes the timer.
+          s = s.replace('float from=inhale?-24f:24f;float to=inhale?24f:-24f;', 'float from=inhale?-56f:56f;float to=inhale?56f:-56f;')
+
+          # Add subtle, different textures for SAY and DO cards.
+          texture_class = r'''
+    public static class TextureView extends View {
+        private final Paint paint=new Paint(Paint.ANTI_ALIAS_FLAG);private final boolean say;private final int accent,base;
+        TextureView(Context c,boolean s,int a,int b){super(c);say=s;accent=a;base=b;}
+        @Override protected void onDraw(Canvas c){super.onDraw(c);paint.setColor(base);c.drawRoundRect(new RectF(0,0,getWidth(),getHeight()),getHeight()/2f,getHeight()/2f,paint);paint.setStrokeWidth(2f);paint.setColor(Color.argb(55,Color.red(accent),Color.green(accent),Color.blue(accent)));if(say){for(int x=-getHeight();x<getWidth();x+=22)c.drawLine(x,getHeight(),x+getHeight(),0,paint);}else{for(int x=10;x<getWidth();x+=22)for(int y=5;y<getHeight();y+=10)c.drawCircle(x,y,2.2f,paint);}}
+    }
+'''
+          marker='\n    public static class RainstickView extends View {'
+          if 'public static class TextureView' not in s:
+              if marker not in s: raise SystemExit('Texture insertion marker not found')
+              s=s.replace(marker,texture_class+marker,1)
+
           p.write_text(s)
           PY
 
@@ -51,6 +120,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MesMeditations-Android-v2
+          name: MesMeditations-Hetre-V3
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
