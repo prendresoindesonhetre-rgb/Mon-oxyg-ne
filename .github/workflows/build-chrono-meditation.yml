@@ -69,13 +69,8 @@ jobs:
             adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v6
             adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v6/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
             grep -F "Status: ok" /tmp/start.txt
-            sleep 3
-            adb shell dumpsys activity activities | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
-            adb logcat -d > /tmp/logcat.txt
-            if grep -A30 -B5 -F "FATAL EXCEPTION" /tmp/logcat.txt | grep -F "fr.prendresoindesonhetre.meditationshetre.v6"; then
-              echo "Application crashed during smoke test"
-              exit 1
-            fi
+            sleep 5
+            adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
