@@ -30,9 +30,9 @@ jobs:
       - name: Install Android 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Apply V3 meditation interface
+      - name: Apply V4 complete rebuild
         working-directory: ChronoMeditation
-        run: python3 v3_patch.py
+        run: python3 v4_patch.py
 
       - name: Build debug APK
         working-directory: ChronoMeditation
@@ -41,6 +41,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MesMeditations-Hetre-V3
+          name: MesMeditations-Hetre-V4
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
