@@ -1,0 +1,82 @@
+package fr.prendresoindesonhetre.chronomeditation;
+
+import android.app.*;
+import android.os.*;
+import android.content.*;
+import android.graphics.*;
+import android.view.*;
+import android.widget.*;
+import org.json.*;
+import java.util.*;
+
+public class MainActivity extends Activity {
+    private static final int MATCH = ViewGroup.LayoutParams.MATCH_PARENT;
+    private static final int WRAP = ViewGroup.LayoutParams.WRAP_CONTENT;
+    private final int BG=Color.rgb(247,245,241), TURQ=Color.rgb(72,184,178), VIOLET=Color.rgb(139,111,168), TEXT=Color.rgb(55,55,58), BROWN=Color.rgb(137,112,91);
+    private SharedPreferences prefs;
+    private final ArrayList<Session> sessions=new ArrayList<>();
+    private LinearLayout root;
+    private final Handler handler=new Handler(Looper.getMainLooper());
+    private Runnable tick;
+    private boolean running=false;
+    private long globalElapsed=0, phaseElapsed=0, lastTick=0;
+    private int currentPhase=0;
+    private Session playing;
+    private TextView globalTimer, phaseTimer, phaseName, nextPhase, guideText;
+    private Button playPause;
+
+    static class Phase {
+        String name,text; int minutes;
+        Phase(String n,int m,String t){name=n;minutes=m;text=t;}
+        JSONObject json() throws JSONException { JSONObject o=new JSONObject();o.put("name",name);o.put("minutes",minutes);o.put("text",text);return o; }
+        static Phase from(JSONObject o){return new Phase(o.optString("name","Phase"),o.optInt("minutes",5),o.optString("text",""));}
+    }
+    static class Session {
+        String title; ArrayList<Phase> phases=new ArrayList<>();
+        Session(String t){title=t;}
+        int total(){int v=0;for(Phase p:phases)v+=p.minutes;return v;}
+        JSONObject json() throws JSONException {JSONObject o=new JSONObject();o.put("title",title);JSONArray a=new JSONArray();for(Phase p:phases)a.put(p.json());o.put("phases",a);return o;}
+        static Session from(JSONObject o){Session s=new Session(o.optString("title","Séance"));JSONArray a=o.optJSONArray("phases");if(a!=null)for(int i=0;i<a.length();i++){JSONObject p=a.optJSONObject(i);if(p!=null)s.phases.add(Phase.from(p));}return s;}
+    }
+    static class Editors {EditText n,m,t;Editors(EditText n,EditText m,EditText t){this.n=n;this.m=m;this.t=t;}}
+
+    @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);prefs=getSharedPreferences("meditations",MODE_PRIVATE);load();home();}
+    private int dp(int x){return (int)(x*getResources().getDisplayMetrics().density+.5f);}
+    private TextView tv(String s,int size,boolean bold){TextView v=new TextView(this);v.setText(s);v.setTextSize(size);v.setTextColor(TEXT);v.setPadding(dp(14),dp(9),dp(14),dp(9));if(bold)v.setTypeface(Typeface.DEFAULT,Typeface.BOLD);return v;}
+    private Button button(String s){Button b=new Button(this);b.setText(s);b.setAllCaps(false);b.setTextSize(16);return b;}
+    private void base(){root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setBackgroundColor(BG);root.setPadding(dp(10),dp(12),dp(10),dp(12));setContentView(root);}
+
+    private void home(){stopTick();base();TextView h=tv("Mes séances",30,true);h.setTextColor(VIOLET);root.addView(h);root.addView(tv("Chronomètre, phases et textes de guidance modifiables.",16,false));ScrollView sc=new ScrollView(this);LinearLayout list=new LinearLayout(this);list.setOrientation(LinearLayout.VERTICAL);sc.addView(list);for(int i=0;i<sessions.size();i++){final int idx=i;Session s=sessions.get(i);LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);card.setPadding(dp(8),dp(8),dp(8),dp(12));TextView n=tv(s.title,20,true);n.setTextColor(BROWN);card.addView(n);card.addView(tv(s.total()+" min • "+s.phases.size()+" phases",14,false));LinearLayout row=new LinearLayout(this);Button start=button("Lancer"),edit=button("Modifier"),dup=button("Dupliquer");row.addView(start,new LinearLayout.LayoutParams(0,WRAP,1));row.addView(edit,new LinearLayout.LayoutParams(0,WRAP,1));row.addView(dup,new LinearLayout.LayoutParams(0,WRAP,1));card.addView(row);start.setOnClickListener(v->start(s));edit.setOnClickListener(v->edit(idx));dup.setOnClickListener(v->{Session c=copy(s);c.title=s.title+" - copie";sessions.add(c);save();home();});list.addView(card);}root.addView(sc,new LinearLayout.LayoutParams(MATCH,0,1));Button add=button("+ Nouvelle séance");add.setTextColor(Color.WHITE);add.setBackgroundColor(TURQ);add.setOnClickListener(v->{sessions.add(new Session("Nouvelle séance"));edit(sessions.size()-1);});root.addView(add);}
+
+    private void edit(int index){base();Session s=sessions.get(index);Button back=button("‹ Retour");root.addView(back);back.setOnClickListener(v->{save();home();});EditText title=new EditText(this);title.setText(s.title);title.setTextSize(24);title.setSingleLine(true);root.addView(title);root.addView(tv("Chaque phase possède une durée et un texte. Tu peux tout modifier.",14,false));ScrollView sc=new ScrollView(this);LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);sc.addView(box);root.addView(sc,new LinearLayout.LayoutParams(MATCH,0,1));ArrayList<Editors> editors=new ArrayList<>();final Runnable[] rebuild=new Runnable[1];rebuild[0]=()->{box.removeAllViews();editors.clear();for(int i=0;i<s.phases.size();i++){final int pos=i;Phase p=s.phases.get(i);LinearLayout card=new LinearLayout(this);card.setOrientation(LinearLayout.VERTICAL);TextView lab=tv("Phase "+(i+1),17,true);lab.setTextColor(VIOLET);card.addView(lab);EditText name=new EditText(this);name.setHint("Nom de la phase");name.setText(p.name);card.addView(name);EditText mins=new EditText(this);mins.setHint("Durée en minutes");mins.setInputType(2);mins.setText(String.valueOf(p.minutes));card.addView(mins);EditText text=new EditText(this);text.setHint("Texte de guidance");text.setMinLines(5);text.setGravity(Gravity.TOP);text.setText(p.text);card.addView(text);Button del=button("Supprimer cette phase");del.setOnClickListener(v->{sync(s,editors);if(pos<s.phases.size())s.phases.remove(pos);rebuild[0].run();});card.addView(del);editors.add(new Editors(name,mins,text));box.addView(card);}};rebuild[0].run();LinearLayout actions=new LinearLayout(this);Button add=button("+ Phase"),saveB=button("Enregistrer");saveB.setTextColor(Color.WHITE);saveB.setBackgroundColor(TURQ);actions.addView(add,new LinearLayout.LayoutParams(0,WRAP,1));actions.addView(saveB,new LinearLayout.LayoutParams(0,WRAP,1));root.addView(actions);add.setOnClickListener(v->{sync(s,editors);s.phases.add(new Phase("Nouvelle phase",5,""));rebuild[0].run();});saveB.setOnClickListener(v->{s.title=title.getText().toString().trim();if(s.title.isEmpty())s.title="Séance";sync(s,editors);save();Toast.makeText(this,"Séance enregistrée",Toast.LENGTH_SHORT).show();home();});}
+    private void sync(Session s,ArrayList<Editors> es){for(int i=0;i<es.size()&&i<s.phases.size();i++){Editors e=es.get(i);Phase p=s.phases.get(i);p.name=e.n.getText().toString();try{p.minutes=Math.max(1,Integer.parseInt(e.m.getText().toString()));}catch(Exception x){p.minutes=5;}p.text=e.t.getText().toString();}}
+
+    private void start(Session s){if(s.phases.isEmpty()){Toast.makeText(this,"Ajoute au moins une phase.",Toast.LENGTH_SHORT).show();return;}playing=s;currentPhase=0;globalElapsed=0;phaseElapsed=0;running=false;player();}
+    private void player(){base();phaseName=tv("",24,true);phaseName.setTextColor(VIOLET);phaseName.setGravity(Gravity.CENTER);root.addView(phaseName);globalTimer=tv("00:00",52,true);globalTimer.setTextColor(TURQ);globalTimer.setGravity(Gravity.CENTER);root.addView(globalTimer);phaseTimer=tv("",20,true);phaseTimer.setTextColor(BROWN);phaseTimer.setGravity(Gravity.CENTER);root.addView(phaseTimer);nextPhase=tv("",14,false);nextPhase.setGravity(Gravity.CENTER);root.addView(nextPhase);ScrollView sc=new ScrollView(this);guideText=tv("",20,false);guideText.setLineSpacing(0,1.2f);sc.addView(guideText);root.addView(sc,new LinearLayout.LayoutParams(MATCH,0,1));LinearLayout row=new LinearLayout(this);Button prev=button("‹ Précédente"),next=button("Suivante ›");playPause=button("Démarrer");row.addView(prev,new LinearLayout.LayoutParams(0,WRAP,1));row.addView(playPause,new LinearLayout.LayoutParams(0,WRAP,1));row.addView(next,new LinearLayout.LayoutParams(0,WRAP,1));root.addView(row);Button stop=button("Arrêter la séance");root.addView(stop);prev.setOnClickListener(v->phase(-1));next.setOnClickListener(v->phase(1));playPause.setOnClickListener(v->{if(running)pause();else resume();});stop.setOnClickListener(v->{pause();new AlertDialog.Builder(this).setMessage("Arrêter cette séance ?").setNegativeButton("Continuer",null).setPositiveButton("Arrêter",(d,w)->home()).show();});update();tick=new Runnable(){public void run(){if(running){long now=SystemClock.elapsedRealtime(),d=now-lastTick;lastTick=now;globalElapsed+=d;phaseElapsed+=d;long dur=playing.phases.get(currentPhase).minutes*60000L;if(phaseElapsed>=dur){if(currentPhase<playing.phases.size()-1){buzz();currentPhase++;phaseElapsed=0;}else{pause();buzz();Toast.makeText(MainActivity.this,"Fin de la séance",Toast.LENGTH_LONG).show();}}update();}handler.postDelayed(this,250);}};handler.post(tick);}
+    private void phase(int d){int n=currentPhase+d;if(n>=0&&n<playing.phases.size()){currentPhase=n;phaseElapsed=0;buzz();update();}}
+    private void resume(){running=true;lastTick=SystemClock.elapsedRealtime();playPause.setText("Pause");}
+    private void pause(){running=false;if(playPause!=null)playPause.setText(globalElapsed==0?"Démarrer":"Reprendre");}
+    private void update(){Phase p=playing.phases.get(currentPhase);phaseName.setText(p.name);globalTimer.setText(time(globalElapsed));long remain=Math.max(0,p.minutes*60000L-phaseElapsed);phaseTimer.setText("Phase : "+time(remain)+" restante");nextPhase.setText(currentPhase+1<playing.phases.size()?"Ensuite : "+playing.phases.get(currentPhase+1).name:"Dernière phase");guideText.setText(p.text.isEmpty()?"Aucun texte pour cette phase.":p.text);}
+    private String time(long ms){long sec=ms/1000;return String.format(Locale.FRANCE,"%02d:%02d",sec/60,sec%60);}
+    private void buzz(){try{Vibrator v=(Vibrator)getSystemService(VIBRATOR_SERVICE);if(Build.VERSION.SDK_INT>=26)v.vibrate(VibrationEffect.createOneShot(120,VibrationEffect.DEFAULT_AMPLITUDE));else v.vibrate(120);}catch(Exception ignored){}}
+    private void stopTick(){running=false;if(tick!=null)handler.removeCallbacks(tick);tick=null;}
+
+    private Session copy(Session s){Session c=new Session(s.title);for(Phase p:s.phases)c.phases.add(new Phase(p.name,p.minutes,p.text));return c;}
+    private void save(){try{JSONArray a=new JSONArray();for(Session s:sessions)a.put(s.json());prefs.edit().putString("sessions",a.toString()).apply();}catch(Exception ignored){}}
+    private void load(){sessions.clear();String raw=prefs.getString("sessions","");try{if(!raw.isEmpty()){JSONArray a=new JSONArray(raw);for(int i=0;i<a.length();i++){JSONObject o=a.optJSONObject(i);if(o!=null)sessions.add(Session.from(o));}}}catch(Exception ignored){}if(sessions.isEmpty()){sessions.add(defaultSession());save();}}
+
+    private Session defaultSession(){Session s=new Session("Séance d’automne — Laisser de la place");
+        s.phases.add(new Phase("Accueil & état des lieux",10,"Prenez le temps de vous installer, de prendre votre place.\n\nPourquoi suis-je venu ici ce soir ? Quelle est mon intention en venant prendre ce temps avec moi-même ?\n\nPlus rien n’a besoin de tenir. Les jambes, les bras, les mains, les épaules, la mâchoire peuvent se relâcher. Laissez le support porter votre poids.\n\nSans rien modifier, observez simplement : comment est votre corps aujourd’hui ? Comment vous sentez-vous ? Voilà où j’en suis aujourd’hui."));
+        s.phases.add(new Phase("Respiration consciente",3,"Portez doucement votre attention vers votre respiration, sans la modifier.\n\nLa respiration peut être volontaire, mais lorsque nous cessons de nous en occuper, le corps continue naturellement à respirer.\n\nObservez où vous respirez aujourd’hui : poitrine, ventre, côtes…\n\nPuis laissez progressivement la respiration descendre vers le ventre. À l’inspiration le ventre se soulève, à l’expiration il redescend. C’est une respiration très instinctive, que l’on observe naturellement chez le nourrisson."));
+        s.phases.add(new Phase("Bâton de pluie — cohérence cardiaque",5,"Pour ceux qui le souhaitent, laissez le bâton de pluie accompagner votre souffle.\n\nEnviron cinq secondes à l’inspiration et cinq secondes à l’expiration, sans forcer. Si ce rythme n’est pas confortable, laissez votre corps trouver le sien.\n\nAprès quelques cycles, ne plus parler et laisser uniquement le son guider la respiration."));
+        s.phases.add(new Phase("Tambour océan — le rivage",7,"Laissez votre respiration retrouver son rythme naturel.\n\nFaites apparaître doucement le tambour océan et laissez d’abord quelques vagues sans parler.\n\nPour ceux qui le souhaitent, imaginez un endroit au bord de la mer où vous vous sentez bien et pleinement en sécurité. Peut-être un souvenir, peut-être un lieu imaginé.\n\nL’automne approche. La nature change, les choses bougent et se transforment. L’arbre laisse progressivement partir certaines de ses feuilles.\n\nS’il existe quelque chose que vous n’avez plus besoin de retenir avec autant de force, vous pouvez simplement le déposer sur le rivage. À chaque vague, laissez partir seulement ce qui est prêt à partir. Ce qui a encore besoin de rester peut rester.\n\nPuis ne plus parler. Espacer progressivement les vagues jusqu’au silence."));
+        s.phases.add(new Phase("Musique — laisser de la place",5,"Quand le tambour océan s’est complètement éteint, laisser quelques secondes de silence.\n\nVous n’avez plus rien à laisser partir, plus rien à chercher. Simplement rester là. Peut-être qu’un peu d’espace est apparu.\n\nLaissez de la place à ce qui bouge, à ce qui évolue, à ce qui change, sans chercher à savoir où cela vous emmène.\n\nLancer la musique puis ne plus parler. À la fin : quelques secondes de silence, puis un coup de bol."));
+        s.phases.add(new Phase("Transition vers l’assise",3,"Reprenez doucement conscience du corps et de la respiration. Remettez un peu de mouvement dans les doigts et les pieds.\n\nPuis venez avec douceur vous placer sur un côté. Prenez quelques instants dans cette position, sans urgence.\n\nÀ votre rythme, revenez ensuite vous installer en position assise."));
+        s.phases.add(new Phase("Trois espaces d’observation",5,"Avant le silence, retrouver les trois espaces :\n\nÉmotionnel et respiratoire : observer ce qui est présent et retrouver un souffle complètement naturel.\n\nPhysique : sentir l’assise, les points d’appui, la verticalité, les tensions et les zones relâchées.\n\nMental : observer les pensées qui apparaissent et passent, sans chercher à faire le vide.\n\nPuis : Je vais maintenant vous laisser dans cette rencontre avec vous-même. Je n’interviendrai plus. Le silence vous appartient. Le son du bol viendra simplement en marquer la fin."));
+        s.phases.add(new Phase("Méditation silencieuse",20,"Silence complet. Ne pas intervenir.\n\nÀ la fin : un coup de bol et laisser entièrement résonner."));
+        s.phases.add(new Phase("Transition douce",3,"Prenez votre temps. Retrouvez doucement la respiration et le corps. Remettez du mouvement.\n\nPuis venez doucement vous placer sur un côté. Restez-y quelques instants avant de revenir à votre rythme."));
+        s.phases.add(new Phase("Troisième temps — musique",25,"Installez-vous confortablement. Laissez le corps reprendre sa place et relâcher ce qui peut l’être.\n\nRelancer la même musique que dans le premier temps, sans expliquer le rappel.\n\nVous n’avez rien à chercher, rien à comprendre, rien à modifier. Simplement écouter et observer ce que la musique vient rencontrer en vous.\n\nLaisser ensuite la musique accompagner ce dernier temps avec le moins de paroles possible."));
+        s.phases.add(new Phase("Retour final",4,"Faire disparaître progressivement la musique.\n\nRetrouver le contact du corps, la respiration et les sons de la pièce. Remettre doucement du mouvement.\n\nVenir avec douceur se placer sur un côté, prendre le temps, puis revenir s’asseoir.\n\nObserver simplement comment vous êtes maintenant, sans comparer avec le début."));
+        return s;
+    }
+}
