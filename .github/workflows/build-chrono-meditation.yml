@@ -30,20 +30,20 @@ jobs:
       - name: Install Android 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Apply V7 application
+      - name: Apply V8 application
         working-directory: ChronoMeditation
-        run: python3 v7_patch.py
+        run: python3 v8_patch.py
 
       - name: Build debug APK
         working-directory: ChronoMeditation
         run: gradle assembleDebug --no-daemon
 
-      - name: Verify V7 launcher
+      - name: Verify V8 launcher
         working-directory: ChronoMeditation
         run: |
           APK="app/build/outputs/apk/debug/app-debug.apk"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee /tmp/badging.txt
-          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v7'" /tmp/badging.txt
+          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v8'" /tmp/badging.txt
           grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
       - name: Enable KVM
@@ -64,8 +64,8 @@ jobs:
           script: |
             adb install -r ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
-            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v7
-            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v7/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
+            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v8
+            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v8/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
             grep -F "Status: ok" /tmp/start.txt
             sleep 5
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
@@ -73,6 +73,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MesMeditations-Hetre-V7-tested
+          name: MesMeditations-Hetre-V8-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
