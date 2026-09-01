@@ -30,30 +30,32 @@ jobs:
       - name: Install Android 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Apply V10 player fixes
+      - name: Apply V11 compact music fixes
         working-directory: ChronoMeditation
-        run: python3 v10_patch.py
+        run: python3 v11_patch.py
 
-      - name: Verify V10 source
+      - name: Verify V11 source
         working-directory: ChronoMeditation
         run: |
           SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
           grep -F 'public void onBackPressed()' "$SRC"
-          grep -F 'new LinearLayout.LayoutParams(MATCH, dp(220))' "$SRC"
-          grep -F 'pendingCommands' "$SRC"
-          grep -F 'request.isForMainFrame()' "$SRC"
-          grep -F 'queueCommand(' "$SRC"
+          grep -F 'new LinearLayout.LayoutParams(dp(200), dp(200))' "$SRC"
+          grep -F 'private SeekBar musicTimeline' "$SRC"
+          grep -F 'function seekY(r)' "$SRC"
+          grep -F 'AndroidBridge.onYoutubeProgress' "$SRC"
+          grep -F 'controls:0' "$SRC"
+          grep -F 'youtubeFallback.setVisibility(View.GONE)' "$SRC"
 
       - name: Build debug APK
         working-directory: ChronoMeditation
         run: gradle assembleDebug --no-daemon
 
-      - name: Verify V10 launcher
+      - name: Verify V11 launcher
         working-directory: ChronoMeditation
         run: |
           APK="app/build/outputs/apk/debug/app-debug.apk"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee /tmp/badging.txt
-          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v10'" /tmp/badging.txt
+          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v11'" /tmp/badging.txt
           grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
       - name: Enable KVM
@@ -74,19 +76,19 @@ jobs:
           script: |
             adb install -r ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
-            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v10
-            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v10/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
+            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v11
+            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v11/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
             grep -F "Status: ok" /tmp/start.txt
             sleep 4
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
             adb shell input keyevent 4
             sleep 2
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
-            ! adb logcat -d | grep -A 20 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v10'
+            ! adb logcat -d | grep -A 20 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v11'
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MesMeditations-Hetre-V10-tested
+          name: MesMeditations-Hetre-V11-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
