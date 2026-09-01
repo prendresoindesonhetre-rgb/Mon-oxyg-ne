@@ -30,29 +30,30 @@ jobs:
       - name: Install Android 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Apply V9 fixes
+      - name: Apply V10 player fixes
         working-directory: ChronoMeditation
-        run: python3 v9_patch.py
+        run: python3 v10_patch.py
 
-      - name: Verify V9 source
+      - name: Verify V10 source
         working-directory: ChronoMeditation
         run: |
           SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
           grep -F 'public void onBackPressed()' "$SRC"
-          grep -F 'https://appassets.androidplatform.net/' "$SRC"
-          grep -F 'AndroidBridge.onYoutubeError' "$SRC"
-          grep -F 'Ouvrir dans YouTube si la vidéo est bloquée' "$SRC"
+          grep -F 'new LinearLayout.LayoutParams(MATCH, dp(220))' "$SRC"
+          grep -F 'pendingCommands' "$SRC"
+          grep -F 'request.isForMainFrame()' "$SRC"
+          grep -F 'queueCommand(' "$SRC"
 
       - name: Build debug APK
         working-directory: ChronoMeditation
         run: gradle assembleDebug --no-daemon
 
-      - name: Verify V9 launcher
+      - name: Verify V10 launcher
         working-directory: ChronoMeditation
         run: |
           APK="app/build/outputs/apk/debug/app-debug.apk"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee /tmp/badging.txt
-          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v9'" /tmp/badging.txt
+          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v10'" /tmp/badging.txt
           grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
       - name: Enable KVM
@@ -73,21 +74,19 @@ jobs:
           script: |
             adb install -r ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
-            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v9
-            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v9/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
+            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v10
+            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v10/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
             grep -F "Status: ok" /tmp/start.txt
             sleep 4
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
-            # Vérification demandée : Retour depuis l'accueil NE DOIT PAS quitter l'application.
             adb shell input keyevent 4
             sleep 2
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
-            # Pas de crash fatal de notre package pendant le test.
-            ! adb logcat -d | grep -A 20 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v9'
+            ! adb logcat -d | grep -A 20 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v10'
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MesMeditations-Hetre-V9-tested
+          name: MesMeditations-Hetre-V10-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
