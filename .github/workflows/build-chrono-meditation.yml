@@ -34,6 +34,15 @@ jobs:
         working-directory: ChronoMeditation
         run: python3 v8_patch.py
 
+      - name: Inspect navigation and music source
+        working-directory: ChronoMeditation
+        run: |
+          SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
+          echo '=== BACK ==='
+          grep -n -C 12 -E 'onBackPressed|OnBackPressed|KEYCODE_BACK|finish\(' "$SRC" || true
+          echo '=== YOUTUBE / WEBVIEW ==='
+          grep -n -C 16 -E 'WebView|youtube|YouTube|iframe|loadData|loadUrl|Music|musique' "$SRC" || true
+
       - name: Build debug APK
         working-directory: ChronoMeditation
         run: gradle assembleDebug --no-daemon
