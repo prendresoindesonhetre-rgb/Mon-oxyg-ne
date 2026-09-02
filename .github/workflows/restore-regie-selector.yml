@@ -10,6 +10,7 @@ on:
       - 'scripts/patch_regie_professional_builder.py'
       - 'scripts/patch_regie_import_maquette.py'
       - 'scripts/patch_regie_visual_harmony.py'
+      - 'scripts/patch_regie_global_compact.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -62,6 +63,9 @@ jobs:
       - name: Harmonize proportions and Prendre soin de son Hetre identity
         run: python scripts/patch_regie_visual_harmony.py pwa-dist/regie-v14/index.html
 
+      - name: Enforce compact controls everywhere
+        run: python scripts/patch_regie_global_compact.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -90,9 +94,11 @@ jobs:
           grep -q 'Utiliser cette maquette' pwa-dist/regie-v14/index.html
           grep -q 'VISUAL_HARMONY_HETRE' pwa-dist/regie-v14/index.html
           grep -q 'COMPACT_SESSION_LIBRARY_V2' pwa-dist/regie-v14/index.html
+          grep -q 'GLOBAL_COMPACT_AUDIT_V3' pwa-dist/regie-v14/index.html
           grep -q -- '--sky:#9bcbd6' pwa-dist/regie-v14/index.html
           grep -q '#createSessionBtn' pwa-dist/regie-v14/index.html
           grep -q 'session-actions,.session-more' pwa-dist/regie-v14/index.html
+          grep -q '#playerView .music-controls,#playerView .auto-row,#playerView .control-row' pwa-dist/regie-v14/index.html
           if grep -q '4,75' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/rain-stick.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/ocean-drum.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
