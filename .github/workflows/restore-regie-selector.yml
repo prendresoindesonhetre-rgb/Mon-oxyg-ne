@@ -14,6 +14,7 @@ on:
       - 'scripts/patch_regie_text_priority.py'
       - 'scripts/patch_regie_pro_hierarchy.py'
       - 'scripts/patch_regie_live_priority.py'
+      - 'scripts/patch_regie_space_air.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -78,6 +79,9 @@ jobs:
       - name: Prioritize live text and restore wheel mode
         run: python scripts/patch_regie_live_priority.py pwa-dist/regie-v14/index.html
 
+      - name: Air the space chooser without enlarging controls
+        run: python scripts/patch_regie_space_air.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -109,6 +113,7 @@ jobs:
           grep -q 'TEXT_PRIORITY_V1' pwa-dist/regie-v14/index.html
           grep -q 'PRO_HIERARCHY_V1' pwa-dist/regie-v14/index.html
           grep -q 'LIVE_PRIORITY_V2' pwa-dist/regie-v14/index.html
+          grep -q 'SPACE_AIR_V1' pwa-dist/regie-v14/index.html
           grep -q 'wheelModeRow' pwa-dist/regie-v14/index.html
           grep -q 'wheelScrollMode' pwa-dist/regie-v14/index.html
           grep -q 'wheelSoundMode' pwa-dist/regie-v14/index.html
