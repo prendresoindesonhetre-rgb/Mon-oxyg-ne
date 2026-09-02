@@ -1,7 +1,8 @@
 .fullscreen-enter,.fullscreen-exit{border:1px solid var(--line,#ddd3c9);background:rgba(255,252,247,.94);color:var(--ink,#493f39);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:800;box-shadow:0 4px 16px rgba(73,63,57,.06)}
 .fullscreen-enter{margin-left:auto;margin-right:8px}.fullscreen-exit{display:none;position:fixed;top:10px;right:12px;z-index:100;padding:8px 11px;background:rgba(255,252,247,.82);backdrop-filter:blur(10px);opacity:.62}.fullscreen-exit:hover{opacity:1}
 .reader-progress>div{height:100%!important;transform:scaleY(0);transform-origin:top center;will-change:transform}
-.reader{contain:paint}
+.reader{contain:paint;cursor:grab}
+.reader.reader-dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .reader-gpu-stage{position:relative;transform:translate3d(0,0,0);transform-origin:top left;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .reader.gpu-autoscroll{overflow-y:hidden;scrollbar-width:none}
 .reader.gpu-autoscroll::-webkit-scrollbar{display:none}
@@ -27,7 +28,7 @@ body.session-fullscreen .workspace{height:calc(100vh - 145px);min-height:0;gap:7
 body.session-fullscreen .reader-panel,body.session-fullscreen .mixer-panel{border-radius:16px;padding:10px;min-height:0}
 body.session-fullscreen .reader-toolbar{margin-bottom:6px}
 body.session-fullscreen .reader-shell{min-height:0;height:100%}
-body.session-fullscreen .reader{height:100%;max-height:none!important;min-height:0!important;padding-top:44px;padding-bottom:44vh}
+body.session-fullscreen .reader{height:100%;max-height:none!important;min-height:0!important;padding-bottom:44vh}
 body.session-fullscreen .script-text{font-size:clamp(23px,2vw,31px);line-height:1.65}
 body.session-fullscreen .mixer-panel{height:100%;overflow:hidden}
 body.session-fullscreen .fader{min-height:160px}
