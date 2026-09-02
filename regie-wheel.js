@@ -12,17 +12,16 @@
   let wheelMode=localStorage.getItem(modeKey)||'speed';
   if(wheelMode!=='speed'&&wheelMode!=='sound')wheelMode='speed';
 
-  /* Étend la plage sans modifier les vitesses déjà enregistrées. */
+  /* Étend la plage : mêmes vitesses basses, mais jusqu'à 200. */
   speed.max='200';
   speed.step='1';
 
   const toggle=document.createElement('button');
   toggle.type='button';
-  toggle.className='pill wheel-mode';
+  toggle.className='pill wheel-mode active';
   toggle.title='Choisir ce que contrôle la molette de la souris';
   const renderToggle=()=>{
     toggle.textContent=wheelMode==='sound'?'🖱 Molette : Son':'🖱 Molette : Vitesse';
-    toggle.classList.toggle('active',true);
   };
   toggle.addEventListener('click',()=>{
     wheelMode=wheelMode==='speed'?'sound':'speed';
@@ -34,13 +33,18 @@
 
   const toast=document.createElement('div');
   toast.className='wheel-toast';
+  toast.style.cssText='position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(6px);z-index:5000;padding:9px 14px;border-radius:999px;background:rgba(64,58,55,.90);color:#fff;font:800 12px/1.1 system-ui,sans-serif;letter-spacing:.05em;box-shadow:0 8px 28px rgba(0,0,0,.16);opacity:0;pointer-events:none;transition:opacity .12s ease,transform .12s ease;';
   document.body.appendChild(toast);
   let toastTimer=0;
   const showToast=(text)=>{
     toast.textContent=text;
-    toast.classList.add('show');
+    toast.style.opacity='1';
+    toast.style.transform='translateX(-50%) translateY(0)';
     clearTimeout(toastTimer);
-    toastTimer=setTimeout(()=>toast.classList.remove('show'),650);
+    toastTimer=setTimeout(()=>{
+      toast.style.opacity='0';
+      toast.style.transform='translateX(-50%) translateY(6px)';
+    },650);
   };
 
   const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
@@ -63,7 +67,7 @@
     const steps=Math.trunc(wheelAccumulator/threshold);
     if(!steps)return;
     wheelAccumulator-=steps*threshold;
-    const direction=-steps; // molette vers le haut = augmentation
+    const direction=-steps; // haut = augmenter, bas = diminuer
 
     if(wheelMode==='sound'){
       try{
