@@ -1,0 +1,74 @@
+name: Restore Regie Selector
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'scripts/patch_regie_selector.py'
+      - '.github/workflows/restore-regie-selector.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout patches
+        uses: actions/checkout@v4
+
+      - name: Recover stable Mon Oxygene build
+        uses: actions/download-artifact@v4
+        with:
+          name: Mon-Oxygene-PWA-v18-sideways-fit
+          path: pwa-dist
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: 33671187910
+
+      - name: Restore all Regie V14 functions
+        run: python scripts/patch_regie_v14.py pwa-dist/regie-v14/index.html
+
+      - name: Restore Meditation Hypnosis selector
+        run: python scripts/patch_regie_selector.py pwa-dist/regie-v14/index.html
+
+      - name: Validate complete Regie
+        run: |
+          grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
+          grep -q 'Séance d’hypnose' pwa-dist/regie-v14/index.html
+          grep -q '+ Créer une séance' pwa-dist/regie-v14/index.html
+          grep -q 'addPhaseBtn' pwa-dist/regie-v14/index.html
+          grep -q 'chooseMeditationSpace' pwa-dist/regie-v14/index.html
+          grep -q 'chooseHypnoseSpace' pwa-dist/regie-v14/index.html
+          grep -q 'if(!playing||!running)return' pwa-dist/regie-v14/index.html
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          h=Path('pwa-dist/regie-v14/index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script>([\s\S]*?)</script>',h)
+          assert scripts
+          Path('/tmp/regie.js').write_text(scripts[-1],encoding='utf-8')
+          PY
+          node --check /tmp/regie.js
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload restored site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pwa-dist
+
+      - name: Deploy restored site
+        id: deployment
+        uses: actions/deploy-pages@v4
