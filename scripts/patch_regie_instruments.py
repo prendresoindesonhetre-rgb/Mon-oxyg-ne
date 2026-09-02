@@ -51,7 +51,7 @@ update_fn = r'''function updateInstrument(p){
 s = s[:start] + update_fn + s[end:]
 
 start = s.index('function animateInstruments(){')
-end = s.index('requestAnimationFrame(animateInstruments);', start)
+end = s.index('function buildMusicSelect(){', start)
 animate_fn = r'''function animateInstruments(){
   if(!playing){requestAnimationFrame(animateInstruments);return}
   const p=state.phases[phaseIndex],t=performance.now()/1000;
@@ -79,6 +79,8 @@ animate_fn = r'''function animateInstruments(){
   }
   requestAnimationFrame(animateInstruments);
 }
+requestAnimationFrame(animateInstruments);
+
 '''
 s = s[:start] + animate_fn + s[end:]
 
