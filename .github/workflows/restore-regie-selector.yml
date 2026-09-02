@@ -89,8 +89,10 @@ jobs:
           grep -q 'mammoth.browser.min.js' pwa-dist/regie-v14/index.html
           grep -q 'Utiliser cette maquette' pwa-dist/regie-v14/index.html
           grep -q 'VISUAL_HARMONY_HETRE' pwa-dist/regie-v14/index.html
+          grep -q 'COMPACT_SESSION_LIBRARY_V2' pwa-dist/regie-v14/index.html
           grep -q -- '--sky:#9bcbd6' pwa-dist/regie-v14/index.html
-          grep -q 'grid-template-columns:34px 34px 1fr 1fr' pwa-dist/regie-v14/index.html
+          grep -q '#createSessionBtn' pwa-dist/regie-v14/index.html
+          grep -q 'session-actions,.session-more' pwa-dist/regie-v14/index.html
           if grep -q '4,75' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/rain-stick.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/ocean-drum.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
