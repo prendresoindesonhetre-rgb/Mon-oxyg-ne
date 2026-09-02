@@ -6,6 +6,9 @@ on:
       - chrono-meditation-android
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -94,3 +97,16 @@ jobs:
           name: Regie-de-mon-Hetre-V13-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      - name: Publish permanent APK link
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk Regie-de-mon-Hetre.apk
+          if ! gh release view regie-de-mon-hetre >/dev/null 2>&1; then
+            gh release create regie-de-mon-hetre \
+              --target chrono-meditation-android \
+              --title "Régie de mon Hêtre — dernière version" \
+              --notes "Lien stable vers la dernière version Android testée de Régie de mon Hêtre."
+          fi
+          gh release upload regie-de-mon-hetre Regie-de-mon-Hetre.apk --clobber
