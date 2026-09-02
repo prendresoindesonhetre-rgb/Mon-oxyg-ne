@@ -1,0 +1,755 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#f7f5f1">
+<title>Régie de mon Hêtre</title>
+<style>
+:root{
+  --bg:#f7f5f1;--paper:#fffdf9;--line:#e5dbd0;--clay:#aa917e;--teal:#5c8586;
+  --mauve:#9c8ca6;--muted:#786e69;--sand:#eee7de;--ink:#403a37;--soft:#f2ece4;
+  --danger:#b96b68;--ok:#618b82;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{overscroll-behavior-y:none}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hidden{display:none!important}
+.screen{width:min(760px,100%);margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(92px + env(safe-area-inset-bottom))}
+.card{background:rgba(255,253,249,.96);border:1px solid var(--line);border-radius:25px;padding:18px;margin:12px 0;box-shadow:0 1px 0 rgba(64,58,55,.03)}
+.brand{font-size:12px;letter-spacing:.16em;font-weight:800;color:var(--mauve);margin:4px 0 8px}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:34px;line-height:1.06;margin-bottom:9px}
+h2{font-size:25px}
+.subtitle{color:var(--muted);line-height:1.5;margin-bottom:18px}
+.row{display:flex;gap:9px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.grow{flex:1}
+.btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:17px;padding:13px 16px;min-height:50px}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:white;font-weight:700}
+.btn.soft{background:var(--sand)}
+.btn.danger{background:#f5e7e5;color:#7d4542}
+.btn.small{min-height:39px;padding:8px 12px;border-radius:14px;font-size:14px}
+.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:12px;color:var(--muted);background:var(--paper)}
+.kicker{font-size:12px;letter-spacing:.12em;font-weight:800;color:var(--mauve)}
+.muted{color:var(--muted)}
+.home-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:14px 0}
+.feature{border:1px solid var(--line);background:var(--paper);border-radius:16px;text-align:center;padding:11px 4px;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted)}
+.session-title{font-size:23px;font-weight:800;margin:7px 0}
+.summary{font-size:14px;color:var(--muted);line-height:1.5}
+.syncbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 2px 9px}
+.syncstatus{font-size:12px;color:var(--muted)}
+.account-btn{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 12px}
+.field{display:block;margin:12px 0}
+.field span{display:block;font-size:12px;font-weight:800;color:var(--muted);margin:0 0 6px 4px}
+input[type=text],input[type=password],input[type=url],input[type=number],textarea,select{
+  width:100%;border:1px solid var(--line);background:white;color:var(--ink);border-radius:16px;padding:13px 14px;outline:none
+}
+textarea{min-height:170px;line-height:1.55;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(92,133,134,.11)}
+.auth-wrap{min-height:calc(100vh - 40px);display:grid;place-items:center}
+.auth-card{width:min(520px,100%)}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.auth-tab.active{background:var(--teal);color:white;border-color:var(--teal)}
+.note{font-size:13px;color:var(--muted);line-height:1.5}
+.error{color:#9b4f4b;font-size:13px;margin:8px 2px}
+.ok{color:var(--ok)}
+.recovery-key{font:700 16px ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all;background:var(--soft);border:1px dashed var(--clay);border-radius:16px;padding:14px;margin:12px 0}
+.modal-backdrop{position:fixed;inset:0;background:rgba(42,36,32,.38);display:grid;place-items:center;padding:16px;z-index:50}
+.modal{width:min(520px,100%);max-height:90vh;overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 20px 70px rgba(0,0,0,.18)}
+.phase-editor{border-top:1px solid var(--line);padding-top:16px;margin-top:16px}
+.phase-editor:first-child{border-top:0;padding-top:0}
+.editor-toolbar{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom));background:rgba(247,245,241,.92);backdrop-filter:blur(8px);padding:10px;border-radius:20px;border:1px solid rgba(229,219,208,.85);margin-top:12px}
+.player{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+.player-head{padding:16px 18px}
+.phase-headline{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.phase-name{font-size:25px;font-weight:800;line-height:1.12}
+.phase-count{font-size:14px;font-weight:700;color:var(--muted);white-space:nowrap}
+.timer-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px}
+.global-time{font-size:38px;color:var(--teal);font-weight:850;font-variant-numeric:tabular-nums}
+.phase-remain{font-size:17px;color:var(--clay);font-weight:750;font-variant-numeric:tabular-nums}
+.nextline{border-top:1px solid var(--soft);padding-top:9px;margin-top:9px;color:var(--muted)}
+.instrument{padding:12px 15px}
+.instrument-title{font-size:12px;font-weight:850;letter-spacing:.12em;color:var(--mauve);margin-bottom:9px}
+.rain-track{height:42px;border-radius:999px;background:linear-gradient(90deg,#dbe9e7,#efe8ef,#dbe9e7);position:relative;overflow:hidden;border:1px solid var(--line)}
+.rain-stick{position:absolute;top:5px;width:46px;height:30px;border-radius:999px;background:linear-gradient(90deg,#927763,#c8a68c,#8e7461);box-shadow:0 2px 6px #0002;transform-origin:center}
+.wave-track{height:54px;position:relative;overflow:hidden}
+.wave-svg{width:100%;height:100%}
+.instrument-controls{display:grid;grid-template-columns:1fr 60px 60px;gap:8px;align-items:center;margin-top:8px}
+.music-card{padding:14px 16px}
+.music-head{display:flex;justify-content:space-between;align-items:center}
+.music-title{font-weight:850;color:var(--clay)}
+.music-body{margin-top:10px}
+.music-controls{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:9px 0}
+.music-controls button{border-radius:0}
+.music-controls button:first-child{border-radius:18px 0 0 18px}
+.music-controls button:last-child{border-radius:0 18px 18px 0}
+.yt-wrap{aspect-ratio:16/7;background:#111;border-radius:14px;overflow:hidden;margin:8px 0}
+.yt-wrap iframe{width:100%;height:100%;border:0}
+.audio-time{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.auto-row{display:grid;grid-template-columns:1.2fr .72fr .72fr .72fr;gap:8px;margin:10px 0}
+.auto-row .btn{padding:10px 8px;min-height:48px}
+.auto-value{text-align:center;font-weight:800;color:var(--muted);align-self:center}
+.guide-card{position:relative;padding:0;overflow:hidden}
+.guide-label{padding:15px 18px 2px;font-size:12px;letter-spacing:.1em;font-weight:850;color:var(--mauve)}
+.guide-scroll{height:min(45vh,470px);min-height:285px;overflow:auto;padding:10px 30px 35vh 28px;scroll-behavior:auto;touch-action:pan-y;cursor:grab}
+.guide-scroll.dragging{cursor:grabbing;user-select:none}
+.guide-text{font-family:Georgia,"Times New Roman",serif;font-size:clamp(22px,3.3vw,29px);line-height:1.78;white-space:pre-wrap}
+.read-progress{position:absolute;left:13px;top:48px;bottom:22px;width:4px;background:var(--soft);border-radius:99px;overflow:hidden}
+.read-progress > i{display:block;width:100%;height:0;background:linear-gradient(var(--teal),var(--mauve));border-radius:99px}
+.read-marker{position:absolute;left:25px;right:22px;top:47%;height:1px;background:rgba(92,133,134,.23);pointer-events:none}
+.read-marker:after{content:"ICI";position:absolute;right:0;top:-15px;font-size:9px;color:var(--teal);font-family:Inter,system-ui}
+.cue-card{padding:15px 18px}
+.cue-text{font-size:14px;line-height:1.5;color:var(--muted)}
+.bottom-controls{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(760px,100%);padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(transparent 0,rgba(247,245,241,.94) 20%,var(--bg) 45%);z-index:20}
+.control-row{display:grid;grid-template-columns:1fr 2.6fr 1fr;gap:9px}
+.control-row .btn{min-height:56px}
+.phase-auto{margin-top:6px;width:100%;min-height:35px;border-radius:15px;border:1px solid var(--line);background:#edf2ef;color:var(--teal);font-size:11px;font-weight:800}
+.fader-edge{position:fixed;right:max(3px,calc((100vw - 760px)/2 + 3px));top:22%;bottom:15%;width:12px;border-radius:99px;background:rgba(229,219,208,.75);z-index:18;opacity:0;pointer-events:none;transition:.2s}
+.fader-edge.active{opacity:1}
+.fader-edge i{position:absolute;left:1px;right:1px;bottom:0;border-radius:99px;background:linear-gradient(var(--mauve),var(--teal));height:50%}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:#283331;color:white;padding:11px 16px;border-radius:999px;font-size:13px;z-index:100;box-shadow:0 8px 30px #0003;max-width:90%;text-align:center}
+.syncdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--clay);margin-right:5px}.syncdot.ok{background:var(--ok)}.syncdot.busy{background:#d2a64b}.syncdot.off{background:#aaa}
+@media(max-width:520px){
+  .screen{padding-left:11px;padding-right:11px}
+  h1{font-size:30px}.feature-grid{grid-template-columns:repeat(4,1fr)}
+  .home-actions{grid-template-columns:1fr}
+  .phase-name{font-size:23px}.global-time{font-size:35px}.phase-remain{font-size:16px}
+  .guide-scroll{height:46vh;padding-left:27px;padding-right:22px}
+}
+</style>
+</head>
+<body>
+
+<section id="authScreen" class="screen">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="brand">PRENDRE SOIN DE SON HÊTRE</div>
+      <h1>Régie de mon Hêtre</h1>
+      <p class="subtitle">Retrouve ta régie sur ton téléphone et ton ordinateur, sans adresse mail ni donnée personnelle.</p>
+      <div class="card">
+        <div class="auth-tabs">
+          <button class="btn auth-tab active" id="tabLogin">Retrouver mon espace</button>
+          <button class="btn auth-tab" id="tabCreate">Créer mon espace</button>
+        </div>
+        <div id="loginPane">
+          <label class="field"><span>Nom d’espace</span><input id="loginName" type="text" autocomplete="username" placeholder="Ton prénom ou un pseudo"></label>
+          <label class="field"><span>Mot de passe</span><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Ton mot de passe"></label>
+          <button class="btn primary" style="width:100%" id="loginBtn">Ouvrir mon espace</button>
+          <button class="btn small" style="width:100%;margin-top:9px" id="forgotBtn">J’ai oublié mon mot de passe</button>
+        </div>
+        <div id="createPane" class="hidden">
+          <label class="field"><span>Nom d’espace</span><input id="createName" type="text" autocomplete="off" placeholder="Ton prénom ou un pseudo"></label>
+          <label class="field"><span>Mot de passe</span><input id="createPassword" type="password" autocomplete="new-password" placeholder="10 caractères minimum"></label>
+          <label class="field"><span>Confirmer</span><input id="createPassword2" type="password" autocomplete="new-password" placeholder="Retape ton mot de passe"></label>
+          <p class="note">Le serveur ne reçoit ni ton mot de passe ni le contenu lisible de tes séances. Tes données sont chiffrées sur ton appareil avant la synchronisation.</p>
+          <button class="btn primary" style="width:100%" id="createBtn">Créer mon espace</button>
+        </div>
+        <div id="authError" class="error"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="appScreen" class="screen hidden">
+  <div class="syncbar">
+    <div class="syncstatus" id="syncStatus"><span class="syncdot"></span>Local</div>
+    <button class="account-btn" id="accountBtn">Mon espace</button>
+  </div>
+
+  <div id="homeView">
+    <div class="brand">PRENDRE SOIN DE SON HÊTRE</div>
+    <h1>Ma régie de séance</h1>
+    <p class="subtitle">Ton fil conducteur pour guider une méditation ou une séance d’hypnose sans perdre le texte, le temps, le rythme ni tes transitions.</p>
+    <div class="feature-grid"><div class="feature">TEXTE</div><div class="feature">TEMPS</div><div class="feature">RYTHME</div><div class="feature">MIX</div></div>
+    <div class="card">
+      <div class="kicker">MA SÉANCE</div>
+      <div class="session-title" id="homeTitle"></div>
+      <div class="summary">90 min • 14 temps • bâton de pluie • tambour océan • silence • musique</div>
+      <div class="home-actions">
+        <button class="btn primary" id="openRegieBtn">Ouvrir ma régie</button>
+        <button class="btn" id="editSessionBtn">Modifier ma séance</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="session-title" style="font-size:20px">Mes musiques</div>
+      <p class="summary">Charge tes morceaux avant la séance. Dans la régie, ils démarrent silencieusement puis entrent avec ton fader, comme sur une petite table de mixage.</p>
+      <button class="btn" style="width:100%" id="musicSettingsBtn">Préparer mes ambiances</button>
+    </div>
+    <div class="card">
+      <div class="kicker">PENDANT LA SÉANCE</div>
+      <p class="summary" style="margin-bottom:0">Le texte reste au centre. Le temps ne s’arrête jamais. L’instrument apparaît seulement quand tu en as besoin. La molette agit sur la vitesse ou le son uniquement après « Démarrer » ; en pause, elle redevient une molette normale.</p>
+    </div>
+  </div>
+
+  <div id="musicSettingsView" class="hidden">
+    <button class="btn small" id="musicBackBtn">‹ Retour</button>
+    <h2 style="margin-top:16px">Mes musiques</h2>
+    <p class="subtitle">Tu peux enregistrer un lien youtube.com ou youtu.be. Certaines vidéos peuvent refuser la lecture intégrée selon leurs réglages.</p>
+    <div id="musicSlots"></div>
+    <button class="btn primary" style="width:100%;margin-top:10px" id="saveMusicBtn">Enregistrer les musiques</button>
+  </div>
+
+  <div id="editView" class="hidden">
+    <button class="btn small" id="editBackBtn">‹ Retour</button>
+    <h2 style="margin-top:16px">Ma séance</h2>
+    <label class="field"><span>Titre</span><input type="text" id="editTitle"></label>
+    <div id="phaseEditors"></div>
+    <div class="editor-toolbar row"><button class="btn grow" id="resetSessionBtn">Revenir à la séance d’origine</button><button class="btn primary grow" id="saveSessionBtn">Enregistrer</button></div>
+  </div>
+
+  <div id="playerView" class="hidden player">
+    <div class="brand">RÉGIE DE MON HÊTRE</div>
+    <div class="card player-head">
+      <div class="phase-headline"><div class="phase-name" id="phaseName"></div><div class="phase-count" id="phaseCount"></div></div>
+      <div class="timer-row"><div class="global-time" id="globalTime">00:00</div><div class="phase-remain" id="phaseRemain">00:00 restant</div></div>
+      <div class="nextline" id="nextLine"></div>
+    </div>
+
+    <div id="instrumentHost"></div>
+
+    <div class="card music-card" id="musicCard">
+      <div class="music-head"><div class="music-title">♫ MIX MUSIQUE</div><button class="btn small" id="musicCollapseBtn">Réduire</button></div>
+      <div id="musicMini" class="summary">Aucune piste</div>
+      <div class="music-body" id="musicBody">
+        <label class="field"><span>Source</span><select id="playerMusicSelect"></select></label>
+        <div id="youtubeBox" class="yt-wrap hidden"><div id="ytPlayer" style="width:100%;height:100%"></div></div>
+        <input id="localAudioInput" class="hidden" type="file" accept="audio/*">
+        <audio id="localAudio" preload="metadata"></audio>
+        <div class="music-controls">
+          <button class="btn soft" id="musicPlayBtn">▶</button>
+          <button class="btn soft" id="musicPauseBtn">Ⅱ</button>
+          <button class="btn soft" id="musicStopBtn">■</button>
+          <button class="btn" id="musicFileBtn">Fichier</button>
+        </div>
+        <div class="audio-time"><span id="musicTime">00:00 / 00:00</span><span id="musicSourceStatus"></span></div>
+        <input type="range" id="musicTimeline" min="0" max="1000" value="0">
+        <label class="field" style="margin-bottom:0"><span>Volume <b id="volumeValue">50 %</b></span><input type="range" id="volumeSlider" min="0" max="100" value="50"></label>
+        <div class="note">Fader à droite : ↑ faire entrer • ↓ faire disparaître</div>
+      </div>
+    </div>
+
+    <div class="auto-row" id="autoRow">
+      <button class="btn soft" id="autoToggle">Défilement auto</button>
+      <button class="btn soft" id="autoMinus">−</button>
+      <div class="auto-value" id="autoValue">OFF</div>
+      <button class="btn soft" id="autoPlus">+</button>
+    </div>
+
+    <div class="card guide-card" id="guideCard">
+      <div class="guide-label">À DIRE</div>
+      <div class="read-progress"><i id="readProgress"></i></div>
+      <div class="read-marker"></div>
+      <div class="guide-scroll" id="guideScroll"><div class="guide-text" id="guideText"></div></div>
+    </div>
+
+    <div class="card cue-card">
+      <div class="kicker">REPÈRES DE CONDUITE</div>
+      <div class="cue-text" id="cueText"></div>
+    </div>
+  </div>
+</section>
+
+<div id="bottomControls" class="bottom-controls hidden">
+  <div class="control-row">
+    <button class="btn" id="prevBtn">‹</button>
+    <button class="btn primary" id="playPauseBtn">Démarrer</button>
+    <button class="btn" id="nextBtn">›</button>
+  </div>
+  <button class="phase-auto" id="phaseAutoBtn">PHASES AUTO ✓</button>
+</div>
+<div id="faderEdge" class="fader-edge"><i></i></div>
+<div id="modalRoot"></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+"use strict";
+const SYNC_URL="https://kzviewbnnnzdyocdjtah.supabase.co/functions/v1/regie-sync";
+const DEFAULT_STATE={"schema": 1, "updatedAt": 0, "title": "Atelier de méditation — 19h30 à 21h", "phases": [{"name": "Accueil & intention", "minutes": 4, "text": "Prenez le temps de vous installer.\n\nDe prendre votre place.\n\nEt avant même de commencer, je vous invite simplement à vous demander :\n\nPourquoi suis-je venu ici ce soir ?\n\nPourquoi ai-je choisi de venir m’asseoir, ou m’allonger, pendant un moment…\n\ndans le silence…\n\navec moi-même ?\n\nIl n’est pas nécessaire de chercher une grande réponse.\n\nPeut-être qu’une intention est déjà présente.\n\nPeut-être simplement une envie.\n\nUn besoin.\n\nOu peut-être juste celui de prendre ce temps pour vous.\n\nGardez simplement cela quelque part avec vous.\n\nSans chercher à en faire quoi que ce soit.", "cue": "[silence]", "instrument": 0}, {"name": "Prendre place", "minutes": 6, "text": "Vous pouvez maintenant vous installer confortablement.\n\nEt progressivement…\n\nlaisser votre corps trouver sa juste place.\n\nPendant quelques instants, plus rien n’a besoin de tenir.\n\nVos jambes n’ont rien à tenir.\n\nVos bras non plus.\n\nVos mains peuvent simplement se déposer.\n\nVos épaules peuvent relâcher ce qu’elles retiennent.\n\nVotre mâchoire peut se desserrer.\n\nVotre visage peut se relâcher.\n\nEt vous pouvez simplement laisser le sol porter votre poids.\n\n[silence]\n\nPuis, sans chercher à modifier quoi que ce soit…\n\nfaites simplement un état des lieux.\n\nComment vous sentez-vous aujourd’hui ?\n\nY a-t-il des endroits qui semblent plus tendus ?\n\nD’autres plus légers ?\n\nPeut-être une émotion qui prend davantage de place.\n\nPeut-être beaucoup de pensées.\n\nPeut-être au contraire quelque chose de très calme.\n\nIl n’y a rien à réussir ou à changer. Simplement observer.", "cue": "Laisser de vrais espaces de silence entre les propositions.", "instrument": 0}, {"name": "Retrouver la respiration", "minutes": 4, "text": "Puis doucement…\n\nportez votre attention sur votre respiration.\n\nSimplement prendre conscience qu’elle est là.\n\nObservez d’abord comment vous respirez aujourd’hui.\n\nOù sentez-vous votre souffle ?\n\nPlutôt dans la poitrine ?\n\nDans le ventre ?\n\nÀ l’inspire, laissez votre ventre se gonfler naturellement.\n\nEt à l’expiration…\n\nlaissez-le redescendre.\n\nSans forcer.", "cue": "Observer quelques respirations naturelles avant de prendre le bâton de pluie.", "instrument": 0}, {"name": "Cohérence cardiaque — bâton de pluie", "minutes": 5, "text": "Et maintenant, pour ceux qui le souhaitent…\n\nje vais vous proposer de laisser le son du bâton de pluie accompagner votre respiration.\n\nMais surtout…\n\nne cherchez pas à poursuivre le son.\n\nSi ce rythme ne vous convient pas, laissez votre corps respirer comme il en a besoin.\n\nLe bâton de pluie est simplement là comme un guide.\n\nÀ l’inspiration votre ventre se gonfle.\n\nEt à l’expire il se dégonfle.\n\nInspirez.\n\nEt expirez.\n\nVoilà, comme ceci c’est très bien.\n\nJe vais vous guider quelques instants comme ceci. Si vous perdez le rythme, si vous partez autre part, laissez-vous aller et laissez-vous voyager. Ce temps est d’abord un temps pour vous, pour vous alléger.", "cue": "Suivre la petite bascule du bâton en haut de l’écran. Le texte reste totalement défilable, et le défilement automatique peut prendre le relais pendant que les deux mains tiennent l’instrument.", "instrument": 1}, {"name": "Revenir au souffle naturel", "minutes": 2, "text": "Puis doucement…\n\nlaissez votre respiration retrouver son rythme naturel.\n\nVous n’avez plus besoin de la contrôler.\n\nPlus besoin de suivre quoi que ce soit.\n\nVotre corps peut reprendre tranquillement sa respiration.\n\nEt pendant quelques instants…\n\nRessentez simplement.", "cue": "Poser le bâton de pluie et laisser revenir le silence.", "instrument": 0}, {"name": "Tambour océan — le bord de la mer", "minutes": 7, "text": "Et maintenant… pour ceux qui le souhaitent\n\nje vous invite simplement à écouter.\n\nPeut-être pouvez-vous laisser ce son vous emmener quelque part.\n\nAu bord de la mer.\n\nPeut-être un endroit que vous connaissez.\n\nUn lieu où vous êtes allé pendant vos vacances.\n\nUn endroit qui vous rappelle un souvenir agréable.\n\nOu peut-être simplement un endroit que vous imaginez.\n\nUn lieu qui n’existe que pour vous.\n\nPeu importe.\n\nLaissez simplement apparaître un endroit dans lequel vous vous sentez bien.\n\nUn endroit dans lequel vous vous sentez pleinement en sécurité.\n\nPrenez le temps de sentir cet endroit.\n\nPeut-être la température de l’air.\n\nLe contact du sol.\n\nLe sable.\n\nLe vent.\n\nLa lumière.\n\nEt devant vous…\n\nla mer.\n\nUne vague arrive.\n\nPuis elle repart.\n\nUne autre vient jusqu’au rivage.\n\nPuis retourne vers le large.\n\nEt simplement… laissez-vous quelques instants ici.\n\nVous n’avez rien à faire. Rien à produire. Simplement écouter ce mouvement, l’observer, peut-être même le ressentir.", "cue": "Le repère de vague en haut sert de rythme pour incliner le tambour : montée douce, sommet, retour. Ajuster la durée d’une vague avec − / +. Le défilement automatique peut rester actif pendant que les deux mains jouent.", "instrument": 2}, {"name": "Laisser partir", "minutes": 7, "text": "Et doucement…\n\nnous approchons de l’automne.\n\nUne saison pendant laquelle la nature commence à changer de rythme.\n\nLes choses bougent.\n\nSe transforment.\n\nCertaines restent.\n\nEt d’autres commencent doucement à partir.\n\nLes arbres laissent tomber leurs feuilles une par une.\n\nPetit à petit, ils laissent partir ce dont ils n’auront plus besoin pour continuer leur chemin.\n\nEt peut-être qu’aujourd’hui…\n\nil existe en vous quelque chose que vous n’avez plus besoin de retenir avec autant de force.\n\nNe cherchez pas.\n\nVous n’avez rien à trouver absolument.\n\nMais si quelque chose se présente…\n\nune pensée…\n\nune inquiétude…\n\nune attente…\n\nune habitude…\n\nune parole…\n\nune couleur…\n\nune image…\n\nObservez-le.\n\nEt si vous sentez que c’est le moment…\n\nvous pouvez finir par le déposer.\n\nLà.\n\nSur la plage.\n\nDevant vous.\n\nSans le jeter.\n\nSans essayer de vous en débarrasser.\n\nSimplement le poser.\n\nNe plus avoir besoin de le tenir pendant quelques instants.\n\nEt à chaque mouvement de la mer…\n\nvous pouvez laisser partir ce qui est prêt à partir.\n\nSeulement ce qui est prêt.\n\nCe qui a encore besoin de rester auprès de vous peut rester.\n\nIl n’y a rien à forcer.", "cue": "Continuer quelques vagues avec le tambour océan. Puis laisser progressivement les vagues s’éloigner pour donner la place à la musique.", "instrument": 2}, {"name": "Musique douce", "minutes": 5, "text": "", "cue": "Ouvrir l’onglet Musique si nécessaire, choisir le morceau et régler le volume. 4 à 5 minutes sans parole. Laisser la musique finir ou diminuer doucement, quelques secondes de silence, puis un seul coup de bol.", "instrument": 3}, {"name": "Transition vers l’assise", "minutes": 3, "text": "Reprenez doucement conscience du corps et de la respiration.\n\nRemettez un peu de mouvement dans les doigts et les pieds.\n\nPuis venez avec douceur vous placer sur un côté. Prenez quelques instants dans cette position, sans urgence.\n\nÀ votre rythme, revenez ensuite vous installer en position assise.", "cue": "Toujours passer doucement sur le côté avant de revenir à l’assise.", "instrument": 0}, {"name": "Trois espaces d’observation", "minutes": 5, "text": "Avant d’entrer dans ce temps de méditation, je vous propose simplement de retrouver nos trois repères.\n\nD’abord, l’espace émotionnel et respiratoire. Prendre un instant pour sentir comment vous arrivez aujourd’hui. Ce qui est là, sans chercher à le modifier. Puis laisser la respiration retrouver son propre rythme. Observer simplement le souffle tel qu’il se présente.\n\nEnsuite, l’espace physique. Sentir votre corps dans l’assise. Vos points d’appui. Votre verticalité. Les tensions éventuelles. Les zones plus relâchées. Et simplement laisser le corps vous renseigner sur ce qui se passe en vous.\n\nEnfin, l’espace mental. Observer les pensées lorsqu’elles apparaissent. Sans chercher à les arrêter. Sans avoir besoin non plus de les suivre. Les laisser passer, revenir, disparaître. Et retrouver, chaque fois que nécessaire, votre présence. À votre souffle. À votre corps. À vous-même.\n\nPendant les vingt prochaines minutes, je vous invite simplement à rester dans cette rencontre. Sans objectif. Sans chercher à produire un état particulier. Sans chercher à réussir quoi que ce soit. La méditation peut simplement devenir cet espace dans lequel vous venez vous retrouver. Et à partir de maintenant, je vais vous laisser entièrement dans le silence.", "cue": "Après cette phrase : aucune intervention verbale pendant les 20 minutes.", "instrument": 0}, {"name": "Méditation silencieuse", "minutes": 20, "text": "", "cue": "Silence complet. Ne pas intervenir. À la fin : un seul coup de bol et laisser sa vibration disparaître entièrement.", "instrument": 4}, {"name": "Transition douce", "minutes": 3, "text": "Prenez votre temps. Retrouvez doucement la respiration et le corps. Remettez un peu de mouvement.", "cue": "Venir doucement sur un côté. Y rester quelques instants avant de changer de position.", "instrument": 0}, {"name": "Troisième temps — musique", "minutes": 15, "text": "Vous n’avez rien à chercher, rien à comprendre, rien à modifier. Simplement écouter et observer ce que la musique vient rencontrer en vous.", "cue": "Utiliser l’onglet Musique. Relancer la même musique que dans le premier temps si tu le souhaites. 15 minutes.", "instrument": 3}, {"name": "Retour final", "minutes": 4, "text": "Retrouvez doucement le contact du corps, la respiration et les sons autour de vous. Observez simplement comment vous êtes maintenant.", "cue": "Faire disparaître progressivement la musique. Remettre du mouvement, venir doucement sur un côté, puis revenir s’asseoir à son rythme.", "instrument": 0}], "musicSlots": [{"name": "", "url": ""}, {"name": "", "url": ""}, {"name": "", "url": ""}], "prefs": {"autoWpm": 90, "autoScroll": false, "autoPhase": true, "waveSeconds": 8, "rainSeconds": 5, "musicVolume": 50}};
+const LS_PROFILE="regie_profile_v1";
+const LS_STATE="regie_state_v14";
+const te=new TextEncoder(), td=new TextDecoder();
+
+let state=structuredClone(DEFAULT_STATE);
+let profile=null;
+let remoteVersion=0;
+let dirty=false,syncTimer=null,pullTimer=null,syncing=false;
+let view="home";
+let playing=false,running=false,phaseIndex=0,globalElapsed=0,phaseElapsed=0,lastTick=0,tickHandle=null;
+let autoLast=0,manualScrollUntil=0;
+let musicCollapsed=false,currentMusicMode="none",currentYoutubeId="",ytReady=false,ytPlayer=null;
+let localAudio=document.getElementById("localAudio");
+let drag={active:false,y:0,scroll:0};
+
+function $(id){return document.getElementById(id)}
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function now(){return Date.now()}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function normalizeName(s){return String(s||"").normalize("NFKC").trim().toLocaleLowerCase("fr-FR").replace(/\s+/g," ")}
+function bytesToB64u(bytes){let s="";for(const b of bytes)s+=String.fromCharCode(b);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/g,"")}
+function b64uToBytes(s){s=s.replace(/-/g,"+").replace(/_/g,"/");while(s.length%4)s+="=";let x=atob(s),a=new Uint8Array(x.length);for(let i=0;i<x.length;i++)a[i]=x.charCodeAt(i);return a}
+function concatBytes(...parts){let n=parts.reduce((a,p)=>a+p.length,0),r=new Uint8Array(n),o=0;for(const p of parts){r.set(p,o);o+=p.length}return r}
+async function sha256Bytes(bytes){return new Uint8Array(await crypto.subtle.digest("SHA-256",bytes))}
+async function sha256HexText(s){let a=await sha256Bytes(te.encode(s));return [...a].map(b=>b.toString(16).padStart(2,"0")).join("")}
+function randomBytes(n){let a=new Uint8Array(n);crypto.getRandomValues(a);return a}
+async function importAes(raw){return crypto.subtle.importKey("raw",raw,{name:"AES-GCM"},false,["encrypt","decrypt"])}
+async function aesEncrypt(rawKey,plainBytes){let iv=randomBytes(12),key=await importAes(rawKey),ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},key,plainBytes));return {iv:bytesToB64u(iv),ciphertext:bytesToB64u(ct)}}
+async function aesDecrypt(rawKey,bundle){let key=await importAes(rawKey),pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:b64uToBytes(bundle.iv)},key,b64uToBytes(bundle.ciphertext));return new Uint8Array(pt)}
+async function derivePassword(password,saltB64){
+  const material=await crypto.subtle.importKey("raw",te.encode(password),"PBKDF2",false,["deriveBits"]);
+  const bits=new Uint8Array(await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:b64uToBytes(saltB64),iterations:250000},material,512));
+  const authKey=bits.slice(0,32),wrapKey=bits.slice(32,64);
+  const authVerifier=bytesToB64u(await sha256Bytes(concatBytes(te.encode("regie-auth-v1|"),authKey)));
+  return {authKey,wrapKey,authVerifier};
+}
+async function recoveryVerifier(raw){return bytesToB64u(await sha256Bytes(concatBytes(te.encode("regie-recovery-v1|"),raw)))}
+async function recoveryWrapKey(raw){return await sha256Bytes(concatBytes(te.encode("regie-recovery-wrap-v1|"),raw))}
+async function usernameHash(name){return sha256HexText("regie-user-v1|"+normalizeName(name))}
+async function api(action,payload={}){
+  if(!navigator.onLine)throw new Error("offline");
+  const r=await fetch(SYNC_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,...payload})});
+  let j={};try{j=await r.json()}catch{}
+  if(!r.ok){let e=new Error(j.error||("http_"+r.status));e.status=r.status;e.data=j;throw e}
+  return j;
+}
+function setSyncStatus(text,kind=""){let d=$("syncStatus");d.innerHTML=`<span class="syncdot ${kind}"></span>${text}`}
+function toast(t){let e=$("toast");e.textContent=t;e.classList.remove("hidden");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.add("hidden"),2200)}
+function showModal(inner){$("modalRoot").innerHTML=`<div class="modal-backdrop"><div class="modal">${inner}</div></div>`}
+function closeModal(){$("modalRoot").innerHTML=""}
+function esc(s=""){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function fmt(ms){let sec=Math.max(0,Math.floor(ms/1000));return String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")}
+function totalMinutes(){return state.phases.reduce((a,p)=>a+(Number(p.minutes)||0),0)}
+
+function persistLocal(){
+  state.updatedAt=now();
+  localStorage.setItem(LS_STATE,JSON.stringify(state));
+  dirty=true;
+  scheduleSync();
+}
+function loadLocal(){
+  try{let s=JSON.parse(localStorage.getItem(LS_STATE)||"null");if(s&&s.schema===1)state=s}catch{}
+  state.prefs={...DEFAULT_STATE.prefs,...(state.prefs||{})};
+  if(!Array.isArray(state.musicSlots))state.musicSlots=clone(DEFAULT_STATE.musicSlots);
+  if(!Array.isArray(state.phases)||!state.phases.length)state.phases=clone(DEFAULT_STATE.phases);
+}
+function saveProfile(){localStorage.setItem(LS_PROFILE,JSON.stringify(profile))}
+function loadProfile(){try{profile=JSON.parse(localStorage.getItem(LS_PROFILE)||"null")}catch{profile=null}}
+
+async function encryptState(){
+  const dek=b64uToBytes(profile.dek);
+  return aesEncrypt(dek,te.encode(JSON.stringify(state)));
+}
+async function decryptState(bundle){
+  const dek=b64uToBytes(profile.dek);
+  const pt=await aesDecrypt(dek,bundle);
+  const s=JSON.parse(td.decode(pt));
+  if(!s||s.schema!==1)throw new Error("bad_state");
+  return s;
+}
+
+function scheduleSync(){
+  if(!profile?.token)return;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(()=>syncPush().catch(()=>{}),700);
+}
+async function syncPush(){
+  if(syncing||!dirty||!profile?.token)return;
+  if(!navigator.onLine){setSyncStatus("Hors ligne","off");return}
+  syncing=true;setSyncStatus("Synchronisation…","busy");
+  try{
+    const bundle=await encryptState();
+    try{
+      const r=await api("push",{token:profile.token,expectedVersion:remoteVersion,dataIv:bundle.iv,dataCiphertext:bundle.ciphertext});
+      remoteVersion=Number(r.version)||remoteVersion+1;dirty=false;setSyncStatus("Synchronisé","ok");
+    }catch(e){
+      if(e.status===409&&e.data?.dataCiphertext){
+        const remote=await decryptState({iv:e.data.dataIv,ciphertext:e.data.dataCiphertext});
+        const rv=Number(e.data.version)||0;
+        if((state.updatedAt||0)>(remote.updatedAt||0)){
+          remoteVersion=rv;
+          syncing=false;
+          return syncPush();
+        }else{
+          state=remote;remoteVersion=rv;dirty=false;localStorage.setItem(LS_STATE,JSON.stringify(state));renderCurrent();setSyncStatus("Synchronisé","ok");
+        }
+      }else if(e.status===401){setSyncStatus("Connexion à renouveler");}
+      else throw e;
+    }
+  }catch(e){setSyncStatus(navigator.onLine?"Sync indisponible":"Hors ligne",navigator.onLine?"":"off")}
+  finally{syncing=false}
+}
+async function syncPull(){
+  if(syncing||dirty||!profile?.token||!navigator.onLine)return;
+  syncing=true;setSyncStatus("Vérification…","busy");
+  try{
+    const r=await api("pull",{token:profile.token});
+    const v=Number(r.version)||0;
+    if(v>remoteVersion&&r.dataCiphertext){
+      const remote=await decryptState({iv:r.dataIv,ciphertext:r.dataCiphertext});
+      state=remote;remoteVersion=v;localStorage.setItem(LS_STATE,JSON.stringify(state));renderCurrent();
+    }else remoteVersion=Math.max(remoteVersion,v);
+    setSyncStatus("Synchronisé","ok");
+  }catch(e){if(e.status===401)setSyncStatus("Connexion à renouveler");else setSyncStatus("Hors ligne","off")}
+  finally{syncing=false}
+}
+function startPullLoop(){clearInterval(pullTimer);pullTimer=setInterval(()=>{if(document.visibilityState==="visible")syncPull().catch(()=>{})},15000)}
+
+async function createAccount(){
+  const name=$("createName").value.trim(),p=$("createPassword").value,p2=$("createPassword2").value;
+  $("authError").textContent="";
+  if(name.length<2)return $("authError").textContent="Choisis un nom d’espace d’au moins 2 caractères.";
+  if(p.length<10)return $("authError").textContent="Choisis un mot de passe d’au moins 10 caractères.";
+  if(p!==p2)return $("authError").textContent="Les deux mots de passe ne sont pas identiques.";
+  const b=$("createBtn");b.disabled=true;b.textContent="Création…";
+  try{
+    const uhash=await usernameHash(name),salt=bytesToB64u(randomBytes(16)),keys=await derivePassword(p,salt);
+    const dek=randomBytes(32),recovery=randomBytes(32),recV=await recoveryVerifier(recovery),recWrap=await recoveryWrapKey(recovery);
+    const pwdBundle=await aesEncrypt(keys.wrapKey,dek),recBundle=await aesEncrypt(recWrap,dek);
+    profile={displayName:name,usernameHash:uhash,dek:bytesToB64u(dek),token:null,expiresAt:null};
+    state=clone(DEFAULT_STATE);state.updatedAt=now();
+    const dataBundle=await encryptState();
+    const r=await api("register",{usernameHash:uhash,authSalt:salt,authVerifier:keys.authVerifier,recoveryVerifier:recV,
+      wrappedDekPwd:pwdBundle.ciphertext,wrappedDekPwdIv:pwdBundle.iv,wrappedDekRecovery:recBundle.ciphertext,wrappedDekRecoveryIv:recBundle.iv,
+      dataIv:dataBundle.iv,dataCiphertext:dataBundle.ciphertext});
+    profile.token=r.token;profile.expiresAt=r.expiresAt;remoteVersion=Number(r.version)||0;saveProfile();localStorage.setItem(LS_STATE,JSON.stringify(state));dirty=false;
+    const key=bytesToB64u(recovery);
+    showRecoveryKey(key,name);
+  }catch(e){
+    profile=null;
+    $("authError").textContent=e.message==="space_exists"?"Ce nom d’espace existe déjà. Choisis-en un autre.":"Impossible de créer l’espace pour le moment.";
+  }finally{b.disabled=false;b.textContent="Créer mon espace"}
+}
+function showRecoveryKey(key,name){
+  showModal(`<div class="kicker">CLÉ DE RÉCUPÉRATION</div><h2>Garde cette clé</h2>
+    <p class="note">Elle est la seule façon de retrouver ton espace si tu oublies ton mot de passe. Elle n’est pas conservée en clair sur le serveur.</p>
+    <div class="recovery-key" id="recoveryKeyText">${esc(key)}</div>
+    <div class="row"><button class="btn grow" id="copyRecovery">Copier la clé</button><button class="btn primary grow" id="finishRecovery">J’ai noté ma clé</button></div>`);
+  $("copyRecovery").onclick=async()=>{try{await navigator.clipboard.writeText(key);toast("Clé copiée")}catch{toast("Maintiens la clé pour la copier")}};
+  $("finishRecovery").onclick=()=>{closeModal();enterApp();toast("Espace créé")};
+}
+
+async function loginAccount(){
+  const name=$("loginName").value.trim(),p=$("loginPassword").value;$("authError").textContent="";
+  if(!name||!p)return $("authError").textContent="Renseigne ton nom d’espace et ton mot de passe.";
+  const b=$("loginBtn");b.disabled=true;b.textContent="Ouverture…";
+  try{
+    const uhash=await usernameHash(name);
+    const ch=await api("challenge",{usernameHash:uhash});
+    if(!ch.exists)throw new Error("invalid_credentials");
+    const keys=await derivePassword(p,ch.authSalt);
+    const r=await api("login",{usernameHash:uhash,authVerifier:keys.authVerifier});
+    const dek=await aesDecrypt(keys.wrapKey,{iv:r.passwordBundle.iv,ciphertext:r.passwordBundle.ciphertext});
+    profile={displayName:name,usernameHash:uhash,dek:bytesToB64u(dek),token:r.token,expiresAt:r.expiresAt};saveProfile();
+    remoteVersion=Number(r.version)||0;
+    if(r.dataCiphertext){
+      state=await decryptState({iv:r.dataIv,ciphertext:r.dataCiphertext});
+      localStorage.setItem(LS_STATE,JSON.stringify(state));
+    }else{state=clone(DEFAULT_STATE);localStorage.setItem(LS_STATE,JSON.stringify(state));dirty=true}
+    enterApp();setSyncStatus("Synchronisé","ok");
+  }catch(e){
+    let m="Nom d’espace ou mot de passe incorrect.";
+    if(e.message==="temporarily_locked")m="Trop d’essais. Réessaie dans quelques minutes.";
+    if(e.message==="offline")m="Connexion internet nécessaire pour ouvrir cet espace sur un nouvel appareil.";
+    $("authError").textContent=m;
+  }finally{b.disabled=false;b.textContent="Ouvrir mon espace"}
+}
+
+function openRecovery(){
+  showModal(`<div class="kicker">RÉCUPÉRATION</div><h2>Retrouver mon espace</h2>
+    <label class="field"><span>Nom d’espace</span><input id="recName" type="text"></label>
+    <label class="field"><span>Clé de récupération</span><input id="recKey" type="text" autocapitalize="off" autocomplete="off"></label>
+    <label class="field"><span>Nouveau mot de passe</span><input id="recPass" type="password"></label>
+    <div id="recError" class="error"></div>
+    <div class="row"><button class="btn grow" id="recCancel">Annuler</button><button class="btn primary grow" id="recGo">Changer le mot de passe</button></div>`);
+  $("recCancel").onclick=closeModal;
+  $("recGo").onclick=recoverAccount;
+}
+async function recoverAccount(){
+  const name=$("recName").value.trim(),keyText=$("recKey").value.trim(),pass=$("recPass").value;
+  $("recError").textContent="";
+  if(name.length<2||keyText.length<30||pass.length<10)return $("recError").textContent="Vérifie le nom, la clé et le nouveau mot de passe.";
+  $("recGo").disabled=true;
+  try{
+    const uhash=await usernameHash(name),ch=await api("challenge",{usernameHash:uhash});if(!ch.exists)throw new Error("invalid_recovery");
+    const recovery=b64uToBytes(keyText),rv=await recoveryVerifier(recovery),rw=await recoveryWrapKey(recovery);
+    const dek=await aesDecrypt(rw,{iv:ch.recoveryBundle.iv,ciphertext:ch.recoveryBundle.ciphertext});
+    const salt=bytesToB64u(randomBytes(16)),keys=await derivePassword(pass,salt),pwdBundle=await aesEncrypt(keys.wrapKey,dek);
+    const r=await api("recover",{usernameHash:uhash,recoveryVerifier:rv,newAuthSalt:salt,newAuthVerifier:keys.authVerifier,newWrappedDekPwd:pwdBundle.ciphertext,newWrappedDekPwdIv:pwdBundle.iv});
+    profile={displayName:name,usernameHash:uhash,dek:bytesToB64u(dek),token:r.token,expiresAt:r.expiresAt};saveProfile();remoteVersion=Number(r.version)||0;
+    if(r.dataCiphertext)state=await decryptState({iv:r.dataIv,ciphertext:r.dataCiphertext});else state=clone(DEFAULT_STATE);
+    localStorage.setItem(LS_STATE,JSON.stringify(state));closeModal();enterApp();toast("Nouveau mot de passe enregistré");
+  }catch(e){$("recError").textContent="La clé de récupération n’est pas valide."}
+  finally{if($("recGo"))$("recGo").disabled=false}
+}
+
+function enterApp(){
+  $("authScreen").classList.add("hidden");$("appScreen").classList.remove("hidden");
+  $("accountBtn").textContent=profile?.displayName||"Mon espace";
+  renderHome();startPullLoop();syncPull().catch(()=>{});
+}
+function openAccount(){
+  showModal(`<div class="kicker">MON ESPACE</div><h2>${esc(profile?.displayName||"")}</h2>
+    <p class="note"><b>Confidentialité :</b> aucun e-mail ni numéro de téléphone. Le contenu de ta régie est chiffré avant de quitter cet appareil.</p>
+    <div class="card" style="padding:12px"><div class="syncstatus">${$("syncStatus").textContent}</div></div>
+    <div class="row"><button class="btn grow" id="accountClose">Fermer</button><button class="btn danger grow" id="logoutBtn">Se déconnecter</button></div>`);
+  $("accountClose").onclick=closeModal;
+  $("logoutBtn").onclick=async()=>{try{if(profile?.token)await api("logout",{token:profile.token})}catch{}localStorage.removeItem(LS_PROFILE);localStorage.removeItem(LS_STATE);profile=null;state=clone(DEFAULT_STATE);closeModal();$("appScreen").classList.add("hidden");$("authScreen").classList.remove("hidden");stopPlayer();};
+}
+
+function showView(name){
+  view=name;
+  for(const id of ["homeView","musicSettingsView","editView","playerView"])$(id).classList.add("hidden");
+  const map={home:"homeView",music:"musicSettingsView",edit:"editView",player:"playerView"};$(map[name]).classList.remove("hidden");
+  $("bottomControls").classList.toggle("hidden",name!=="player");
+  if(name!=="player")$("faderEdge").classList.remove("active");
+  window.scrollTo({top:0,behavior:"instant"});
+}
+function renderCurrent(){
+  if(view==="home")renderHome();else if(view==="music")renderMusicSettings();else if(view==="edit")renderEditor();else if(view==="player")updatePlayer();
+}
+function renderHome(){
+  showView("home");$("homeTitle").textContent=state.title||DEFAULT_STATE.title;
+}
+function renderMusicSettings(){
+  showView("music");let box=$("musicSlots");box.innerHTML="";
+  state.musicSlots.forEach((m,i)=>{
+    let d=document.createElement("div");d.className="card";d.innerHTML=`<div class="kicker">MUSIQUE ${i+1}</div>
+      <label class="field"><span>Nom du morceau</span><input data-i="${i}" data-k="name" type="text" value="${esc(m.name||"")}"></label>
+      <label class="field"><span>Lien YouTube</span><input data-i="${i}" data-k="url" type="url" value="${esc(m.url||"")}" placeholder="https://youtu.be/..."></label>`;
+    box.appendChild(d);
+  });
+  box.querySelectorAll("input").forEach(el=>el.oninput=()=>{state.musicSlots[+el.dataset.i][el.dataset.k]=el.value});
+}
+function renderEditor(){
+  showView("edit");$("editTitle").value=state.title||"";
+  let box=$("phaseEditors");box.innerHTML="";
+  state.phases.forEach((p,i)=>{
+    let d=document.createElement("div");d.className="card phase-editor";d.innerHTML=`<div class="kicker">PHASE ${i+1}</div>
+      <label class="field"><span>Nom</span><input data-i="${i}" data-k="name" type="text" value="${esc(p.name)}"></label>
+      <label class="field"><span>Durée en minutes</span><input data-i="${i}" data-k="minutes" type="number" min="1" max="120" value="${Number(p.minutes)||1}"></label>
+      <label class="field"><span>Texte à dire</span><textarea data-i="${i}" data-k="text">${esc(p.text||"")}</textarea></label>
+      <label class="field"><span>Repère de conduite</span><textarea data-i="${i}" data-k="cue" style="min-height:90px">${esc(p.cue||"")}</textarea></label>`;
+    box.appendChild(d);
+  });
+  box.querySelectorAll("input,textarea").forEach(el=>el.oninput=()=>{let p=state.phases[+el.dataset.i];p[el.dataset.k]=el.dataset.k==="minutes"?clamp(+el.value||1,1,120):el.value});
+}
+function saveEditor(){state.title=$("editTitle").value.trim()||DEFAULT_STATE.title;persistLocal();renderHome();toast("Séance enregistrée")}
+function saveMusic(){persistLocal();renderHome();toast("Musiques enregistrées")}
+
+function startPlayer(){
+  playing=true;running=false;phaseIndex=0;globalElapsed=0;phaseElapsed=0;lastTick=performance.now();autoLast=performance.now();
+  showView("player");buildMusicSelect();updateMusicVolume();updatePlayer();$("playPauseBtn").textContent="Démarrer";startTicker();
+}
+function stopPlayer(){
+  playing=false;running=false;clearInterval(tickHandle);tickHandle=null;pauseMusic();showView("home");
+}
+function startTicker(){clearInterval(tickHandle);tickHandle=setInterval(tick,100)}
+function tick(){
+  if(!playing)return;
+  const t=performance.now();
+  if(running){
+    let d=Math.min(1000,t-lastTick);lastTick=t;globalElapsed+=d;phaseElapsed+=d;
+    const dur=(Number(state.phases[phaseIndex].minutes)||1)*60000;
+    if(phaseElapsed>=dur&&state.prefs.autoPhase){
+      if(phaseIndex<state.phases.length-1){phaseIndex++;phaseElapsed=0;manualScrollUntil=0;try{navigator.vibrate?.(100)}catch{}}
+      else{running=false;$("playPauseBtn").textContent="Reprendre";try{navigator.vibrate?.([120,80,120])}catch{}}
+    }
+    if(state.prefs.autoScroll&&t>manualScrollUntil)advanceAutoScroll((t-autoLast)/1000);
+  }
+  autoLast=t;updatePlayer(false);updateMusicTime();
+}
+function toggleRun(){
+  if(running){running=false;$("playPauseBtn").textContent="Reprendre";$("faderEdge").classList.remove("active")}
+  else{running=true;lastTick=performance.now();autoLast=performance.now();$("playPauseBtn").textContent="Pause";$("faderEdge").classList.add("active")}
+  updateAutoUi();
+}
+function changePhase(delta){
+  const n=phaseIndex+delta;if(n<0||n>=state.phases.length)return;
+  phaseIndex=n;phaseElapsed=0;manualScrollUntil=0;$("guideScroll").scrollTop=0;try{navigator.vibrate?.(60)}catch{};updatePlayer();
+}
+function updatePlayer(resetText=true){
+  if(!playing||!state.phases.length)return;
+  const p=state.phases[phaseIndex];
+  $("phaseName").textContent=p.name;$("phaseCount").textContent=(phaseIndex+1)+" / "+state.phases.length;
+  $("globalTime").textContent=fmt(globalElapsed);
+  const remain=(Number(p.minutes)||1)*60000-phaseElapsed;
+  $("phaseRemain").textContent=(remain>=0?fmt(remain)+" restant":"DÉPASSÉ +"+fmt(-remain));
+  $("nextLine").textContent=phaseIndex+1<state.phases.length?"Ensuite : "+state.phases[phaseIndex+1].name:"Dernier temps";
+  if(resetText&&$("guideText").dataset.phase!=String(phaseIndex)){$("guideText").dataset.phase=String(phaseIndex);$("guideText").textContent=p.text||"";$("guideScroll").scrollTop=0}
+  $("cueText").textContent=p.cue||"";
+  updateInstrument(p);updateAutoUi();updateReadProgress();
+}
+function updateReadProgress(){
+  let el=$("guideScroll"),max=Math.max(1,el.scrollHeight-el.clientHeight),r=clamp(el.scrollTop/max,0,1);$("readProgress").style.height=(r*100)+"%";
+}
+function advanceAutoScroll(dt){
+  const el=$("guideScroll");if(el.scrollHeight<=el.clientHeight)return;
+  const pxPerSec=(state.prefs.autoWpm/90)*24;
+  el.scrollTop+=pxPerSec*dt;updateReadProgress();
+}
+function updateAutoUi(){
+  $("autoValue").textContent=state.prefs.autoScroll?Math.round(state.prefs.autoWpm)+" mots/min":"OFF";
+  $("autoToggle").textContent=state.prefs.autoScroll?"AUTO ✓":"Défilement auto";
+  $("phaseAutoBtn").textContent=state.prefs.autoPhase?"PHASES AUTO ✓":"PHASES AUTO";
+}
+function adjustAuto(dir){
+  if(!state.prefs.autoScroll)state.prefs.autoScroll=true;
+  state.prefs.autoWpm=clamp((Number(state.prefs.autoWpm)||90)+dir*5,45,160);persistLocal();updateAutoUi();
+}
+function updateInstrument(p){
+  let host=$("instrumentHost"),current=host.dataset.phase;
+  if(current===String(phaseIndex))return;host.dataset.phase=String(phaseIndex);host.innerHTML="";
+  if(p.instrument===1){
+    host.innerHTML=`<div class="card instrument"><div class="instrument-title">COHÉRENCE CARDIAQUE — BÂTON DE PLUIE</div>
+      <div class="rain-track"><div class="rain-stick" id="rainStick"></div></div>
+      <div class="instrument-controls"><div class="note" id="rainLabel">INSPIRE</div><button class="btn small" id="rainMinus">−</button><button class="btn small" id="rainPlus">+</button></div></div>`;
+    $("rainMinus").onclick=()=>{state.prefs.rainSeconds=clamp((state.prefs.rainSeconds||5)-1,3,10);persistLocal()};
+    $("rainPlus").onclick=()=>{state.prefs.rainSeconds=clamp((state.prefs.rainSeconds||5)+1,3,10);persistLocal()};
+  }else if(p.instrument===2){
+    host.innerHTML=`<div class="card instrument"><div class="instrument-title">RYTHME DE LA VAGUE</div><div class="note">Monte • sommet • redescend</div>
+      <div class="wave-track"><svg class="wave-svg" viewBox="0 0 600 70" preserveAspectRatio="none"><path d="M0,58 C100,58 130,12 240,12 S380,58 480,58 S560,24 600,24" fill="none" stroke="#5c8586" stroke-width="4" opacity=".75"/><circle id="waveDot" r="7" fill="#9c8ca6" cx="0" cy="58"/></svg></div>
+      <div class="instrument-controls"><div class="note" id="waveLabel">1 vague • ${state.prefs.waveSeconds||8} s</div><button class="btn small" id="waveMinus">−</button><button class="btn small" id="wavePlus">+</button></div></div>`;
+    $("waveMinus").onclick=()=>{state.prefs.waveSeconds=clamp((state.prefs.waveSeconds||8)-1,4,20);persistLocal();host.dataset.phase="";updateInstrument(p)};
+    $("wavePlus").onclick=()=>{state.prefs.waveSeconds=clamp((state.prefs.waveSeconds||8)+1,4,20);persistLocal();host.dataset.phase="";updateInstrument(p)};
+  }else if(p.instrument===4){
+    host.innerHTML=`<div class="card instrument"><div class="instrument-title">SILENCE</div><div class="note">Silence complet. Le temps continue, sans intervention.</div></div>`;
+  }
+}
+function animateInstruments(){
+  if(!playing){requestAnimationFrame(animateInstruments);return}
+  const p=state.phases[phaseIndex],t=performance.now()/1000;
+  if(p.instrument===1&&$("rainStick")){
+    const sec=state.prefs.rainSeconds||5,cycle=(t%(sec*2))/(sec*2),x=cycle<.5?cycle*2:(1-cycle)*2;
+    $("rainStick").style.left=`calc(${(x*100).toFixed(2)}% - 23px)`;
+    $("rainStick").style.transform=`rotate(${cycle<.5?(x*26-13):((1-x)*26-13)}deg)`;
+    $("rainLabel").textContent=cycle<.5?"INSPIRE":"EXPIRE";
+  }
+  if(p.instrument===2&&$("waveDot")){
+    const sec=state.prefs.waveSeconds||8,q=(t%sec)/sec,x=q*600,y=35+23*Math.cos(q*Math.PI*2);$("waveDot").setAttribute("cx",x);$("waveDot").setAttribute("cy",y);
+  }
+  requestAnimationFrame(animateInstruments);
+}
+requestAnimationFrame(animateInstruments);
+
+function buildMusicSelect(){
+  const s=$("playerMusicSelect");s.innerHTML=`<option value="none">Choisir une musique YouTube</option>`;
+  state.musicSlots.forEach((m,i)=>{if((m.url||"").trim()){let o=document.createElement("option");o.value="slot"+i;o.textContent=(m.name||("Musique "+(i+1)));s.appendChild(o)}})
+  s.value="none";setMusicMode("none");
+}
+function youtubeId(url){
+  try{
+    let u=new URL(url);if(u.hostname.includes("youtu.be"))return u.pathname.split("/").filter(Boolean)[0]||"";
+    if(u.hostname.includes("youtube.com")){if(u.searchParams.get("v"))return u.searchParams.get("v");let a=u.pathname.split("/").filter(Boolean);let k=a.findIndex(x=>["embed","shorts","live"].includes(x));if(k>=0)return a[k+1]||""}
+  }catch{}
+  return "";
+}
+function ensureYT(){
+  if(window.YT?.Player){ytReady=true;return Promise.resolve()}
+  return new Promise(resolve=>{
+    if(document.getElementById("ytapi")){let t=setInterval(()=>{if(window.YT?.Player){clearInterval(t);resolve()}},100);return}
+    let sc=document.createElement("script");sc.id="ytapi";sc.src="https://www.youtube.com/iframe_api";document.head.appendChild(sc);
+    const prev=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=()=>{try{prev?.()}catch{}ytReady=true;resolve()};
+  });
+}
+async function setMusicMode(v){
+  pauseMusic();currentMusicMode=v;$("youtubeBox").classList.add("hidden");$("musicSourceStatus").textContent="";currentYoutubeId="";
+  if(v==="none"){$("musicMini").textContent="Aucune piste";return}
+  if(v==="local"){$("musicMini").textContent=localAudio.src?"Fichier audio prêt":"Choisis un fichier";return}
+  let i=+v.replace("slot",""),m=state.musicSlots[i],id=youtubeId(m?.url||"");
+  $("musicMini").textContent=m?.name||("Musique "+(i+1));
+  if(!id){$("musicSourceStatus").textContent="Lien YouTube non reconnu";return}
+  currentYoutubeId=id;$("youtubeBox").classList.remove("hidden");
+  try{
+    await ensureYT();
+    if(ytPlayer&&ytPlayer.destroy){try{ytPlayer.destroy()}catch{}}
+    // YT.Player remplace le nœud cible. On le recrée à chaque changement de piste.
+    $("youtubeBox").innerHTML='<div id="ytPlayer" style="width:100%;height:100%"></div>';
+    ytPlayer=new YT.Player("ytPlayer",{videoId:id,playerVars:{playsinline:1,controls:0,rel:0},events:{onReady:()=>{updateMusicVolume();$("musicSourceStatus").textContent="Prête"},onError:()=>{$("musicSourceStatus").textContent="Lecture intégrée indisponible"}}});
+  }catch{$("musicSourceStatus").textContent="Impossible de charger YouTube"}
+}
+function playMusic(){
+  if(currentMusicMode==="local"){localAudio.play().catch(()=>toast("Impossible d’ouvrir ce fichier"))}
+  else if(currentMusicMode.startsWith("slot")){try{ytPlayer?.playVideo?.()}catch{}}
+  else toast("Choisis d’abord une musique");
+}
+function pauseMusic(){try{localAudio.pause()}catch{}try{ytPlayer?.pauseVideo?.()}catch{}}
+function stopMusic(){try{localAudio.pause();localAudio.currentTime=0}catch{}try{ytPlayer?.stopVideo?.()}catch{}}
+function setVolume(v,persist=true){
+  state.prefs.musicVolume=clamp(Math.round(v),0,100);$("volumeSlider").value=state.prefs.musicVolume;$("volumeValue").textContent=state.prefs.musicVolume+" %";
+  try{localAudio.volume=state.prefs.musicVolume/100}catch{}try{ytPlayer?.setVolume?.(state.prefs.musicVolume)}catch{}
+  $("faderEdge").firstElementChild.style.height=state.prefs.musicVolume+"%";if(persist)persistLocal();
+}
+function updateMusicVolume(){setVolume(Number(state.prefs.musicVolume)||50,false)}
+function updateMusicTime(){
+  let cur=0,dur=0;
+  if(currentMusicMode==="local"){cur=localAudio.currentTime||0;dur=localAudio.duration||0}
+  else if(currentMusicMode.startsWith("slot")){try{cur=ytPlayer?.getCurrentTime?.()||0;dur=ytPlayer?.getDuration?.()||0}catch{}}
+  $("musicTime").textContent=fmt(cur*1000)+" / "+fmt(dur*1000);
+  if(dur>0&&!$("musicTimeline").dataset.drag)$("musicTimeline").value=Math.round(cur/dur*1000);
+}
+function seekMusic(r){
+  if(currentMusicMode==="local"&&localAudio.duration)localAudio.currentTime=localAudio.duration*r;
+  else if(currentMusicMode.startsWith("slot")){try{let d=ytPlayer?.getDuration?.()||0;if(d)ytPlayer.seekTo(d*r,true)}catch{}}
+}
+function toggleMusicPanel(){musicCollapsed=!musicCollapsed;$("musicBody").classList.toggle("hidden",musicCollapsed);$("musicCollapseBtn").textContent=musicCollapsed?"Source":"Réduire"}
+
+function bindDragScroll(){
+  const el=$("guideScroll");
+  el.addEventListener("pointerdown",e=>{drag.active=true;drag.y=e.clientY;drag.scroll=el.scrollTop;el.setPointerCapture?.(e.pointerId);el.classList.add("dragging");manualScrollUntil=performance.now()+2500});
+  el.addEventListener("pointermove",e=>{if(!drag.active)return;let dy=e.clientY-drag.y;el.scrollTop=drag.scroll-dy;manualScrollUntil=performance.now()+2500;updateReadProgress()});
+  const up=e=>{drag.active=false;el.classList.remove("dragging");try{el.releasePointerCapture?.(e.pointerId)}catch{}};
+  el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);el.addEventListener("scroll",()=>{if(!running||performance.now()<manualScrollUntil)updateReadProgress()},{passive:true});
+}
+function wheelHandler(e){
+  // Requested behaviour: never capture the wheel until the session is actually running.
+  if(!playing||!running)return;
+  const onMusic=e.target.closest?.("#musicCard")||e.clientX>window.innerWidth*.83;
+  if(onMusic){
+    e.preventDefault();setVolume((Number(state.prefs.musicVolume)||0)+(e.deltaY<0?3:-3));
+  }else if(e.target.closest?.("#guideCard")||e.target.closest?.("#autoRow")){
+    e.preventDefault();adjustAuto(e.deltaY<0?1:-1);
+  }
+}
+document.addEventListener("wheel",wheelHandler,{passive:false});
+
+$("tabLogin").onclick=()=>{$("tabLogin").classList.add("active");$("tabCreate").classList.remove("active");$("loginPane").classList.remove("hidden");$("createPane").classList.add("hidden");$("authError").textContent=""}
+$("tabCreate").onclick=()=>{$("tabCreate").classList.add("active");$("tabLogin").classList.remove("active");$("createPane").classList.remove("hidden");$("loginPane").classList.add("hidden");$("authError").textContent=""}
+$("createBtn").onclick=createAccount;$("loginBtn").onclick=loginAccount;$("forgotBtn").onclick=openRecovery;$("accountBtn").onclick=openAccount;
+$("openRegieBtn").onclick=startPlayer;$("musicSettingsBtn").onclick=renderMusicSettings;$("musicBackBtn").onclick=renderHome;
+$("editSessionBtn").onclick=renderEditor;$("editBackBtn").onclick=renderHome;$("saveSessionBtn").onclick=saveEditor;
+$("resetSessionBtn").onclick=()=>{if(confirm("Remettre la séance d’origine ?")){state.phases=clone(DEFAULT_STATE.phases);state.title=DEFAULT_STATE.title;persistLocal();renderEditor();toast("Séance d’origine restaurée")}};
+$("saveMusicBtn").onclick=saveMusic;
+$("prevBtn").onclick=()=>changePhase(-1);$("nextBtn").onclick=()=>changePhase(1);$("playPauseBtn").onclick=toggleRun;
+$("phaseAutoBtn").onclick=()=>{state.prefs.autoPhase=!state.prefs.autoPhase;persistLocal();updateAutoUi()};
+$("autoToggle").onclick=()=>{state.prefs.autoScroll=!state.prefs.autoScroll;persistLocal();updateAutoUi()};
+$("autoMinus").onclick=()=>adjustAuto(-1);$("autoPlus").onclick=()=>adjustAuto(1);
+$("musicCollapseBtn").onclick=toggleMusicPanel;$("playerMusicSelect").onchange=e=>setMusicMode(e.target.value);
+$("musicPlayBtn").onclick=playMusic;$("musicPauseBtn").onclick=pauseMusic;$("musicStopBtn").onclick=stopMusic;
+$("musicFileBtn").onclick=()=>$("localAudioInput").click();
+$("localAudioInput").onchange=e=>{let f=e.target.files?.[0];if(!f)return;try{if(localAudio.src)URL.revokeObjectURL(localAudio.src)}catch{}localAudio.src=URL.createObjectURL(f);currentMusicMode="local";$("playerMusicSelect").value="none";$("musicMini").textContent=f.name;$("musicSourceStatus").textContent="Fichier audio prêt à 0 % — utilise le fader";setVolume(0,false)};
+$("volumeSlider").oninput=e=>setVolume(+e.target.value);
+$("musicTimeline").onpointerdown=()=>{$("musicTimeline").dataset.drag="1"};$("musicTimeline").onpointerup=e=>{delete $("musicTimeline").dataset.drag;seekMusic(+e.target.value/1000)};$("musicTimeline").onchange=e=>seekMusic(+e.target.value/1000);
+$("guideScroll").onscroll=updateReadProgress;
+$("loginPassword").addEventListener("keydown",e=>{if(e.key==="Enter")loginAccount()});
+$("createPassword2").addEventListener("keydown",e=>{if(e.key==="Enter")createAccount()});
+bindDragScroll();
+window.addEventListener("online",()=>{setSyncStatus("Connexion retrouvée","busy");syncPush().then(syncPull).catch(()=>{})});
+window.addEventListener("offline",()=>setSyncStatus("Hors ligne","off"));
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")syncPull().catch(()=>{})});
+
+(async function boot(){
+  loadProfile();loadLocal();
+  if(profile?.token&&profile?.dek){
+    $("authScreen").classList.add("hidden");$("appScreen").classList.remove("hidden");enterApp();setSyncStatus(navigator.onLine?"Vérification…":"Hors ligne",navigator.onLine?"busy":"off");
+  }else{
+    $("authScreen").classList.remove("hidden");$("appScreen").classList.add("hidden");
+  }
+})();
+</script>
+</body>
+</html>
