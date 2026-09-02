@@ -6,7 +6,6 @@ on:
     paths:
       - 'scripts/patch_regie_selector.py'
       - 'scripts/patch_regie_instruments.py'
-      - 'regie-assets/**'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -44,12 +43,8 @@ jobs:
       - name: Restore Meditation Hypnosis selector
         run: python scripts/patch_regie_selector.py pwa-dist/regie-v14/index.html
 
-      - name: Install personalized instrument visuals
-        run: |
-          mkdir -p pwa-dist/regie-v14/assets
-          cp regie-assets/rain-stick.jpg pwa-dist/regie-v14/assets/rain-stick.jpg
-          cp regie-assets/ocean-drum.jpg pwa-dist/regie-v14/assets/ocean-drum.jpg
-          python scripts/patch_regie_instruments.py pwa-dist/regie-v14/index.html
+      - name: Install simplified instrument animations
+        run: python scripts/patch_regie_instruments.py pwa-dist/regie-v14/index.html
 
       - name: Validate complete Regie
         run: |
@@ -60,10 +55,12 @@ jobs:
           grep -q 'chooseMeditationSpace' pwa-dist/regie-v14/index.html
           grep -q 'chooseHypnoseSpace' pwa-dist/regie-v14/index.html
           grep -q 'if(!playing||!running)return' pwa-dist/regie-v14/index.html
-          grep -q 'rainInstrumentImg' pwa-dist/regie-v14/index.html
+          grep -q 'simpleRainTube' pwa-dist/regie-v14/index.html
+          grep -q 'rainBeads' pwa-dist/regie-v14/index.html
+          grep -q 'simpleOceanDrum' pwa-dist/regie-v14/index.html
           grep -q 'oceanBeads' pwa-dist/regie-v14/index.html
-          test -s pwa-dist/regie-v14/assets/rain-stick.jpg
-          test -s pwa-dist/regie-v14/assets/ocean-drum.jpg
+          if grep -q 'assets/rain-stick.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
+          if grep -q 'assets/ocean-drum.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           python - <<'PY'
           import re
           from pathlib import Path
