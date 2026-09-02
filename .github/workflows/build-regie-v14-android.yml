@@ -1,0 +1,66 @@
+name: Build Regie V14 Android
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'RegieAndroidV14/**'
+      - '.github/workflows/build-regie-v14-android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Build APK
+        working-directory: RegieAndroidV14
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Verify APK
+        run: |
+          $ANDROID_HOME/build-tools/35.0.0/aapt dump badging RegieAndroidV14/app/build/outputs/apk/debug/app-debug.apk | tee /tmp/regie-badging.txt
+          grep -F "package: name='fr.prendresoindesonhetre.regiev14'" /tmp/regie-badging.txt
+          grep -F "launchable-activity: name='fr.prendresoindesonhetre.regiev14.MainActivity'" /tmp/regie-badging.txt
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Regie-de-mon-Hetre-V14
+          path: RegieAndroidV14/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Publish stable APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp RegieAndroidV14/app/build/outputs/apk/debug/app-debug.apk Regie-de-mon-Hetre-V14.apk
+          if ! gh release view regie-v14-android >/dev/null 2>&1; then
+            gh release create regie-v14-android \
+              --target main \
+              --title "Régie de mon Hêtre — Android V14" \
+              --notes "APK Android de la Régie V14. Cette application ouvre la régie synchronisée en ligne et reçoit automatiquement les évolutions de l'interface."
+          fi
+          gh release upload regie-v14-android Regie-de-mon-Hetre-V14.apk --clobber
