@@ -8,6 +8,7 @@ on:
       - 'scripts/patch_regie_instruments.py'
       - 'scripts/patch_regie_whole_seconds.py'
       - 'scripts/patch_regie_professional_builder.py'
+      - 'scripts/patch_regie_import_maquette.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -54,6 +55,9 @@ jobs:
       - name: Install professional session builder
         run: python scripts/patch_regie_professional_builder.py pwa-dist/regie-v14/index.html
 
+      - name: Install Word and text mockup importer
+        run: python scripts/patch_regie_import_maquette.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -75,6 +79,11 @@ jobs:
           grep -q 'phaseDurationMs' pwa-dist/regie-v14/index.html
           grep -q 'phaseWaveSeconds' pwa-dist/regie-v14/index.html
           grep -q 'musicSlot' pwa-dist/regie-v14/index.html
+          grep -q 'Importer / Coller' pwa-dist/regie-v14/index.html
+          grep -q 'Générer la maquette' pwa-dist/regie-v14/index.html
+          grep -q 'buildMaquetteDraft' pwa-dist/regie-v14/index.html
+          grep -q 'mammoth.browser.min.js' pwa-dist/regie-v14/index.html
+          grep -q 'Utiliser cette maquette' pwa-dist/regie-v14/index.html
           if grep -q '4,75' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/rain-stick.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/ocean-drum.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
