@@ -9,6 +9,7 @@ on:
       - 'scripts/patch_regie_whole_seconds.py'
       - 'scripts/patch_regie_professional_builder.py'
       - 'scripts/patch_regie_import_maquette.py'
+      - 'scripts/patch_regie_visual_harmony.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -58,6 +59,9 @@ jobs:
       - name: Install Word and text mockup importer
         run: python scripts/patch_regie_import_maquette.py pwa-dist/regie-v14/index.html
 
+      - name: Harmonize proportions and Prendre soin de son Hetre identity
+        run: python scripts/patch_regie_visual_harmony.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -84,6 +88,9 @@ jobs:
           grep -q 'buildMaquetteDraft' pwa-dist/regie-v14/index.html
           grep -q 'mammoth.browser.min.js' pwa-dist/regie-v14/index.html
           grep -q 'Utiliser cette maquette' pwa-dist/regie-v14/index.html
+          grep -q 'VISUAL_HARMONY_HETRE' pwa-dist/regie-v14/index.html
+          grep -q -- '--sky:#9bcbd6' pwa-dist/regie-v14/index.html
+          grep -q 'grid-template-columns:34px 34px 1fr 1fr' pwa-dist/regie-v14/index.html
           if grep -q '4,75' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/rain-stick.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/ocean-drum.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
