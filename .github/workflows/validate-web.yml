@@ -1,0 +1,24 @@
+name: Validate Regie Web
+on:
+  push:
+    branches: [gh-pages]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check hypnose.js
+      - name: Check separated modes
+        run: |
+          grep -F 'Séance de méditation' index.html
+          grep -F 'Séance d’hypnose' index.html
+          grep -F 'app.js' meditation.html
+          grep -F 'hypnose.js' hypnose.html
+          grep -F "hypnose.tracks" hypnose.js
+          grep -F "hypnose.scrollSpeed" hypnose.js
