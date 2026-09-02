@@ -16,6 +16,7 @@ on:
       - 'scripts/patch_regie_live_priority.py'
       - 'scripts/patch_regie_space_air.py'
       - 'scripts/patch_regie_live_layout.py'
+      - 'scripts/patch_regie_balanced_live.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -86,6 +87,9 @@ jobs:
       - name: Make text the main live workspace
         run: python scripts/patch_regie_live_layout.py pwa-dist/regie-v14/index.html
 
+      - name: Rebalance live regie around text
+        run: python scripts/patch_regie_balanced_live.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -119,13 +123,14 @@ jobs:
           grep -q 'LIVE_PRIORITY_V2' pwa-dist/regie-v14/index.html
           grep -q 'SPACE_AIR_V1' pwa-dist/regie-v14/index.html
           grep -q 'LIVE_LAYOUT_V3' pwa-dist/regie-v14/index.html
+          grep -q 'BALANCED_LIVE_V1' pwa-dist/regie-v14/index.html
           grep -q 'wheelModeRow' pwa-dist/regie-v14/index.html
           grep -q 'wheelScrollMode' pwa-dist/regie-v14/index.html
           grep -q 'wheelSoundMode' pwa-dist/regie-v14/index.html
           grep -q 'guideFullscreenBtn' pwa-dist/regie-v14/index.html
-          grep -q 'Texte plein écran' pwa-dist/regie-v14/index.html
+          grep -q '⛶ Plein écran' pwa-dist/regie-v14/index.html
           grep -q 'currentWheelMode' pwa-dist/regie-v14/index.html
-          grep -q 'active===$("guideCard")' pwa-dist/regie-v14/index.html
+          grep -q 'document.documentElement' pwa-dist/regie-v14/index.html
           grep -q 'musicCollapsed=true' pwa-dist/regie-v14/index.html
           grep -q '#playerView #guideCard' pwa-dist/regie-v14/index.html
           grep -q -- '--sky:#9bcbd6' pwa-dist/regie-v14/index.html
