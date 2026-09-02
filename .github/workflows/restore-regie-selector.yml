@@ -13,6 +13,7 @@ on:
       - 'scripts/patch_regie_global_compact.py'
       - 'scripts/patch_regie_text_priority.py'
       - 'scripts/patch_regie_pro_hierarchy.py'
+      - 'scripts/patch_regie_live_priority.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -74,6 +75,9 @@ jobs:
       - name: Apply professional hierarchy everywhere
         run: python scripts/patch_regie_pro_hierarchy.py pwa-dist/regie-v14/index.html
 
+      - name: Prioritize live text and restore wheel mode
+        run: python scripts/patch_regie_live_priority.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -87,7 +91,6 @@ jobs:
           grep -q 'rainBeads' pwa-dist/regie-v14/index.html
           grep -q 'simpleOceanDrum' pwa-dist/regie-v14/index.html
           grep -q 'oceanBeads' pwa-dist/regie-v14/index.html
-          grep -q '⛶ Plein écran' pwa-dist/regie-v14/index.html
           grep -q 'Construction de la séance' pwa-dist/regie-v14/index.html
           grep -q 'Transition vers la phase suivante' pwa-dist/regie-v14/index.html
           grep -q 'Passage à la phase suivante' pwa-dist/regie-v14/index.html
@@ -105,11 +108,19 @@ jobs:
           grep -q 'GLOBAL_COMPACT_AUDIT_V4' pwa-dist/regie-v14/index.html
           grep -q 'TEXT_PRIORITY_V1' pwa-dist/regie-v14/index.html
           grep -q 'PRO_HIERARCHY_V1' pwa-dist/regie-v14/index.html
+          grep -q 'LIVE_PRIORITY_V2' pwa-dist/regie-v14/index.html
+          grep -q 'wheelModeRow' pwa-dist/regie-v14/index.html
+          grep -q 'wheelScrollMode' pwa-dist/regie-v14/index.html
+          grep -q 'wheelSoundMode' pwa-dist/regie-v14/index.html
+          grep -q 'guideFullscreenBtn' pwa-dist/regie-v14/index.html
+          grep -q 'Texte plein écran' pwa-dist/regie-v14/index.html
+          grep -q 'currentWheelMode' pwa-dist/regie-v14/index.html
+          grep -q 'active===$("guideCard")' pwa-dist/regie-v14/index.html
           grep -q -- '--sky:#9bcbd6' pwa-dist/regie-v14/index.html
           grep -q '#createSessionBtn' pwa-dist/regie-v14/index.html
           grep -q 'session-actions,.session-more' pwa-dist/regie-v14/index.html
           grep -q '#playerView .music-controls,#playerView .auto-row,#playerView .control-row' pwa-dist/regie-v14/index.html
-          grep -q 'height:clamp(460px,64vh,740px)' pwa-dist/regie-v14/index.html
+          grep -q 'height:clamp(500px,66vh,780px)' pwa-dist/regie-v14/index.html
           grep -q 'textarea\[data-k="text"\].*230px' pwa-dist/regie-v14/index.html || grep -q 'min-height:230px' pwa-dist/regie-v14/index.html
           grep -q 'width:min(940px,100%)' pwa-dist/regie-v14/index.html
           if grep -q '4,75' pwa-dist/regie-v14/index.html; then exit 1; fi
