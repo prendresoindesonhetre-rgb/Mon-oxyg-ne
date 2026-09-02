@@ -2,7 +2,6 @@ package fr.prendresoindesonhetre.regiev14;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -62,6 +61,18 @@ public class MainActivity extends Activity {
         );
     }
 
+    private void hideCustomView() {
+        if (customView == null) return;
+        root.removeView(customView);
+        customView = null;
+        webView.setVisibility(View.VISIBLE);
+        if (customViewCallback != null) {
+            customViewCallback.onCustomViewHidden();
+            customViewCallback = null;
+        }
+        enterImmersiveMode();
+    }
+
     private void configureWebView() {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -94,18 +105,13 @@ public class MainActivity extends Activity {
                     return false;
                 }
             }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-            }
         });
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onShowFileChooser(WebView webView,
                                              ValueCallback<Uri[]> filePathCallback,
-                                             FileChooserParams fileChooserParams) {
+                                             WebChromeClient.FileChooserParams fileChooserParams) {
                 if (fileCallback != null) {
                     fileCallback.onReceiveValue(null);
                 }
@@ -138,15 +144,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onHideCustomView() {
-                if (customView == null) return;
-                root.removeView(customView);
-                customView = null;
-                webView.setVisibility(View.VISIBLE);
-                if (customViewCallback != null) {
-                    customViewCallback.onCustomViewHidden();
-                    customViewCallback = null;
-                }
-                enterImmersiveMode();
+                hideCustomView();
             }
         });
     }
@@ -186,7 +184,7 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (customView != null) {
-            ((WebChromeClient) webView.getWebChromeClient()).onHideCustomView();
+            hideCustomView();
         } else if (webView.canGoBack()) {
             webView.goBack();
         } else {
