@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/patch_regie_selector.py'
       - 'scripts/patch_regie_instruments.py'
+      - 'scripts/patch_regie_whole_seconds.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -46,6 +47,9 @@ jobs:
       - name: Install simplified instrument animations
         run: python scripts/patch_regie_instruments.py pwa-dist/regie-v14/index.html
 
+      - name: Keep rain stick timing on whole seconds
+        run: python scripts/patch_regie_whole_seconds.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -59,6 +63,10 @@ jobs:
           grep -q 'rainBeads' pwa-dist/regie-v14/index.html
           grep -q 'simpleOceanDrum' pwa-dist/regie-v14/index.html
           grep -q 'oceanBeads' pwa-dist/regie-v14/index.html
+          grep -q 'step="1" value="${exact}"' pwa-dist/regie-v14/index.html
+          grep -q '− 1 seconde' pwa-dist/regie-v14/index.html
+          grep -q '⛶ Plein écran' pwa-dist/regie-v14/index.html
+          if grep -q '4,75' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/rain-stick.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/ocean-drum.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           python - <<'PY'
