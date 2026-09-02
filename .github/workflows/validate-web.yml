@@ -13,12 +13,22 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check app.js
-          node --check hypnose.js
-      - name: Check separated modes
+          node --check hypnose-v2.js
+          node --check gign-1.js
+          node --check gign-2.js
+          node --check gign-3.js
+          node --check gign-4.js
+          node --check gign-5.js
+          node --check gign-6.js
+          node --check gign-7.js
+      - name: Check separated modes and imported session
         run: |
           grep -F 'Séance de méditation' index.html
           grep -F 'Séance d’hypnose' index.html
           grep -F 'app.js' meditation.html
-          grep -F 'hypnose.js' hypnose.html
-          grep -F "hypnose.tracks" hypnose.js
-          grep -F "hypnose.scrollSpeed" hypnose.js
+          grep -F 'hypnose-v2.js' hypnose.html
+          grep -F 'hypnosisSessionSelect' hypnose.html
+          grep -F 'Traverser l’inconfort en gardant ses capacités' hypnose.html
+          grep -F '"guide":"rain","inhale":5,"exhale":5' gign-2.js
+          grep -F "hypnose.tracks" hypnose-v2.js
+          grep -F "hypnose.scrollSpeed" hypnose-v2.js
