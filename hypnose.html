@@ -7,15 +7,16 @@
   <title>Hypnose — Régie de mon Hêtre</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    .mode-nav{max-width:1540px;margin:12px auto -8px;padding:0 clamp(16px,2.5vw,34px);display:flex;justify-content:space-between;align-items:center}.mode-nav a{color:#7e6a81;text-decoration:none;font-size:12px;font-weight:800}.mode-badge{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#7e6a81;border:1px solid rgba(162,143,164,.4);background:rgba(162,143,164,.08);border-radius:999px;padding:7px 10px}.guide-switch{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}.guide-switch button{border:1px solid var(--line);background:var(--paper);border-radius:11px;padding:7px 10px;font-size:11px}.guide-switch button.active{border-color:rgba(162,143,164,.6);background:rgba(162,143,164,.12);color:#6f5d73}.hypnose-note{color:#7e6a81}.instrument-card.hypnose{border-color:rgba(162,143,164,.35);background:linear-gradient(135deg,rgba(255,252,247,.95),rgba(162,143,164,.08))}
+    .mode-nav{max-width:1540px;margin:12px auto -8px;padding:0 clamp(16px,2.5vw,34px);display:flex;justify-content:space-between;align-items:center}.mode-nav a{color:#7e6a81;text-decoration:none;font-size:12px;font-weight:800}.mode-badge{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#7e6a81;border:1px solid rgba(162,143,164,.4);background:rgba(162,143,164,.08);border-radius:999px;padding:7px 10px}.guide-switch{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}.guide-switch button{border:1px solid var(--line);background:var(--paper);border-radius:11px;padding:7px 10px;font-size:11px}.guide-switch button.active{border-color:rgba(162,143,164,.6);background:rgba(162,143,164,.12);color:#6f5d73}.hypnose-note{color:#7e6a81}.instrument-card.hypnose{border-color:rgba(162,143,164,.35);background:linear-gradient(135deg,rgba(255,252,247,.95),rgba(162,143,164,.08))}.session-picker{max-width:1540px;margin:16px auto 10px;padding:0 clamp(16px,2.5vw,34px);display:flex;align-items:center;gap:10px;flex-wrap:wrap}.session-picker label{font-size:11px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#7e6a81}.session-picker select{min-width:min(520px,72vw);border:1px solid var(--line);background:var(--paper);border-radius:12px;padding:9px 12px}.session-picker small{color:var(--muted);font-size:11px}
   </style>
 </head>
 <body>
 <div class="mode-nav"><a href="index.html">← Choisir le type de séance</a><span class="mode-badge">Hypnose</span></div>
+<div class="session-picker"><label for="hypnosisSessionSelect">Séance</label><select id="hypnosisSessionSelect"><option value="gign">Traverser l’inconfort en gardant ses capacités</option><option value="free">Séance libre / modèle</option></select><small id="hypnosisSessionHint">Script importé</small></div>
 <div id="app">
   <header class="topbar">
     <div class="brand"><div class="brand-mark" aria-hidden="true">⌁</div><div><div class="eyebrow">Prendre soin de son Hêtre</div><h1>Régie de mon Hêtre</h1></div></div>
-    <div class="phase-heading"><div id="phaseCounter" class="eyebrow">PHASE 1 / 7</div><div id="phaseTitle" class="phase-title">Accueil & cadre</div></div>
+    <div class="phase-heading"><div id="phaseCounter" class="eyebrow">PHASE 1 / 7</div><div id="phaseTitle" class="phase-title">Installation</div></div>
   </header>
   <section class="time-deck" aria-label="Temps de séance"><div class="time-card"><span>SÉANCE</span><strong id="sessionTime">00:00</strong></div><div class="time-card accent"><span>PHASE</span><strong id="phaseTime">00:00</strong></div><div class="time-card"><span id="remainingCaption">RESTANT</span><strong id="remainingTime">03:00</strong></div></section>
   <section id="instrumentCard" class="instrument-card hypnose">
@@ -31,7 +32,14 @@
   <footer class="control-dock"><button id="prevPhase" type="button">← Précédente</button><button id="sessionPlay" type="button" class="session-play">▶ Démarrer</button><button id="nextPhase" type="button">Suivante →</button><button id="autoPhaseBtn" type="button" class="auto-phase">PHASES AUTO ✓</button></footer>
 </div>
 <audio id="localAudio" preload="metadata"></audio>
-<script src="hypnose.js"></script>
+<script src="gign-1.js"></script>
+<script src="gign-2.js"></script>
+<script src="gign-3.js"></script>
+<script src="gign-4.js"></script>
+<script src="gign-5.js"></script>
+<script src="gign-6.js"></script>
+<script src="gign-7.js"></script>
+<script src="hypnose-v2.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
