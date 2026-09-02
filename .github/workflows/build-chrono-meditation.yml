@@ -34,6 +34,13 @@ jobs:
         working-directory: ChronoMeditation
         run: python3 v12_patch.py
 
+      - name: Upload generated V12 source
+        uses: actions/upload-artifact@v4
+        with:
+          name: V12-generated-source
+          path: ChronoMeditation/app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
+          if-no-files-found: error
+
       - name: Verify V12 source
         working-directory: ChronoMeditation
         run: |
