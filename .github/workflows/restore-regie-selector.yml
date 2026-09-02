@@ -12,6 +12,7 @@ on:
       - 'scripts/patch_regie_visual_harmony.py'
       - 'scripts/patch_regie_global_compact.py'
       - 'scripts/patch_regie_text_priority.py'
+      - 'scripts/patch_regie_pro_hierarchy.py'
       - '.github/workflows/restore-regie-selector.yml'
   workflow_dispatch:
 
@@ -70,6 +71,9 @@ jobs:
       - name: Make spoken text the main live area
         run: python scripts/patch_regie_text_priority.py pwa-dist/regie-v14/index.html
 
+      - name: Apply professional hierarchy everywhere
+        run: python scripts/patch_regie_pro_hierarchy.py pwa-dist/regie-v14/index.html
+
       - name: Validate complete Regie
         run: |
           grep -q 'Séance de méditation' pwa-dist/regie-v14/index.html
@@ -100,13 +104,14 @@ jobs:
           grep -q 'COMPACT_SESSION_LIBRARY_V2' pwa-dist/regie-v14/index.html
           grep -q 'GLOBAL_COMPACT_AUDIT_V4' pwa-dist/regie-v14/index.html
           grep -q 'TEXT_PRIORITY_V1' pwa-dist/regie-v14/index.html
+          grep -q 'PRO_HIERARCHY_V1' pwa-dist/regie-v14/index.html
           grep -q -- '--sky:#9bcbd6' pwa-dist/regie-v14/index.html
           grep -q '#createSessionBtn' pwa-dist/regie-v14/index.html
           grep -q 'session-actions,.session-more' pwa-dist/regie-v14/index.html
           grep -q '#playerView .music-controls,#playerView .auto-row,#playerView .control-row' pwa-dist/regie-v14/index.html
-          grep -q 'grid-template-columns:40px minmax(150px,210px) 40px' pwa-dist/regie-v14/index.html
-          grep -q 'guide-text{font-size:19px' pwa-dist/regie-v14/index.html
-          grep -q 'height:clamp(340px,56vh,560px)' pwa-dist/regie-v14/index.html
+          grep -q 'height:clamp(460px,64vh,740px)' pwa-dist/regie-v14/index.html
+          grep -q 'textarea\[data-k="text"\].*230px' pwa-dist/regie-v14/index.html || grep -q 'min-height:230px' pwa-dist/regie-v14/index.html
+          grep -q 'width:min(940px,100%)' pwa-dist/regie-v14/index.html
           if grep -q '4,75' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/rain-stick.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
           if grep -q 'assets/ocean-drum.jpg' pwa-dist/regie-v14/index.html; then exit 1; fi
