@@ -30,40 +30,35 @@ jobs:
       - name: Install Android 35
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Apply V12 control-room redesign
+      - name: Apply V13 smart-session fixes
         working-directory: ChronoMeditation
-        run: python3 v12_patch.py
+        run: python3 v13_patch.py
 
-      - name: Upload generated V12 source
-        uses: actions/upload-artifact@v4
-        with:
-          name: V12-generated-source
-          path: ChronoMeditation/app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
-          if-no-files-found: error
-
-      - name: Verify V12 source
+      - name: Verify V13 source
         working-directory: ChronoMeditation
         run: |
           SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
-          grep -F 'public void onBackPressed()' "$SRC"
-          grep -F 'RÉGIE DE MON HÊTRE' "$SRC"
-          grep -F 'class VolumeFaderView' "$SRC"
-          grep -F 'Fader à droite' "$SRC"
-          grep -F 'phaseRemainingCaption.setText("DÉPASSÉ")' "$SRC"
-          grep -F 'double dpPerSecond' "$SRC"
-          grep -F 'setMusicVolume(0)' "$SRC"
-          grep -F 'function seekY(r)' "$SRC"
+          grep -F 'class ReadProgressView' "$SRC"
+          grep -F 'readingStepCostMs' "$SRC"
+          grep -F 'PHASES AUTO ✓' "$SRC"
+          grep -F 'phaseElapsedMs >= planned && smartReadingFinished()' "$SRC"
+          grep -F 'handler.postDelayed(this, 40L)' "$SRC"
+          grep -F 'smoothVolumeRunnable' "$SRC"
+          grep -F 'Math.pow(n, 1.65)' "$SRC"
+          grep -F 'wantedPlay=false' "$SRC"
+          grep -F 'AudioAttributes.CONTENT_TYPE_MUSIC' "$SRC"
+          grep -F 'renderedPhaseIndex' "$SRC"
 
       - name: Build debug APK
         working-directory: ChronoMeditation
         run: gradle assembleDebug --no-daemon
 
-      - name: Verify V12 launcher
+      - name: Verify V13 launcher
         working-directory: ChronoMeditation
         run: |
           APK="app/build/outputs/apk/debug/app-debug.apk"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | tee /tmp/badging.txt
-          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v12'" /tmp/badging.txt
+          grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v13'" /tmp/badging.txt
           grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
       - name: Enable KVM
@@ -72,7 +67,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Launch and back-button smoke test on Android
+      - name: Launch and session smoke test on Android
         uses: ReactiveCircus/android-emulator-runner@v2
         with:
           api-level: 35
@@ -82,21 +77,58 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -no-snapshot -noaudio -no-boot-anim -gpu swiftshader_indirect
           script: |
-            adb install -r ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
+            APK=ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
+            PKG=fr.prendresoindesonhetre.meditationshetre.v13
+            ACT=fr.prendresoindesonhetre.chronomeditation.MainActivity
+            adb install -r "$APK"
             adb logcat -c
-            adb shell am force-stop fr.prendresoindesonhetre.meditationshetre.v12
-            adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v12/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
+            adb shell am force-stop "$PKG"
+            adb shell am start -W -n "$PKG/$ACT" | tee /tmp/start.txt
             grep -F "Status: ok" /tmp/start.txt
-            sleep 4
-            adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
-            adb shell input keyevent 4
             sleep 2
-            adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
-            ! adb logcat -d | grep -A 20 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v12'
+
+            tap_text() {
+              local LABEL="$1"
+              adb shell uiautomator dump /sdcard/window.xml >/dev/null
+              adb pull /sdcard/window.xml /tmp/window.xml >/dev/null
+              python3 - "$LABEL" <<'PY'
+import sys, xml.etree.ElementTree as ET, re, subprocess
+label=sys.argv[1]
+root=ET.parse('/tmp/window.xml').getroot()
+for node in root.iter('node'):
+    if node.attrib.get('text') == label:
+        b=node.attrib.get('bounds','')
+        m=re.match(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]', b)
+        if not m: continue
+        x1,y1,x2,y2=map(int,m.groups())
+        subprocess.check_call(['adb','shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)])
+        sys.exit(0)
+print('Text not found:', label, file=sys.stderr)
+sys.exit(1)
+PY
+            }
+
+            tap_text "Ouvrir ma régie"
+            sleep 1
+            adb shell uiautomator dump /sdcard/regie.xml >/dev/null
+            adb pull /sdcard/regie.xml /tmp/regie.xml >/dev/null
+            grep -F 'text="AUTO ✓"' /tmp/regie.xml
+            grep -F 'text="PHASES AUTO ✓"' /tmp/regie.xml
+            tap_text "Démarrer"
+            sleep 2
+            adb shell uiautomator dump /sdcard/running.xml >/dev/null
+            adb pull /sdcard/running.xml /tmp/running.xml >/dev/null
+            grep -F 'text="Pause"' /tmp/running.xml
+            adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "$ACT"
+
+            adb shell input keyevent 4
+            sleep 1
+            adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "$ACT"
+            ! adb logcat -d | grep -A 20 'FATAL EXCEPTION' | grep -F "$PKG"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Regie-de-mon-Hetre-V12-tested
+          name: Regie-de-mon-Hetre-V13-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
