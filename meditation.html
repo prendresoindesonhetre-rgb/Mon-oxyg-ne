@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f1ea">
+  <title>Méditation — Régie de mon Hêtre</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>.mode-nav{max-width:1540px;margin:12px auto -8px;padding:0 clamp(16px,2.5vw,34px);display:flex;justify-content:space-between;align-items:center}.mode-nav a{color:#608c89;text-decoration:none;font-size:12px;font-weight:800}.mode-badge{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#608c89;border:1px solid rgba(96,140,137,.35);background:rgba(96,140,137,.07);border-radius:999px;padding:7px 10px}</style>
+</head>
+<body>
+<div class="mode-nav"><a href="index.html">← Choisir le type de séance</a><span class="mode-badge">Méditation</span></div>
+<div id="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark" aria-hidden="true">⌁</div><div><div class="eyebrow">Prendre soin de son Hêtre</div><h1>Régie de mon Hêtre</h1></div></div>
+    <div class="phase-heading"><div id="phaseCounter" class="eyebrow">PHASE 1 / 14</div><div id="phaseTitle" class="phase-title">Accueil & intention</div></div>
+  </header>
+  <section class="time-deck" aria-label="Temps de séance"><div class="time-card"><span>SÉANCE</span><strong id="sessionTime">00:00</strong></div><div class="time-card accent"><span>PHASE</span><strong id="phaseTime">00:00</strong></div><div class="time-card"><span id="remainingCaption">RESTANT</span><strong id="remainingTime">04:00</strong></div></section>
+  <section id="instrumentCard" class="instrument-card normal">
+    <div class="instrument-title"><span id="instrumentName">FIL DE SÉANCE</span><small id="instrumentHint">Garde seulement les repères dont tu as besoin.</small></div>
+    <div id="rainGuide" class="rain-guide hidden"><div class="rain-wrap"><div id="rainStick" class="rain-stick"><div class="rain-grains"></div></div></div><div class="instrument-readout"><strong id="breathLabel">INSPIRE</strong><span id="breathCountdown">5.0 s</span></div><div class="micro-controls"><button id="inhaleMinus" type="button">−</button><span>Inspire <b id="inhaleValue">5</b>s</span><button id="inhalePlus" type="button">+</button><button id="exhaleMinus" type="button">−</button><span>Expire <b id="exhaleValue">5</b>s</span><button id="exhalePlus" type="button">+</button><button id="rainReverse" type="button">↔ inverser</button></div></div>
+    <div id="oceanGuide" class="ocean-guide hidden"><canvas id="waveCanvas" width="900" height="92" aria-label="Guide de vague"></canvas><div class="instrument-readout"><strong id="waveLabel">La vague monte doucement</strong><span><b id="waveSeconds">8</b> s / vague</span></div><div class="micro-controls"><button id="waveMinus" type="button">−</button><span>Durée de la vague</span><button id="wavePlus" type="button">+</button></div></div>
+  </section>
+  <main class="workspace">
+    <section class="reader-panel"><div class="reader-toolbar"><div><div class="eyebrow">MON FIL</div><div id="readStatus" class="read-status">Lecture prête</div></div><div class="scroll-controls"><button id="autoScrollBtn" type="button" class="pill">Défilement auto</button><label class="speed-control">Vitesse <input id="scrollSpeed" type="range" min="1" max="100" value="38"><b id="speedValue">38</b></label></div></div><div class="reader-shell"><div class="reader-progress" aria-hidden="true"><div id="readerProgressFill"></div></div><div class="reading-line" aria-hidden="true"><span>ici</span></div><div id="reader" class="reader" tabindex="0"><article id="scriptText" class="script-text"></article><aside id="actionText" class="action-text"></aside><div class="reader-end">fin de cette phase</div></div></div></section>
+    <aside class="mixer-panel"><div class="mixer-head"><div><div class="eyebrow">MIX MUSIQUE</div><strong id="trackName">Aucune piste</strong></div><button id="sourceToggle" type="button" class="text-btn">Source</button></div><div id="sourceDrawer" class="source-drawer hidden"><label>Piste<select id="trackSlot"><option value="0">Piste 1</option><option value="1">Piste 2</option><option value="2">Piste 3</option></select></label><label>Nom <input id="trackTitleInput" type="text" placeholder="417 Hz changement"></label><label>Lien YouTube <input id="youtubeUrlInput" type="url" placeholder="https://youtu.be/..."></label><div class="source-actions"><button id="saveTrackBtn" type="button">Enregistrer & préparer</button><label class="file-btn">Fichier audio<input id="localFile" type="file" accept="audio/*"></label></div><div id="youtubeBox" class="youtube-box"><div id="youtubePlayer"></div></div><div id="sourceStatus" class="source-status">Choisis une piste. Elle sera préparée à volume 0.</div></div><div class="transport"><button id="musicPlay" class="transport-main" type="button" aria-label="Lecture">▶</button><button id="musicPause" type="button" aria-label="Pause">Ⅱ</button><button id="musicStop" type="button" aria-label="Arrêt">■</button><span id="musicState">PRÊT</span></div><div class="timeline-row"><input id="musicTimeline" type="range" min="0" max="1000" value="0"><span id="musicTime">00:00 / 00:00</span></div><div id="fader" class="fader" role="slider" aria-label="Volume musique" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><div class="fader-track"><div id="faderFill" class="fader-fill"></div><div id="faderKnob" class="fader-knob"></div></div><div class="fader-copy"><strong id="volumeValue">0%</strong><span>Glisse vers le haut<br>pour faire entrer la musique</span></div></div></aside>
+  </main>
+  <footer class="control-dock"><button id="prevPhase" type="button">← Précédente</button><button id="sessionPlay" type="button" class="session-play">▶ Démarrer</button><button id="nextPhase" type="button">Suivante →</button><button id="autoPhaseBtn" type="button" class="auto-phase">PHASES AUTO ✓</button></footer>
+</div>
+<audio id="localAudio" preload="metadata"></audio>
+<script src="app.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
