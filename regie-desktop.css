@@ -1,0 +1,33 @@
+.fullscreen-enter,.fullscreen-exit{border:1px solid var(--line,#ddd3c9);background:rgba(255,252,247,.94);color:var(--ink,#493f39);border-radius:999px;padding:7px 12px;font-size:11px;font-weight:800;box-shadow:0 4px 16px rgba(73,63,57,.06)}
+.fullscreen-enter{margin-left:auto;margin-right:8px}.fullscreen-exit{display:none;position:fixed;top:10px;right:12px;z-index:100;padding:8px 11px;background:rgba(255,252,247,.82);backdrop-filter:blur(10px);opacity:.62}.fullscreen-exit:hover{opacity:1}
+.reader-progress>div{height:100%!important;transform:scaleY(0);transform-origin:top center;will-change:transform}
+.reader{will-change:scroll-position;contain:paint}
+body.session-fullscreen{overflow:hidden;background:var(--bg,#f5f1ea)}
+body.session-fullscreen .mode-nav,body.session-fullscreen .session-picker{display:none!important}
+body.session-fullscreen .fullscreen-exit{display:block}
+body.session-fullscreen #app{max-width:none;width:100vw;height:100vh;min-height:0;margin:0;padding:8px 12px 70px;overflow:hidden}
+body.session-fullscreen .topbar{margin:0 52px 6px 0;min-height:38px;align-items:center}
+body.session-fullscreen .brand-mark{display:none}
+body.session-fullscreen .brand h1{font-size:22px;line-height:1;margin:0}
+body.session-fullscreen .brand .eyebrow{font-size:9px}
+body.session-fullscreen .phase-heading{display:flex;align-items:baseline;gap:10px;max-width:58%;margin-left:auto}
+body.session-fullscreen .phase-heading .eyebrow{font-size:9px;white-space:nowrap}
+body.session-fullscreen .phase-title{font-size:20px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.session-fullscreen .time-deck{gap:7px;margin-bottom:6px}
+body.session-fullscreen .time-card{padding:7px 12px;border-radius:13px}
+body.session-fullscreen .time-card span{font-size:9px}
+body.session-fullscreen .time-card strong{font-size:20px}
+body.session-fullscreen .instrument-card{min-height:50px;padding:7px 12px;margin-bottom:6px;border-radius:14px}
+body.session-fullscreen .instrument-card.fullscreen-guide-empty{display:none!important}
+body.session-fullscreen .rain-wrap{height:36px}
+body.session-fullscreen .workspace{height:calc(100vh - 145px);min-height:0;gap:7px}
+body.session-fullscreen .reader-panel,body.session-fullscreen .mixer-panel{border-radius:16px;padding:10px;min-height:0}
+body.session-fullscreen .reader-toolbar{margin-bottom:6px}
+body.session-fullscreen .reader-shell{min-height:0;height:100%}
+body.session-fullscreen .reader{height:100%;max-height:none!important;min-height:0!important;padding-top:44px;padding-bottom:44vh}
+body.session-fullscreen .script-text{font-size:clamp(23px,2vw,31px);line-height:1.65}
+body.session-fullscreen .mixer-panel{height:100%;overflow:hidden}
+body.session-fullscreen .fader{min-height:160px}
+body.session-fullscreen .control-dock{bottom:7px}
+@media(min-width:1100px){body.session-fullscreen .workspace{grid-template-columns:minmax(0,1fr) 270px}}
+@media(max-width:900px){.fullscreen-enter{margin-left:0}.fullscreen-exit{top:7px;right:7px}body.session-fullscreen #app{padding-left:8px;padding-right:8px}body.session-fullscreen .workspace{height:auto;min-height:calc(100vh - 160px);overflow:auto}body.session-fullscreen .reader{min-height:58vh!important}body.session-fullscreen .phase-heading{max-width:48%}}
