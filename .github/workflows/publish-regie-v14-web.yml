@@ -49,3 +49,5 @@ jobs:
             git commit -m 'Publish Regie de mon Hetre V14 web app'
             git push origin HEAD:gh-pages
           fi
+
+# Refresh current live HTML for the mobile layout pass (2026-09-03).
