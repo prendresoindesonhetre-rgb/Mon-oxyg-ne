@@ -30,6 +30,28 @@ jobs:
           grep -q 'Régie de mon Hêtre' /tmp/regie-web/index.html
           grep -q 'regie-sync' /tmp/regie-web/index.html
 
+      - name: Align mobile player with web layout
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/regie-web/index.html')
+          s=p.read_text(encoding='utf-8')
+          css=r'''<style id="mobile-player-v141">
+          @media(max-width:600px){
+            #playerView.player{padding-bottom:calc(190px + env(safe-area-inset-bottom))}
+            #autoRow.auto-row{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));width:min(calc(100% - 22px),738px);z-index:24;margin:0;padding:7px;border:1px solid var(--line);border-radius:18px;background:rgba(247,245,241,.96);box-shadow:0 -4px 18px rgba(64,58,55,.08);backdrop-filter:blur(10px)}
+            #bottomControls{z-index:25}
+            #guideCard{margin-bottom:110px}
+            #guideScroll{height:50dvh;min-height:320px;max-height:560px}
+            .screen{padding-bottom:calc(190px + env(safe-area-inset-bottom))}
+          }
+          </style>'''
+          if 'mobile-player-v141' not in s:
+              s=s.replace('</head>',css+'\n</head>')
+          p.write_text(s,encoding='utf-8')
+          PY
+          grep -q 'mobile-player-v141' /tmp/regie-web/index.html
+
       - name: Publish without touching the existing site
         env:
           GH_TOKEN: ${{ github.token }}
@@ -46,8 +68,6 @@ jobs:
           if git diff --cached --quiet; then
             echo 'No web changes to publish.'
           else
-            git commit -m 'Publish Regie de mon Hetre V14 web app'
+            git commit -m 'Keep Regie controls visible on mobile'
             git push origin HEAD:gh-pages
           fi
-
-# Refresh current live HTML for the mobile layout pass (2026-09-03).
