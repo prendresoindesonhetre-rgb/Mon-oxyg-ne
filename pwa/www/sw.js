@@ -1,4 +1,4 @@
-// PWA refresh v36 — force le navigateur à détecter la nouvelle version.
+// PWA refresh — ajout des enchaînements de rythmes sur le lien permanent v37.
 const CACHE_NAME = 'mon-oxygene-pwa-v3-landscape';
 const CORE = [
   './',
@@ -7,6 +7,7 @@ const CORE = [
   './landscape-force.css',
   './orientation.js',
   './app.js',
+  './sequence.js',
   './manifest.webmanifest',
   './assets/settings_bg.jpg',
   './assets/curve_bg.jpg',
