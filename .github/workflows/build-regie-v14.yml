@@ -1,4 +1,4 @@
-name: Build Regie V14 Secure APK
+name: Build Regie V14.1 Mobile Web APK
 
 on:
   push:
@@ -44,12 +44,21 @@ jobs:
         working-directory: ChronoMeditation
         run: python3 v14_secure_web_patch.py
 
-      - name: Verify V14 source and isolation
+      - name: Match Android to exact published web layout
+        working-directory: ChronoMeditation
+        run: python3 v14_mobile_match_web.py
+
+      - name: Verify V14.1 source and isolation
         working-directory: ChronoMeditation
         run: |
           SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
-          grep -F 'https://kzviewbnnnzdyocdjtah.supabase.co/functions/v1/regie-app' "$SRC"
+          grep -F 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/' "$SRC"
+          grep -F 's.setLoadWithOverviewMode(false);' "$SRC"
+          grep -F 's.setUseWideViewPort(false);' "$SRC"
+          grep -F 's.setTextZoom(100);' "$SRC"
           grep -F "applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'" app/build.gradle
+          grep -F 'versionCode 15' app/build.gradle
+          grep -F "versionName '14.1-mobile-web'" app/build.gradle
           grep -F 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -F 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
           grep -F 'android.permission.INTERNET' app/src/main/AndroidManifest.xml
@@ -86,13 +95,13 @@ jobs:
             adb logcat -c
             adb shell am start -W -n fr.prendresoindesonhetre.meditationshetre.v14/fr.prendresoindesonhetre.chronomeditation.MainActivity | tee /tmp/start.txt
             grep -F "Status: ok" /tmp/start.txt
-            sleep 6
+            sleep 7
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
             ! adb logcat -d | grep -A 30 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v14'
 
-      - name: Upload V14 APK
+      - name: Upload V14.1 APK
         uses: actions/upload-artifact@v4
         with:
-          name: Regie-de-mon-Hetre-V14-secure-tested
+          name: Regie-de-mon-Hetre-V14.1-mobile-web-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
