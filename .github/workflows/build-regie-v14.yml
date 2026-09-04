@@ -63,11 +63,10 @@ jobs:
           grep -F 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
           grep -F 'android.permission.INTERNET' app/src/main/AndroidManifest.xml
 
-      - name: Verify permanent web contains locked validated functions
+      - name: Verify published web source contains locked validated functions
         run: |
-          curl --fail --silent --show-error --location \
-            'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/' \
-            -o /tmp/regie-live.html
+          git fetch origin gh-pages
+          git show origin/gh-pages:regie-v14/index.html > /tmp/regie-live.html
           grep -q 'locked-session-type-script-v142' /tmp/regie-live.html
           grep -q 'Méditation' /tmp/regie-live.html
           grep -q 'Hypnose' /tmp/regie-live.html
@@ -77,7 +76,11 @@ jobs:
           grep -q 'id="playPauseBtn"' /tmp/regie-live.html
           grep -q 'id="musicCard"' /tmp/regie-live.html
           grep -q 'id="phaseAutoBtn"' /tmp/regie-live.html
+          grep -q 'id="accountBtn"' /tmp/regie-live.html
           grep -q 'regie-sync' /tmp/regie-live.html
+          grep -q 'manualScrollUntil' /tmp/regie-live.html
+          grep -q 'function toggleRun' /tmp/regie-live.html
+          grep -q 'faderEdge' /tmp/regie-live.html
 
       - name: Build debug APK
         working-directory: ChronoMeditation
