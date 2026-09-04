@@ -132,6 +132,11 @@ input[type=range]{width:100%;accent-color:var(--teal)}
   .screen{padding-bottom:calc(190px + env(safe-area-inset-bottom))}
 }
 </style>
+<style id="locked-session-type-v142">
+.session-type-picker{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:6px}
+.session-type-picker .btn.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:800}
+.session-type-badge{display:inline-flex;align-items:center;margin:0 0 8px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;color:var(--teal);background:var(--paper)}
+</style>
 </head>
 <body>
 
@@ -178,6 +183,7 @@ input[type=range]{width:100%;accent-color:var(--teal)}
     <div class="feature-grid"><div class="feature">TEXTE</div><div class="feature">TEMPS</div><div class="feature">RYTHME</div><div class="feature">MIX</div></div>
     <div class="card">
       <div class="kicker">MA SÉANCE</div>
+      <div class="session-type-badge" id="homeSessionType">Type à choisir</div>
       <div class="session-title" id="homeTitle"></div>
       <div class="summary">90 min • 14 temps • bâton de pluie • tambour océan • silence • musique</div>
       <div class="home-actions">
@@ -207,6 +213,12 @@ input[type=range]{width:100%;accent-color:var(--teal)}
   <div id="editView" class="hidden">
     <button class="btn small" id="editBackBtn">‹ Retour</button>
     <h2 style="margin-top:16px">Ma séance</h2>
+    <div class="field" id="sessionTypeField"><span>Type de séance</span>
+      <div class="session-type-picker" id="sessionTypePicker">
+        <button class="btn" type="button" data-session-type="meditation">Méditation</button>
+        <button class="btn" type="button" data-session-type="hypnose">Hypnose</button>
+      </div>
+    </div>
     <label class="field"><span>Titre</span><input type="text" id="editTitle"></label>
     <div id="phaseEditors"></div>
     <div class="editor-toolbar row"><button class="btn grow" id="resetSessionBtn">Revenir à la séance d’origine</button><button class="btn primary grow" id="saveSessionBtn">Enregistrer</button></div>
@@ -759,6 +771,44 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
   }else{
     $("authScreen").classList.remove("hidden");$("appScreen").classList.add("hidden");
   }
+})();
+</script>
+<script id="locked-session-type-script-v142">
+(()=>{
+  const norm=t=>t==="hypnose"?"hypnose":t==="meditation"?"meditation":"";
+  const label=t=>t==="hypnose"?"Hypnose":t==="meditation"?"Méditation":"Type à choisir";
+  try{DEFAULT_STATE.sessionType=""}catch(e){}
+  const current=()=>{try{return norm(state&&state.sessionType)}catch(e){return ""}};
+  const paint=()=>{
+    const t=current();
+    document.querySelectorAll("[data-session-type]").forEach(b=>b.classList.toggle("active",b.dataset.sessionType===t));
+    const badge=document.getElementById("homeSessionType");
+    if(badge)badge.textContent=label(t);
+  };
+  window.setRegieSessionType=t=>{try{state.sessionType=norm(t);paint()}catch(e){}};
+
+  document.addEventListener("click",e=>{
+    const b=e.target.closest&&e.target.closest("[data-session-type]");
+    if(b){e.preventDefault();window.setRegieSessionType(b.dataset.sessionType);return;}
+    if(e.target.closest&&e.target.closest("#editSessionBtn"))setTimeout(paint,0);
+  });
+
+  const open=document.getElementById("openRegieBtn");
+  if(open)open.addEventListener("click",e=>{
+    if(current())return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    showModal(`<div class="kicker">TYPE DE SÉANCE</div><h2>Que vas-tu guider ?</h2><p class="note">Choisis le type de cette séance. Ce choix restera enregistré avec elle.</p><div class="session-type-picker"><button class="btn" id="chooseMeditation">Méditation</button><button class="btn" id="chooseHypnose">Hypnose</button></div><button class="btn" style="width:100%;margin-top:10px" id="chooseCancel">Annuler</button>`);
+    document.getElementById("chooseMeditation").onclick=()=>{window.setRegieSessionType("meditation");persistLocal();closeModal();startPlayer()};
+    document.getElementById("chooseHypnose").onclick=()=>{window.setRegieSessionType("hypnose");persistLocal();closeModal();startPlayer()};
+    document.getElementById("chooseCancel").onclick=closeModal;
+  },true);
+
+  const save=document.getElementById("saveSessionBtn");
+  if(save)save.addEventListener("click",()=>setTimeout(paint,0));
+  const reset=document.getElementById("resetSessionBtn");
+  if(reset)reset.addEventListener("click",()=>setTimeout(paint,0));
+  paint();
 })();
 </script>
 </body>
