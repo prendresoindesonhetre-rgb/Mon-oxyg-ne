@@ -1,4 +1,4 @@
-name: Build Regie V14.1 Mobile Web APK
+name: Build Regie V14.2 Locked APK
 
 on:
   push:
@@ -40,15 +40,15 @@ jobs:
         working-directory: ChronoMeditation
         run: python3 v13_patch.py
 
-      - name: Apply V14 secure account and sync wrapper
+      - name: Apply secure account and permanent web wrapper
         working-directory: ChronoMeditation
         run: python3 v14_secure_web_patch.py
 
-      - name: Match Android to exact published web layout
+      - name: Match Android to exact permanent web layout
         working-directory: ChronoMeditation
         run: python3 v14_mobile_match_web.py
 
-      - name: Verify V14.1 source and isolation
+      - name: Verify locked Android source
         working-directory: ChronoMeditation
         run: |
           SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
@@ -57,11 +57,27 @@ jobs:
           grep -F 's.setUseWideViewPort(false);' "$SRC"
           grep -F 's.setTextZoom(100);' "$SRC"
           grep -F "applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'" app/build.gradle
-          grep -F 'versionCode 15' app/build.gradle
-          grep -F "versionName '14.1-mobile-web'" app/build.gradle
+          grep -F 'versionCode 142' app/build.gradle
+          grep -F "versionName '14.2-locked'" app/build.gradle
           grep -F 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -F 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
           grep -F 'android.permission.INTERNET' app/src/main/AndroidManifest.xml
+
+      - name: Verify permanent web contains locked validated functions
+        run: |
+          curl --fail --silent --show-error --location \
+            'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/' \
+            -o /tmp/regie-live.html
+          grep -q 'locked-session-type-script-v142' /tmp/regie-live.html
+          grep -q 'Méditation' /tmp/regie-live.html
+          grep -q 'Hypnose' /tmp/regie-live.html
+          grep -q 'mobile-player-v141' /tmp/regie-live.html
+          grep -q 'id="autoRow"' /tmp/regie-live.html
+          grep -q 'id="guideScroll"' /tmp/regie-live.html
+          grep -q 'id="playPauseBtn"' /tmp/regie-live.html
+          grep -q 'id="musicCard"' /tmp/regie-live.html
+          grep -q 'id="phaseAutoBtn"' /tmp/regie-live.html
+          grep -q 'regie-sync' /tmp/regie-live.html
 
       - name: Build debug APK
         working-directory: ChronoMeditation
@@ -99,9 +115,9 @@ jobs:
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
             ! adb logcat -d | grep -A 30 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v14'
 
-      - name: Upload V14.1 APK
+      - name: Upload V14.2 APK
         uses: actions/upload-artifact@v4
         with:
-          name: Regie-de-mon-Hetre-V14.1-mobile-web-tested
+          name: Regie-de-mon-Hetre-V14.2-locked-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
