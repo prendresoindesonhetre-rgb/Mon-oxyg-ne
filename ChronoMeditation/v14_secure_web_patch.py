@@ -26,7 +26,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
-    private static final String APP_URL = "https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/";
+    private static final String APP_URL = "https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/?app=143";
     private static final int FILE_CHOOSER_REQUEST = 7401;
 
     private WebView webView;
@@ -134,8 +134,8 @@ public class MainActivity extends Activity {
 }
 ''', encoding='utf-8')
 
-GRADLE.write_text('''plugins { id 'com.android.application' }\n\nandroid {\n    namespace 'fr.prendresoindesonhetre.chronomeditation'\n    compileSdk 35\n\n    defaultConfig {\n        applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'\n        minSdk 26\n        targetSdk 35\n        versionCode 142\n        versionName '14.2-locked'\n    }\n\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n}\n''', encoding='utf-8')
+GRADLE.write_text('''plugins { id 'com.android.application' }\n\nandroid {\n    namespace 'fr.prendresoindesonhetre.chronomeditation'\n    compileSdk 35\n\n    defaultConfig {\n        applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'\n        minSdk 26\n        targetSdk 35\n        versionCode 143\n        versionName '14.3-home-tabs'\n    }\n\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n}\n''', encoding='utf-8')
 
 MANIFEST.write_text('''<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <application\n        android:allowBackup="false"\n        android:label="Régie de mon Hêtre"\n        android:theme="@style/AppTheme"\n        android:usesCleartextTraffic="false">\n        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">\n            <intent-filter>\n                <action android:name="android.intent.action.MAIN" />\n                <category android:name="android.intent.category.LAUNCHER" />\n            </intent-filter>\n        </activity>\n    </application>\n</manifest>\n''', encoding='utf-8')
 
-print('V14.2 locked secure wrapper applied')
+print('V14.3 secure wrapper applied with fresh home tabs URL')
