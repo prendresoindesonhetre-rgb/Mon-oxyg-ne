@@ -26,9 +26,28 @@ type_css = '''<style id="locked-session-type-v142">
 .session-type-picker{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:6px}
 .session-type-picker .btn.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:800}
 .session-type-badge{display:inline-flex;align-items:center;margin:0 0 8px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;color:var(--teal);background:var(--paper)}
+.session-type-home{margin:12px 0 16px;padding:14px 16px}
+.session-type-home .kicker{margin-bottom:8px}
+.session-type-home .session-type-picker{margin-top:0}
+.session-type-home .btn{min-height:54px;font-weight:800}
 </style>'''
 if 'locked-session-type-v142' not in s:
     s = s.replace('</head>', type_css + '\n</head>', 1)
+
+# The two choices must be visible immediately on the home screen.
+home_intro_anchor = '''<p class="subtitle">Ton fil conducteur pour guider une méditation ou une séance d’hypnose sans perdre le texte, le temps, le rythme ni tes transitions.</p>'''
+home_intro_block = '''<p class="subtitle">Ton fil conducteur pour guider une méditation ou une séance d’hypnose sans perdre le texte, le temps, le rythme ni tes transitions.</p>
+    <div class="card session-type-home" id="homeSessionTypeCard">
+      <div class="kicker">TYPE DE SÉANCE</div>
+      <div class="session-type-picker" id="homeSessionTypePicker">
+        <button class="btn" type="button" data-session-type="meditation">Méditation</button>
+        <button class="btn" type="button" data-session-type="hypnose">Hypnose</button>
+      </div>
+    </div>'''
+if 'id="homeSessionTypePicker"' not in s:
+    if home_intro_anchor not in s:
+        raise SystemExit('home intro anchor missing')
+    s = s.replace(home_intro_anchor, home_intro_block, 1)
 
 edit_anchor = '''<h2 style="margin-top:16px">Ma séance</h2>
     <label class="field"><span>Titre</span><input type="text" id="editTitle"></label>'''
@@ -67,7 +86,13 @@ script = '''<script id="locked-session-type-script-v142">
     const badge=document.getElementById("homeSessionType");
     if(badge)badge.textContent=label(t);
   };
-  window.setRegieSessionType=t=>{try{state.sessionType=norm(t);paint()}catch(e){}};
+  window.setRegieSessionType=t=>{
+    try{
+      state.sessionType=norm(t);
+      paint();
+      if(typeof persistLocal==="function")persistLocal();
+    }catch(e){}
+  };
 
   document.addEventListener("click",e=>{
     const b=e.target.closest&&e.target.closest("[data-session-type]");
@@ -80,9 +105,9 @@ script = '''<script id="locked-session-type-script-v142">
     if(current())return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    showModal(`<div class="kicker">TYPE DE SÉANCE</div><h2>Que vas-tu guider ?</h2><p class="note">Choisis le type de cette séance. Ce choix restera enregistré avec elle.</p><div class="session-type-picker"><button class="btn" id="chooseMeditation">Méditation</button><button class="btn" id="chooseHypnose">Hypnose</button></div><button class="btn" style="width:100%;margin-top:10px" id="chooseCancel">Annuler</button>`);
-    document.getElementById("chooseMeditation").onclick=()=>{window.setRegieSessionType("meditation");persistLocal();closeModal();startPlayer()};
-    document.getElementById("chooseHypnose").onclick=()=>{window.setRegieSessionType("hypnose");persistLocal();closeModal();startPlayer()};
+    showModal(`<div class="kicker">TYPE DE SÉANCE</div><h2>Que vas-tu guider ?</h2><p class="note">Choisis le type de cette séance.</p><div class="session-type-picker"><button class="btn" id="chooseMeditation">Méditation</button><button class="btn" id="chooseHypnose">Hypnose</button></div><button class="btn" style="width:100%;margin-top:10px" id="chooseCancel">Annuler</button>`);
+    document.getElementById("chooseMeditation").onclick=()=>{window.setRegieSessionType("meditation");closeModal();startPlayer()};
+    document.getElementById("chooseHypnose").onclick=()=>{window.setRegieSessionType("hypnose");closeModal();startPlayer()};
     document.getElementById("chooseCancel").onclick=closeModal;
   },true);
 
@@ -99,6 +124,7 @@ if 'locked-session-type-script-v142' not in s:
 # Fail rather than silently publish a version that lost a validated feature.
 required = [
     'locked-session-type-script-v142', 'Méditation', 'Hypnose',
+    'id="homeSessionTypePicker"', 'id="sessionTypePicker"',
     'mobile-player-v141', 'id="autoRow"', 'id="guideScroll"',
     'id="playPauseBtn"', 'id="musicCard"', 'id="phaseAutoBtn"',
     'id="accountBtn"', 'regie-sync', 'manualScrollUntil',
@@ -109,4 +135,4 @@ if missing:
     raise SystemExit('missing validated features: ' + ', '.join(missing))
 
 p.write_text(s, encoding='utf-8')
-print('V14.2 locked web patch applied and validated')
+print('V14.2 locked web patch applied and validated with home Meditation/Hypnosis tabs')
