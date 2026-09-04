@@ -136,6 +136,10 @@ input[type=range]{width:100%;accent-color:var(--teal)}
 .session-type-picker{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:6px}
 .session-type-picker .btn.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:800}
 .session-type-badge{display:inline-flex;align-items:center;margin:0 0 8px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;color:var(--teal);background:var(--paper)}
+.session-type-home{margin:12px 0 16px;padding:14px 16px}
+.session-type-home .kicker{margin-bottom:8px}
+.session-type-home .session-type-picker{margin-top:0}
+.session-type-home .btn{min-height:54px;font-weight:800}
 </style>
 </head>
 <body>
@@ -180,6 +184,13 @@ input[type=range]{width:100%;accent-color:var(--teal)}
     <div class="brand">PRENDRE SOIN DE SON HÊTRE</div>
     <h1>Ma régie de séance</h1>
     <p class="subtitle">Ton fil conducteur pour guider une méditation ou une séance d’hypnose sans perdre le texte, le temps, le rythme ni tes transitions.</p>
+    <div class="card session-type-home" id="homeSessionTypeCard">
+      <div class="kicker">TYPE DE SÉANCE</div>
+      <div class="session-type-picker" id="homeSessionTypePicker">
+        <button class="btn" type="button" data-session-type="meditation">Méditation</button>
+        <button class="btn" type="button" data-session-type="hypnose">Hypnose</button>
+      </div>
+    </div>
     <div class="feature-grid"><div class="feature">TEXTE</div><div class="feature">TEMPS</div><div class="feature">RYTHME</div><div class="feature">MIX</div></div>
     <div class="card">
       <div class="kicker">MA SÉANCE</div>
@@ -785,7 +796,13 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
     const badge=document.getElementById("homeSessionType");
     if(badge)badge.textContent=label(t);
   };
-  window.setRegieSessionType=t=>{try{state.sessionType=norm(t);paint()}catch(e){}};
+  window.setRegieSessionType=t=>{
+    try{
+      state.sessionType=norm(t);
+      paint();
+      if(typeof persistLocal==="function")persistLocal();
+    }catch(e){}
+  };
 
   document.addEventListener("click",e=>{
     const b=e.target.closest&&e.target.closest("[data-session-type]");
@@ -798,9 +815,9 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
     if(current())return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    showModal(`<div class="kicker">TYPE DE SÉANCE</div><h2>Que vas-tu guider ?</h2><p class="note">Choisis le type de cette séance. Ce choix restera enregistré avec elle.</p><div class="session-type-picker"><button class="btn" id="chooseMeditation">Méditation</button><button class="btn" id="chooseHypnose">Hypnose</button></div><button class="btn" style="width:100%;margin-top:10px" id="chooseCancel">Annuler</button>`);
-    document.getElementById("chooseMeditation").onclick=()=>{window.setRegieSessionType("meditation");persistLocal();closeModal();startPlayer()};
-    document.getElementById("chooseHypnose").onclick=()=>{window.setRegieSessionType("hypnose");persistLocal();closeModal();startPlayer()};
+    showModal(`<div class="kicker">TYPE DE SÉANCE</div><h2>Que vas-tu guider ?</h2><p class="note">Choisis le type de cette séance.</p><div class="session-type-picker"><button class="btn" id="chooseMeditation">Méditation</button><button class="btn" id="chooseHypnose">Hypnose</button></div><button class="btn" style="width:100%;margin-top:10px" id="chooseCancel">Annuler</button>`);
+    document.getElementById("chooseMeditation").onclick=()=>{window.setRegieSessionType("meditation");closeModal();startPlayer()};
+    document.getElementById("chooseHypnose").onclick=()=>{window.setRegieSessionType("hypnose");closeModal();startPlayer()};
     document.getElementById("chooseCancel").onclick=closeModal;
   },true);
 
