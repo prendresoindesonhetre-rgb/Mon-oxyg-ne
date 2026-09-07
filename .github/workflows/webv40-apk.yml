@@ -66,14 +66,16 @@ jobs:
           python scripts/apply_v38_true_responsive.py pwa
           python scripts/apply_v39_sideways_fit.py pwa
 
-      - name: Verify sequence layer
+      - name: Verify phone and sequence layers
         run: |
           grep -q "Retrouver le calme" pwa/www/sequence.js
           grep -q "Retrouver de l’élan" pwa/www/sequence.js
           grep -q "ton ventre se gonfle" pwa/www/sequence.js
           grep -q "ton ventre se dégonfle" pwa/www/sequence.js
           grep -q "0.655 + 0.28" pwa/www/sequence.js
-          test -f pwa/www/v40-mobile-sequence.css
+          grep -q "Rythme simple" pwa/www/v41-phone-ui.js
+          grep -q "Enchaînements" pwa/www/v41-phone-ui.js
+          test -f pwa/www/v41-phone-ui.css
 
       - name: Bundle the same web app inside Android
         run: |
@@ -87,6 +89,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Mon-Oxygene-Enchainements-v40
+          name: Mon-Oxygene-Telephone-v41
           path: webv40/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
