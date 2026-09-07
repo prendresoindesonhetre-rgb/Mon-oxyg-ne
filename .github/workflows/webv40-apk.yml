@@ -1,0 +1,92 @@
+name: Build Mon Oxygene Enchainements APK
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'webv40/**'
+      - 'pwa/**'
+      - 'scripts/apply_seconds_labels.py'
+      - 'scripts/apply_v24_lotus_scale.py'
+      - 'scripts/apply_v25_lotus_balance.py'
+      - 'scripts/apply_v26_lotus_slightly_larger.py'
+      - 'scripts/apply_v27_thinner_sinusoid.py'
+      - 'scripts/apply_v28_thinner_line_only.py'
+      - 'scripts/apply_v29_final_thinner_line.py'
+      - 'scripts/apply_v31_lotus_slightly_smaller.py'
+      - 'scripts/apply_v32_lotus_slightly_larger.py'
+      - 'scripts/apply_v33_thinner_sinusoid_all.py'
+      - 'scripts/apply_v34_wide_compat.py'
+      - 'scripts/apply_v35_responsive_layout.py'
+      - 'scripts/apply_v37_install_and_fresh_link.py'
+      - 'scripts/apply_v38_true_responsive.py'
+      - 'scripts/apply_v39_sideways_fit.py'
+      - '.github/workflows/webv40-apk.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.11.1'
+
+      - name: Prepare PWA assets
+        run: |
+          python -m pip install pillow
+          python pwa/scripts/prepare_assets.py
+
+      - name: Apply validated Mon Oxygene visual patches
+        run: |
+          python scripts/apply_seconds_labels.py pwa
+          python scripts/apply_v24_lotus_scale.py pwa
+          python scripts/apply_v25_lotus_balance.py pwa
+          python scripts/apply_v26_lotus_slightly_larger.py pwa
+          python scripts/apply_v27_thinner_sinusoid.py pwa
+          python scripts/apply_v28_thinner_line_only.py pwa
+          python scripts/apply_v29_final_thinner_line.py pwa
+          python scripts/apply_v31_lotus_slightly_smaller.py pwa
+          python scripts/apply_v32_lotus_slightly_larger.py pwa
+          python scripts/apply_v33_thinner_sinusoid_all.py pwa
+          python scripts/apply_v34_wide_compat.py pwa
+          python scripts/apply_v35_responsive_layout.py pwa
+          python scripts/apply_v37_install_and_fresh_link.py pwa
+          python scripts/apply_v38_true_responsive.py pwa
+          python scripts/apply_v39_sideways_fit.py pwa
+
+      - name: Verify sequence layer
+        run: |
+          grep -q "Retrouver le calme" pwa/www/sequence.js
+          grep -q "Retrouver de l’élan" pwa/www/sequence.js
+          grep -q "ton ventre se gonfle" pwa/www/sequence.js
+          grep -q "ton ventre se dégonfle" pwa/www/sequence.js
+          grep -q "0.655 + 0.28" pwa/www/sequence.js
+          test -f pwa/www/v40-mobile-sequence.css
+
+      - name: Bundle the same web app inside Android
+        run: |
+          rm -rf webv40/app/src/main/assets/web
+          mkdir -p webv40/app/src/main/assets/web
+          cp -R pwa/www/. webv40/app/src/main/assets/web/
+
+      - name: Build clean Android APK
+        run: gradle -p webv40 :app:assembleDebug --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mon-Oxygene-Enchainements-v40
+          path: webv40/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

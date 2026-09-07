@@ -1,0 +1,14 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'fr.prendresoindesonhetre.monoxygene.v40'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'fr.prendresoindesonhetre.monoxygene.enchainementsv40'
+        minSdk 23
+        targetSdk 35
+        versionCode 40
+        versionName '1.0.40'
+    }
+}
