@@ -1,5 +1,5 @@
-// PWA refresh — ajout des enchaînements de rythmes sur le lien permanent v37.
-const CACHE_NAME = 'mon-oxygene-pwa-v3-landscape';
+// PWA refresh — interface téléphone v42 sur le lien permanent v37.
+const CACHE_NAME = 'mon-oxygene-pwa-v42-phone';
 const CORE = [
   './',
   './index.html',
@@ -8,6 +8,10 @@ const CORE = [
   './orientation.js',
   './app.js',
   './sequence.js',
+  './v41-phone-ui.css',
+  './v41-phone-ui.js',
+  './v42-phone-layout.css',
+  './v42-phone-layout.js',
   './manifest.webmanifest',
   './assets/settings_bg.jpg',
   './assets/curve_bg.jpg',
