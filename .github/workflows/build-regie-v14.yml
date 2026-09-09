@@ -1,4 +1,4 @@
-name: Build Regie V14.3 Home Tabs APK
+name: Build Regie V14.4 Tabs Back APK
 
 on:
   push:
@@ -48,30 +48,36 @@ jobs:
         working-directory: ChronoMeditation
         run: python3 v14_mobile_match_web.py
 
-      - name: Verify locked Android source
+      - name: Verify Android source
         working-directory: ChronoMeditation
         run: |
           SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
           grep -F 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/' "$SRC"
-          grep -F '?app=143' "$SRC"
+          grep -F '?app=144' "$SRC"
+          grep -F 's.setCacheMode(WebSettings.LOAD_NO_CACHE);' "$SRC"
+          grep -F 'webView.clearCache(true);' "$SRC"
+          grep -F 'window.regieBack' "$SRC"
           grep -F 's.setLoadWithOverviewMode(false);' "$SRC"
           grep -F 's.setUseWideViewPort(false);' "$SRC"
           grep -F 's.setTextZoom(100);' "$SRC"
           grep -F "applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'" app/build.gradle
-          grep -F 'versionCode 143' app/build.gradle
-          grep -F "versionName '14.3-home-tabs'" app/build.gradle
+          grep -F 'versionCode 144' app/build.gradle
+          grep -F "versionName '14.4-tabs-back'" app/build.gradle
           grep -F 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -F 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
           grep -F 'android.permission.INTERNET' app/src/main/AndroidManifest.xml
 
-      - name: Verify published web source contains locked validated functions
+      - name: Verify published web source contains all validated functions
         run: |
           git fetch origin gh-pages
           git show origin/gh-pages:regie-v14/index.html > /tmp/regie-live.html
-          grep -q 'locked-session-type-script-v142' /tmp/regie-live.html
+          grep -q 'name="regie-build" content="14.4"' /tmp/regie-live.html
+          grep -q 'locked-session-type-script-v144' /tmp/regie-live.html
           grep -q 'id="homeSessionTypePicker"' /tmp/regie-live.html
           grep -q 'data-session-type="meditation"' /tmp/regie-live.html
           grep -q 'data-session-type="hypnose"' /tmp/regie-live.html
+          grep -q 'id="playerBackBtn"' /tmp/regie-live.html
+          grep -q 'window.regieBack' /tmp/regie-live.html
           grep -q 'Méditation' /tmp/regie-live.html
           grep -q 'Hypnose' /tmp/regie-live.html
           grep -q 'mobile-player-v141' /tmp/regie-live.html
@@ -95,8 +101,8 @@ jobs:
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/debug/app-debug.apk | tee /tmp/badging.txt
           grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v14'" /tmp/badging.txt
-          grep -F "versionCode='143'" /tmp/badging.txt
-          grep -F "versionName='14.3-home-tabs'" /tmp/badging.txt
+          grep -F "versionCode='144'" /tmp/badging.txt
+          grep -F "versionName='14.4-tabs-back'" /tmp/badging.txt
           grep -F "application-label:'Régie de mon Hêtre'" /tmp/badging.txt
           grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
@@ -124,9 +130,9 @@ jobs:
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
             ! adb logcat -d | grep -A 30 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v14'
 
-      - name: Upload V14.3 APK
+      - name: Upload V14.4 APK
         uses: actions/upload-artifact@v4
         with:
-          name: Regie-de-mon-Hetre-V14.3-home-tabs-tested
+          name: Regie-de-mon-Hetre-V14.4-tabs-back-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
