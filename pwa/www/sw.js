@@ -1,5 +1,5 @@
 // PWA refresh — interface téléphone v42 sur le lien permanent v37.
-const CACHE_NAME = 'mon-oxygene-pwa-v42-phone';
+const CACHE_NAME = 'mon-oxygene-pwa-v3-landscape';
 const CORE = [
   './',
   './index.html',
