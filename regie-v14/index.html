@@ -7,7 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="regie-build" content="14.4">
+<meta name="regie-build" content="14.5">
 <title>Régie de mon Hêtre</title>
 <style>
 :root{
@@ -126,27 +126,29 @@ input[type=range]{width:100%;accent-color:var(--teal)}
   .guide-scroll{height:46vh;padding-left:27px;padding-right:22px}
 }
 </style>
-<style id="mobile-player-v141">
+<style id="mobile-player-v145">
 @media(max-width:600px){
-  #playerView.player{padding-bottom:calc(190px + env(safe-area-inset-bottom))}
-  #autoRow.auto-row{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));width:min(calc(100% - 22px),738px);z-index:24;margin:0;padding:7px;border:1px solid var(--line);border-radius:18px;background:rgba(247,245,241,.96);box-shadow:0 -4px 18px rgba(64,58,55,.08);backdrop-filter:blur(10px)}
+  #playerView.player{padding-top:62px;padding-bottom:calc(190px + env(safe-area-inset-bottom))}
+  #autoRow.auto-row{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom));width:min(calc(100% - 22px),738px);z-index:24;margin:0;padding:7px;border:1px solid var(--line);border-radius:18px;background:rgba(247,245,241,.97);box-shadow:0 -4px 18px rgba(64,58,55,.08);backdrop-filter:blur(10px)}
   #bottomControls{z-index:25}
   #guideCard{margin-bottom:110px}
   #guideScroll{height:50dvh;min-height:320px;max-height:560px}
   .screen{padding-bottom:calc(190px + env(safe-area-inset-bottom))}
+  #playerNav{position:fixed;left:11px;right:11px;top:calc(8px + env(safe-area-inset-top));z-index:70;margin:0;pointer-events:none}
+  #playerBackBtn,#playerTypePill{pointer-events:auto}
 }
 </style>
-<style id="locked-session-type-v144">
+<style id="locked-session-type-v145">
 .session-type-picker{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:6px}
 .session-type-picker .btn.active{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:800}
 .session-type-badge{display:inline-flex;align-items:center;margin:0 0 8px;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800;color:var(--teal);background:var(--paper)}
-.session-type-home{margin:8px 0 16px;padding:10px;background:rgba(255,253,249,.98)}
+.session-type-home{margin:8px 0 16px;padding:12px;background:rgba(255,253,249,.99);border:2px solid rgba(92,133,134,.24)}
 .session-type-home .kicker{margin:2px 4px 8px}
 .session-type-home .session-type-picker{margin-top:0}
-.session-type-home .btn{min-height:58px;font-size:17px;font-weight:850;border-radius:18px}
-.player-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;position:sticky;top:calc(6px + env(safe-area-inset-top));z-index:26}
-.player-back{background:rgba(255,253,249,.97);box-shadow:0 4px 14px rgba(64,58,55,.08);font-weight:800}
-@media(max-width:600px){.player-nav{top:calc(4px + env(safe-area-inset-top))}.player-back{min-height:46px}}
+.session-type-home .btn{min-height:60px;font-size:17px;font-weight:850;border-radius:18px}
+.player-nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px;position:sticky;top:calc(6px + env(safe-area-inset-top));z-index:40}
+.player-back{background:rgba(255,253,249,.98);box-shadow:0 4px 14px rgba(64,58,55,.12);font-weight:800;border-color:rgba(92,133,134,.35)}
+.type-modal-title{margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -532,6 +534,7 @@ function enterApp(){
   $("authScreen").classList.add("hidden");$("appScreen").classList.remove("hidden");
   $("accountBtn").textContent=profile?.displayName||"Mon espace";
   renderHome();startPullLoop();syncPull().catch(()=>{});
+  setTimeout(()=>window.ensureRegieTypeChoice?.(),120);
 }
 function openAccount(){
   showModal(`<div class="kicker">MON ESPACE</div><h2>${esc(profile?.displayName||"")}</h2>
@@ -792,27 +795,32 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
   }
 })();
 </script>
-<script id="locked-session-type-script-v144">
+<script id="locked-session-type-script-v145">
 (()=>{
   const norm=t=>t==="hypnose"?"hypnose":t==="meditation"?"meditation":"";
   const label=t=>t==="hypnose"?"Hypnose":t==="meditation"?"Méditation":"Type à choisir";
-  try{DEFAULT_STATE.sessionType=""}catch(e){}
   const current=()=>{try{return norm(state&&state.sessionType)}catch(e){return ""}};
   const paint=()=>{
     const t=current();
     document.querySelectorAll("[data-session-type]").forEach(b=>b.classList.toggle("active",b.dataset.sessionType===t));
-    const badge=document.getElementById("homeSessionType");
-    if(badge)badge.textContent=label(t);
-    const pill=document.getElementById("playerTypePill");
-    if(pill)pill.textContent=label(t);
+    const badge=document.getElementById("homeSessionType");if(badge)badge.textContent=label(t);
+    const pill=document.getElementById("playerTypePill");if(pill)pill.textContent=t?label(t):"";
   };
   window.setRegieSessionType=t=>{
-    try{
-      state.sessionType=norm(t);
-      paint();
-      if(typeof persistLocal==="function")persistLocal();
-    }catch(e){}
+    try{state.sessionType=norm(t);paint();if(typeof persistLocal==="function")persistLocal();return true}catch(e){return false}
   };
+
+  const showChooser=()=>{
+    if(current())return false;
+    if(document.getElementById("chooseMeditation"))return true;
+    if(typeof showModal!=="function")return false;
+    showModal(`<div class="kicker">MES SÉANCES</div><h2 class="type-modal-title">Méditation ou hypnose ?</h2><p class="note">Choisis l’espace dans lequel tu veux travailler.</p><div class="session-type-picker"><button class="btn" id="chooseMeditation">Méditation</button><button class="btn" id="chooseHypnose">Hypnose</button></div>`);
+    const m=document.getElementById("chooseMeditation"),h=document.getElementById("chooseHypnose");
+    if(m)m.onclick=()=>{window.setRegieSessionType("meditation");closeModal();paint()};
+    if(h)h.onclick=()=>{window.setRegieSessionType("hypnose");closeModal();paint()};
+    return true;
+  };
+  window.ensureRegieTypeChoice=showChooser;
 
   document.addEventListener("click",e=>{
     const b=e.target.closest&&e.target.closest("[data-session-type]");
@@ -823,20 +831,16 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
   const open=document.getElementById("openRegieBtn");
   if(open)open.addEventListener("click",e=>{
     if(current())return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    showModal(`<div class="kicker">TYPE DE SÉANCE</div><h2>Que vas-tu guider ?</h2><p class="note">Choisis le type de cette séance.</p><div class="session-type-picker"><button class="btn" id="chooseMeditation">Méditation</button><button class="btn" id="chooseHypnose">Hypnose</button></div><button class="btn" style="width:100%;margin-top:10px" id="chooseCancel">Annuler</button>`);
-    document.getElementById("chooseMeditation").onclick=()=>{window.setRegieSessionType("meditation");closeModal();startPlayer();paint()};
-    document.getElementById("chooseHypnose").onclick=()=>{window.setRegieSessionType("hypnose");closeModal();startPlayer();paint()};
-    document.getElementById("chooseCancel").onclick=closeModal;
+    e.preventDefault();e.stopImmediatePropagation();
+    showChooser();
   },true);
 
-  // Reliable back behaviour for the on-screen button, browser back and Android hardware/system back.
   const goHome=()=>{
     try{
       if(typeof stopPlayer==="function" && typeof view!=="undefined" && view==="player")stopPlayer();
       else if(typeof renderHome==="function")renderHome();
       paint();
+      try{history.replaceState({regieView:"home"},"")}catch(e){}
       return true;
     }catch(e){return false}
   };
@@ -846,27 +850,25 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
     }catch(e){}
     return false;
   };
-  const back=document.getElementById("playerBackBtn");
-  if(back)back.onclick=()=>goHome();
+  const back=document.getElementById("playerBackBtn");if(back)back.onclick=goHome;
 
-  // Create an in-app history entry whenever the user enters a sub-screen.
+  // Browser back must return from a session instead of leaving the app.
   const markView=()=>{
     try{
-      if(typeof view!=="undefined" && ["player","edit","music"].includes(view) && history.state?.regieView!==view){
-        history.pushState({regieView:view},"");
-      }
+      if(typeof view!=="undefined" && ["player","edit","music"].includes(view) && history.state?.regieView!==view)history.pushState({regieView:view},"");
     }catch(e){}
   };
   document.addEventListener("click",()=>setTimeout(()=>{paint();markView()},0));
-  window.addEventListener("popstate",()=>{
-    try{if(typeof view!=="undefined" && ["player","edit","music"].includes(view))goHome()}catch(e){}
-  });
+  window.addEventListener("popstate",()=>{try{if(typeof view!=="undefined" && ["player","edit","music"].includes(view))goHome()}catch(e){}});
 
-  const save=document.getElementById("saveSessionBtn");
-  if(save)save.addEventListener("click",()=>setTimeout(paint,0));
-  const reset=document.getElementById("resetSessionBtn");
-  if(reset)reset.addEventListener("click",()=>setTimeout(paint,0));
+  const save=document.getElementById("saveSessionBtn");if(save)save.addEventListener("click",()=>setTimeout(paint,0));
+  const reset=document.getElementById("resetSessionBtn");if(reset)reset.addEventListener("click",()=>setTimeout(paint,0));
   paint();
+  setTimeout(()=>{
+    paint();
+    const app=document.getElementById("appScreen");
+    if(app && !app.classList.contains("hidden"))showChooser();
+  },180);
 })();
 </script>
 </body>
