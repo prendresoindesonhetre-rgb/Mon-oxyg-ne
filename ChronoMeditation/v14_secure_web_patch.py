@@ -26,7 +26,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
-    private static final String APP_URL = "https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/?app=144";
+    private static final String BASE_URL = "https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/";
+    private static final String APP_URL = BASE_URL + "?app=145";
     private static final int FILE_CHOOSER_REQUEST = 7401;
 
     private WebView webView;
@@ -88,8 +89,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        if (savedInstanceState != null) webView.restoreState(savedInstanceState);
-        else webView.loadUrl(APP_URL);
+        // Always load the current web build. LocalStorage remains intact, but an old rendered WebView is never restored.
+        webView.loadUrl(APP_URL);
     }
 
     private void showOfflinePage() {
@@ -98,7 +99,7 @@ public class MainActivity extends Activity {
                 "<div style='max-width:420px;padding:30px;text-align:center'><h2>Régie de mon Hêtre</h2>" +
                 "<p>La connexion est indisponible pour le moment. Tes données déjà enregistrées sur cet appareil restent dans son espace privé.</p>" +
                 "<button style='border:0;border-radius:18px;padding:14px 22px;background:#789895;color:white;font-size:16px' onclick=\"location.href='" + APP_URL + "'\">Réessayer</button></div></body></html>";
-        webView.loadDataWithBaseURL(APP_URL, html, "text/html", "UTF-8", null);
+        webView.loadDataWithBaseURL(BASE_URL, html, "text/html", "UTF-8", null);
     }
 
     @Override
@@ -113,7 +114,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        webView.saveState(outState);
+        // Do not save/restore the rendered page: that could resurrect an older cached UI.
         super.onSaveInstanceState(outState);
     }
 
@@ -146,8 +147,8 @@ public class MainActivity extends Activity {
 }
 ''', encoding='utf-8')
 
-GRADLE.write_text('''plugins { id 'com.android.application' }\n\nandroid {\n    namespace 'fr.prendresoindesonhetre.chronomeditation'\n    compileSdk 35\n\n    defaultConfig {\n        applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'\n        minSdk 26\n        targetSdk 35\n        versionCode 144\n        versionName '14.4-tabs-back'\n    }\n\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n}\n''', encoding='utf-8')
+GRADLE.write_text('''plugins { id 'com.android.application' }\n\nandroid {\n    namespace 'fr.prendresoindesonhetre.chronomeditation'\n    compileSdk 35\n\n    defaultConfig {\n        applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'\n        minSdk 26\n        targetSdk 35\n        versionCode 145\n        versionName '14.5-fresh-tabs-back'\n    }\n\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n}\n''', encoding='utf-8')
 
 MANIFEST.write_text('''<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <application\n        android:allowBackup="false"\n        android:label="Régie de mon Hêtre"\n        android:theme="@style/AppTheme"\n        android:usesCleartextTraffic="false">\n        <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">\n            <intent-filter>\n                <action android:name="android.intent.action.MAIN" />\n                <category android:name="android.intent.category.LAUNCHER" />\n            </intent-filter>\n        </activity>\n    </application>\n</manifest>\n''', encoding='utf-8')
 
-print('V14.4 secure wrapper: fresh web cache + in-app Android back')
+print('V14.5 secure wrapper: forced fresh page + in-app Android back')
