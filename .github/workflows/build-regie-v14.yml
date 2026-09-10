@@ -1,4 +1,4 @@
-name: Build Regie V14.4 Tabs Back APK
+name: Build Regie V14.5 Fresh Tabs Back APK
 
 on:
   push:
@@ -53,16 +53,18 @@ jobs:
         run: |
           SRC=app/src/main/java/fr/prendresoindesonhetre/chronomeditation/MainActivity.java
           grep -F 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/regie-v14/' "$SRC"
-          grep -F '?app=144' "$SRC"
+          grep -F '?app=145' "$SRC"
           grep -F 's.setCacheMode(WebSettings.LOAD_NO_CACHE);' "$SRC"
           grep -F 'webView.clearCache(true);' "$SRC"
           grep -F 'window.regieBack' "$SRC"
+          grep -F 'webView.loadUrl(APP_URL);' "$SRC"
+          ! grep -F 'webView.restoreState' "$SRC"
           grep -F 's.setLoadWithOverviewMode(false);' "$SRC"
           grep -F 's.setUseWideViewPort(false);' "$SRC"
           grep -F 's.setTextZoom(100);' "$SRC"
           grep -F "applicationId 'fr.prendresoindesonhetre.meditationshetre.v14'" app/build.gradle
-          grep -F 'versionCode 144' app/build.gradle
-          grep -F "versionName '14.4-tabs-back'" app/build.gradle
+          grep -F 'versionCode 145' app/build.gradle
+          grep -F "versionName '14.5-fresh-tabs-back'" app/build.gradle
           grep -F 'android:allowBackup="false"' app/src/main/AndroidManifest.xml
           grep -F 'android:usesCleartextTraffic="false"' app/src/main/AndroidManifest.xml
           grep -F 'android.permission.INTERNET' app/src/main/AndroidManifest.xml
@@ -71,16 +73,17 @@ jobs:
         run: |
           git fetch origin gh-pages
           git show origin/gh-pages:regie-v14/index.html > /tmp/regie-live.html
-          grep -q 'name="regie-build" content="14.4"' /tmp/regie-live.html
-          grep -q 'locked-session-type-script-v144' /tmp/regie-live.html
+          grep -q 'name="regie-build" content="14.5"' /tmp/regie-live.html
+          grep -q 'locked-session-type-script-v145' /tmp/regie-live.html
           grep -q 'id="homeSessionTypePicker"' /tmp/regie-live.html
           grep -q 'data-session-type="meditation"' /tmp/regie-live.html
           grep -q 'data-session-type="hypnose"' /tmp/regie-live.html
+          grep -q 'window.ensureRegieTypeChoice' /tmp/regie-live.html
           grep -q 'id="playerBackBtn"' /tmp/regie-live.html
           grep -q 'window.regieBack' /tmp/regie-live.html
           grep -q 'Méditation' /tmp/regie-live.html
           grep -q 'Hypnose' /tmp/regie-live.html
-          grep -q 'mobile-player-v141' /tmp/regie-live.html
+          grep -q 'mobile-player-v145' /tmp/regie-live.html
           grep -q 'id="autoRow"' /tmp/regie-live.html
           grep -q 'id="guideScroll"' /tmp/regie-live.html
           grep -q 'id="playPauseBtn"' /tmp/regie-live.html
@@ -101,8 +104,8 @@ jobs:
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging app/build/outputs/apk/debug/app-debug.apk | tee /tmp/badging.txt
           grep -F "package: name='fr.prendresoindesonhetre.meditationshetre.v14'" /tmp/badging.txt
-          grep -F "versionCode='144'" /tmp/badging.txt
-          grep -F "versionName='14.4-tabs-back'" /tmp/badging.txt
+          grep -F "versionCode='145'" /tmp/badging.txt
+          grep -F "versionName='14.5-fresh-tabs-back'" /tmp/badging.txt
           grep -F "application-label:'Régie de mon Hêtre'" /tmp/badging.txt
           grep -F "launchable-activity: name='fr.prendresoindesonhetre.chronomeditation.MainActivity'" /tmp/badging.txt
 
@@ -130,9 +133,9 @@ jobs:
             adb shell dumpsys activity activities | grep -F "topResumedActivity" | grep -F "fr.prendresoindesonhetre.chronomeditation.MainActivity"
             ! adb logcat -d | grep -A 30 'FATAL EXCEPTION' | grep -F 'fr.prendresoindesonhetre.meditationshetre.v14'
 
-      - name: Upload V14.4 APK
+      - name: Upload V14.5 APK
         uses: actions/upload-artifact@v4
         with:
-          name: Regie-de-mon-Hetre-V14.4-tabs-back-tested
+          name: Regie-de-mon-Hetre-V14.5-fresh-tabs-back-tested
           path: ChronoMeditation/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
