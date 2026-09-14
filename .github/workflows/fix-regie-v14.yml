@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'scripts/patch_regie_v14.py'
+      - 'scripts/add_bulle_session.py'
       - '.github/workflows/fix-regie-v14.yml'
   workflow_dispatch:
 
@@ -39,6 +40,9 @@ jobs:
       - name: Restore complete Regie functionality
         run: python scripts/patch_regie_v14.py pwa-dist/regie-v14/index.html
 
+      - name: Add Ma bulle session
+        run: python scripts/add_bulle_session.py pwa-dist/regie-v14/index.html
+
       - name: Validate restored Regie
         run: |
           grep -q '+ Créer une séance' pwa-dist/regie-v14/index.html
@@ -46,6 +50,8 @@ jobs:
           grep -q 'Hypnose' pwa-dist/regie-v14/index.html
           grep -q 'addPhaseBtn' pwa-dist/regie-v14/index.html
           grep -q 'if(!playing||!running)return' pwa-dist/regie-v14/index.html
+          grep -q 'Ma bulle — mon espace' pwa-dist/regie-v14/index.html
+          grep -q 'BULLE_SESSION_20260914' pwa-dist/regie-v14/index.html
           python - <<'PY'
           import re
           from pathlib import Path
