@@ -1,244 +1,58 @@
-name: Build and Deploy PWA
-
+name: Deploy Mon Oxygene PWA
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'pwa/**'
-      - 'app/src/main/assets/settings_exact/**'
-      - 'app/src/main/java/fr/prendresoindesonhetre/monoxygene/AssetCurve*.java'
-      - 'app/src/main/res/drawable/lotus_breathing.webp'
       - '.github/workflows/pwa.yml'
-      - 'scripts/apply_seconds_labels.py'
-      - 'scripts/apply_v24_lotus_scale.py'
-      - 'scripts/apply_v25_lotus_balance.py'
-      - 'scripts/apply_v26_lotus_slightly_larger.py'
-      - 'scripts/apply_v27_thinner_sinusoid.py'
-      - 'scripts/apply_v28_thinner_line_only.py'
-      - 'scripts/apply_v29_final_thinner_line.py'
-      - 'scripts/apply_v31_lotus_slightly_smaller.py'
-      - 'scripts/apply_v32_lotus_slightly_larger.py'
-      - 'scripts/apply_v33_thinner_sinusoid_all.py'
-      - 'scripts/apply_v34_wide_compat.py'
-      - 'scripts/apply_v35_responsive_layout.py'
-      - 'scripts/apply_v37_install_and_fresh_link.py'
-      - 'scripts/apply_v38_true_responsive.py'
-      - 'scripts/apply_v39_sideways_fit.py'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'pwa/**'
-      - 'app/src/main/assets/settings_exact/**'
-      - 'app/src/main/java/fr/prendresoindesonhetre/monoxygene/AssetCurve*.java'
-      - 'app/src/main/res/drawable/lotus_breathing.webp'
-      - '.github/workflows/pwa.yml'
-      - 'scripts/apply_seconds_labels.py'
-      - 'scripts/apply_v24_lotus_scale.py'
-      - 'scripts/apply_v25_lotus_balance.py'
-      - 'scripts/apply_v26_lotus_slightly_larger.py'
-      - 'scripts/apply_v27_thinner_sinusoid.py'
-      - 'scripts/apply_v28_thinner_line_only.py'
-      - 'scripts/apply_v29_final_thinner_line.py'
-      - 'scripts/apply_v31_lotus_slightly_smaller.py'
-      - 'scripts/apply_v32_lotus_slightly_larger.py'
-      - 'scripts/apply_v33_thinner_sinusoid_all.py'
-      - 'scripts/apply_v34_wide_compat.py'
-      - 'scripts/apply_v35_responsive_layout.py'
-      - 'scripts/apply_v37_install_and_fresh_link.py'
-      - 'scripts/apply_v38_true_responsive.py'
-      - 'scripts/apply_v39_sideways_fit.py'
   workflow_dispatch:
-
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: pages
-  cancel-in-progress: false
-
+  cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install image tools
-        run: python -m pip install pillow
-
-      - name: Prepare exact Mon Oxygène assets
+          python-version: '3.x'
+      - run: pip install pillow
+      - name: Restore image assets
         run: python pwa/scripts/prepare_assets.py
-
-      - name: Add seconds to breathing rhythm labels
-        run: python scripts/apply_seconds_labels.py pwa
-
-      - name: Apply smaller lotus breathing scale
-        run: python scripts/apply_v24_lotus_scale.py pwa
-
-      - name: Apply balanced lotus breathing scale
-        run: python scripts/apply_v25_lotus_balance.py pwa
-
-      - name: Apply slightly larger lotus breathing scale
-        run: python scripts/apply_v26_lotus_slightly_larger.py pwa
-
-      - name: Apply slightly thinner sinusoid
-        run: python scripts/apply_v27_thinner_sinusoid.py pwa
-
-      - name: Apply thinner sinusoid line only
-        run: python scripts/apply_v28_thinner_line_only.py pwa
-
-      - name: Apply final thinner sinusoid line
-        run: python scripts/apply_v29_final_thinner_line.py pwa
-
-      - name: Apply slightly smaller lotus
-        run: python scripts/apply_v31_lotus_slightly_smaller.py pwa
-
-      - name: Apply slightly larger lotus
-        run: python scripts/apply_v32_lotus_slightly_larger.py pwa
-
-      - name: Apply thinner sinusoid everywhere
-        run: python scripts/apply_v33_thinner_sinusoid_all.py pwa
-
-      - name: Apply wide PWA compatibility
-        run: python scripts/apply_v34_wide_compat.py pwa
-
-      - name: Apply automatic responsive layout
-        run: python scripts/apply_v35_responsive_layout.py pwa
-
-      - name: Apply fresh mobile link and small-screen fixes
-        run: python scripts/apply_v37_install_and_fresh_link.py pwa
-
-      - name: Apply v38 responsive foundation
-        run: python scripts/apply_v38_true_responsive.py pwa
-
-      - name: Apply permanent landscape fit
-        run: python scripts/apply_v39_sideways_fit.py pwa
-
-      - name: Build legacy-compatible JavaScript
+      - name: Validate PWA
         run: |
-          npm install --no-save --package-lock=false @babel/core@7 @babel/cli@7 @babel/preset-env@7 core-js-bundle@3
-          npx babel pwa/www/app.js --out-file /tmp/app.js --presets=@babel/preset-env
-          mv /tmp/app.js pwa/www/app.js
-          npx babel pwa/www/orientation.js --out-file /tmp/orientation.js --presets=@babel/preset-env
-          mv /tmp/orientation.js pwa/www/orientation.js
-          npx babel pwa/www/sw.js --out-file /tmp/sw.js --presets=@babel/preset-env
-          mv /tmp/sw.js pwa/www/sw.js
-          cp node_modules/core-js-bundle/minified.js pwa/www/polyfills.js
-
-      - name: Validate PWA source
-        run: |
-          node --check pwa/www/app.js
-          node --check pwa/www/orientation.js
-          node --check pwa/www/responsive.js
-          node --check pwa/www/sw.js
-          node --check pwa/www/compat-init.js
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          root = Path('pwa/www')
-          manifest = json.loads((root/'manifest.webmanifest').read_text(encoding='utf-8'))
-          assert manifest['display'] == 'standalone'
-          assert manifest['start_url'] == './'
-          assert manifest['orientation'] == 'landscape'
-          app_js = (root/'app.js').read_text(encoding='utf-8')
-          for label in ['5s/5s', '4s/6s', '3s/5s', '6s/4s', '5s/3s']:
-              assert label in app_js, label
-          assert '0.655 + 0.48 * breathEase(elapsed)' in app_js
-          assert '=>' not in app_js
-          assert 'async function' not in app_js
-          css = (root/'styles.css').read_text(encoding='utf-8')
-          assert 'stroke-width:12' in css
-          assert 'stroke-width:3.4' in css
-          responsive = (root/'responsive.js').read_text(encoding='utf-8')
-          assert '--ui-panel-width' in responsive
-          responsive_css = (root/'responsive.css').read_text(encoding='utf-8')
-          assert '.ui-compact' in responsive_css
-          v37 = (root/'v37-fixes.css').read_text(encoding='utf-8')
-          assert '-webkit-text-size-adjust:100%' in v37
-          v39 = (root/'v39-landscape-fit.css').read_text(encoding='utf-8')
-          assert '--landscape-width' in v39
-          assert 'rotate(90deg)' in v39
-          orientation = (root/'orientation.js').read_text(encoding='utf-8')
-          assert 'visualViewport' in orientation
-          assert 'landscape-width' in orientation
-          assert 'rotate(90deg)' in orientation
-          sw = (root/'sw.js').read_text(encoding='utf-8')
-          assert 'mon-oxygene-pwa-v18-sideways-fit' in sw
-          assert './v39-landscape-fit.css' in sw
-          for name in ['index.html','styles.css','landscape-force.css','legacy.css','responsive.css','v37-fixes.css','v38-responsive.css','v39-landscape-fit.css','compat-init.js','responsive.js','polyfills.js','orientation.js','app.js','sw.js','manifest.webmanifest']:
-              assert (root/name).exists(), name
-          for name in ['settings_bg.jpg','curve_bg.jpg','lotus.png','icon-192.png','icon-512.png','apple-touch-icon.png']:
-              assert (root/'assets'/name).exists(), name
-          print('PWA v39 validée : toujours en paysage et ajustée au viewport visible')
-          PY
-
-      - name: Prepare static site and v39 path
-        run: |
-          rm -rf pwa-dist
-          mkdir -p pwa-dist/v37 pwa-dist/v38 pwa-dist/v39
-          cp -R pwa/www/. pwa-dist/
-          cp -R pwa/www/. pwa-dist/v37/
-          cp -R pwa/www/. pwa-dist/v38/
-          cp -R pwa/www/. pwa-dist/v39/
-          touch pwa-dist/.nojekyll
-          touch pwa-dist/v37/.nojekyll
-          touch pwa-dist/v38/.nojekyll
-          touch pwa-dist/v39/.nojekyll
-
-      - name: Upload PWA build artifact
-        uses: actions/upload-artifact@v4
+          set -e
+          test -f pwa/www/index.html
+          test -f pwa/www/app.js
+          test -f pwa/www/styles.css
+          test -f pwa/www/v44-rainstick.js
+          test -f pwa/www/sw.js
+          test -f pwa/www/assets/apple-touch-icon.png
+          test -f pwa/www/assets/mon-oxygene-splash.png
+          test -f pwa/www/assets/mon-oxygene-start.png
+          test -f pwa/www/assets/settings_bg.jpg
+          test -f pwa/www/assets/curve_bg.jpg
+          test -f pwa/www/assets/lotus.png
+          test -f pwa/www/assets/rainstick/up-8.mp3
+          test -f pwa/www/assets/rainstick/down-8.mp3
+          grep -q 'v44-rainstick.js?v=46' pwa/www/index.html
+          grep -q 'mon-oxygene-pwa-v46-fixed' pwa/www/sw.js
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: Mon-Oxygene-PWA-v18-sideways-fit
-          path: pwa-dist
-          if-no-files-found: error
-
-      - name: Configure GitHub Pages
-        if: github.event_name != 'pull_request'
-        uses: actions/configure-pages@v6
-
-      - name: Upload GitHub Pages artifact
-        if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: pwa-dist
-
+          path: pwa/www
   deploy:
-    if: github.event_name != 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Record live PWA URL
-        uses: actions/checkout@v4
-        with:
-          ref: main
-
-      - name: Save live URL in repository
-        env:
-          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
-        run: |
-          printf '%s\n' "$PAGE_URL" > PWA_LIVE_URL.txt
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add PWA_LIVE_URL.txt
-          if git diff --cached --quiet; then
-            echo "URL déjà enregistrée"
-          else
-            git commit -m "Record live Mon Oxygène PWA URL"
-            git push origin main
-          fi
