@@ -35,6 +35,8 @@ jobs:
           test -f pwa/www/app.js
           test -f pwa/www/styles.css
           test -f pwa/www/v44-rainstick.js
+          test -f pwa/www/v59-settings-redesign.js
+          test -f pwa/www/v59-settings-redesign.css
           test -f pwa/www/sw.js
           test -f pwa/www/assets/apple-touch-icon.png
           test -f pwa/www/assets/settings_bg.jpg
@@ -43,8 +45,8 @@ jobs:
           test -f pwa/www/assets/rainstick/up-8.mp3
           test -f pwa/www/assets/rainstick/down-8.mp3
           test -f pwa/www/assets/rainstick/ambient-rainstick.mp3
-          grep -q 'v44-rainstick.js?v=58' pwa/www/index.html
-          grep -q 'mon-oxygene-pwa-v58-fresh-web' pwa/www/sw.js
+          grep -q 'v44-rainstick.js?v=59' pwa/www/index.html
+          grep -q 'mon-oxygene-pwa-v59-settings-redesign' pwa/www/sw.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
