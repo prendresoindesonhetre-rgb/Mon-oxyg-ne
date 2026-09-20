@@ -113,10 +113,12 @@
     }
   }
 
-  // v56 : même beau bâton de pluie, plus chaud et avec une transition moins nette.
-  // Inspiration et expiration restent bien distinctes, mais se raccordent doucement.
+  // v57 : aucun chevauchement entre inspiration et expiration.
+  // Le son diminue naturellement AVANT le changement, s'arrête au pic,
+  // puis l'autre passage démarre à zéro et augmente APRÈS le changement.
   var RAINSTICK_FILE = './assets/rainstick/ambient-rainstick.mp3';
-  var TRANSITION_MS = 420;
+  var FADE_OUT_BEFORE_SWITCH_MS = 480;
+  var FADE_IN_AFTER_SWITCH_MS = 480;
   var PLAYBACK_RATE = 0.92;
   var UP_BASE_OFFSET = 0.65;
   var DOWN_BASE_OFFSET = 6.00;
@@ -172,8 +174,16 @@
     var audio = ensureAudio(kind);
     activeAudio = audio;
 
+    // Aucun chevauchement : au changement de phase, l'ancien son est coupé
+    // seulement après avoir eu le temps de descendre naturellement avant le pic.
+    if (previousAudio && previousAudio !== audio) {
+      cancelFade(previousAudio);
+      try { previousAudio.pause(); } catch (_) {}
+    }
+
     cancelFade(audio);
     try { audio.pause(); } catch (_) {}
+    audio.volume = 0;
 
     function begin() {
       if (token !== pendingToken || activeKey !== key || !state.rainstickEnabled) return;
@@ -183,32 +193,31 @@
       try { audio.currentTime = baseOffset + phaseOffset * PLAYBACK_RATE; } catch (_) {}
 
       var targetVolume = clamp(state.rainstickVolume, 0, 0.52);
-      var lowVolume = targetVolume * 0.14;
       var remainingMs = Math.max(0, (seconds - phaseOffset) * 1000);
 
-      // Le nouveau mouvement démarre exactement au changement de respiration.
-      audio.volume = kind === 'up' ? lowVolume : targetVolume;
-
+      // Le nouveau passage commence exactement au changement de respiration,
+      // puis monte naturellement après ce point.
+      audio.volume = 0;
       var p;
       try { p = audio.play(); } catch (_) { return; }
       if (p && typeof p.catch === 'function') p.catch(function () {});
 
-      // L'ancien mouvement ne s'arrête plus net : il disparaît sur 420 ms
-      // pendant que le nouveau commence.
-      if (previousAudio && previousAudio !== audio) {
-        var previousVolume = clamp(previousAudio.volume, 0, 1);
-        fadeVolume(previousAudio, previousVolume, 0, TRANSITION_MS, function () {
-          try { previousAudio.pause(); } catch (_) {}
-        });
-      }
+      var fadeInMs = Math.min(FADE_IN_AFTER_SWITCH_MS, Math.max(80, remainingMs * 0.35));
+      fadeVolume(audio, 0, targetVolume, fadeInMs);
 
-      // Le son continue de "respirer" sur toute la durée réellement choisie.
-      var envelopeMs = Math.max(120, remainingMs);
-      if (kind === 'up') {
-        fadeVolume(audio, lowVolume, targetVolume, envelopeMs);
-      } else {
-        fadeVolume(audio, targetVolume, lowVolume, envelopeMs);
-      }
+      // Le son reste présent pendant la phase puis redescend AVANT le changement.
+      // Il atteint zéro exactement au pic, sans jamais se superposer au son suivant.
+      var fadeOutMs = Math.min(FADE_OUT_BEFORE_SWITCH_MS, Math.max(80, remainingMs * 0.35));
+      var fadeOutDelay = Math.max(fadeInMs, remainingMs - fadeOutMs);
+
+      phaseEndTimer = setTimeout(function () {
+        if (token !== pendingToken || activeAudio !== audio || activeKey !== key) return;
+        fadeVolume(audio, audio.volume, 0, fadeOutMs, function () {
+          if (token === pendingToken && activeAudio === audio && activeKey === key) {
+            try { audio.pause(); } catch (_) {}
+          }
+        });
+      }, fadeOutDelay);
     }
 
     if (audio.readyState >= 1) begin();
