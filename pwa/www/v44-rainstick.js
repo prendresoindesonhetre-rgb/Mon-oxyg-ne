@@ -10,10 +10,11 @@
   var pendingToken = 0;
   var fadeTimer = null;
   // v47 : attaques et passages inspiration/expiration plus doux.
-  var FADE_IN_MS = 900;
-  var FADE_OUT_MS = 760;
-  var FADE_OUT_LEAD_MS = 820;
-  var SOFT_ATTACK_SKIP_SEC = 0.08;
+  // v48 : vrai enregistrement de bâton de pluie, plus chaud, enveloppant et rassurant.
+  var FADE_IN_MS = 1350;
+  var FADE_OUT_MS = 1150;
+  var FADE_OUT_LEAD_MS = 1250;
+  var NATURAL_RAINSTICK = './assets/rainstick/natural-rainstick.mp3';
 
   function cancelFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
   function fadeVolume(audio, from, to, durationMs, done) {
@@ -103,7 +104,7 @@
   }
 
   function audioPath(kind) {
-    return './assets/rainstick/' + kind + '-8.mp3';
+    return NATURAL_RAINSTICK;
   }
 
   function ensureAudio(kind) {
@@ -111,6 +112,8 @@
     if (!audioCache[key]) {
       var audio = new Audio(audioPath(kind));
       audio.preload = 'auto';
+      // Une lecture très légèrement ralentie apporte plus de rondeur au vrai bâton de pluie.
+      try { audio.playbackRate = 0.90; audio.preservesPitch = false; audio.mozPreservesPitch = false; audio.webkitPreservesPitch = false; } catch (_) {}
       audioCache[key] = audio;
       try { audio.load(); } catch (_) {}
     }
@@ -139,16 +142,17 @@
     var token = ++pendingToken;
     var audio = ensureAudio(kind);
     activeAudio = audio;
-    var targetVolume = clamp(state.rainstickVolume, 0, 0.62);
+    var targetVolume = clamp(state.rainstickVolume, 0, 0.54);
     audio.volume = 0;
 
     function begin() {
       if (token !== pendingToken || activeKey !== key || !state.rainstickEnabled) return;
-      var maxOffset = Math.max(0, 8 - 0.04);
-      var safeOffset = clamp(offset || 0, 0, maxOffset);
-      // La toute première attaque des enregistrements est plus brillante : on la contourne légèrement.
-      if (safeOffset < 0.15) safeOffset = Math.min(maxOffset, safeOffset + SOFT_ATTACK_SKIP_SEC);
-      try { audio.currentTime = safeOffset; } catch (_) {}
+      // Deux zones différentes du même vrai enregistrement pour éviter un effet répétitif.
+      // La seconde moitié est volontairement plus profonde et calme pour l'expiration.
+      var baseOffset = kind === 'up' ? 0.65 : 6.00;
+      var maxLocalOffset = kind === 'up' ? 7.20 : 7.40;
+      var safeOffset = clamp(offset || 0, 0, maxLocalOffset);
+      try { audio.currentTime = baseOffset + safeOffset * 0.90; } catch (_) {}
       var promise;
       try { promise = audio.play(); } catch (_) { return; }
       if (promise && typeof promise.catch === 'function') promise.catch(function () {});
