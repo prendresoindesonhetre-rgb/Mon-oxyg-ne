@@ -113,14 +113,13 @@
     }
   }
 
-  // v54 : deux passages distincts du même beau bâton de pluie.
-  // Chaque passage dure EXACTEMENT le temps choisi pour la respiration,
-  // y compris lorsque l'utilisateur modifie inspiration et expiration.
+  // v55 : retour au premier beau bâton de pluie naturel.
+  // Le son "respire" avec l'utilisateur : il monte pendant l'inspiration
+  // et redescend pendant l'expiration, tout en gardant deux passages distincts.
   var RAINSTICK_FILE = './assets/rainstick/ambient-rainstick.mp3';
-  var PHASE_FADE_IN_MS = 180;
-  var PHASE_FADE_OUT_MS = 180;
-  var UP_BASE_OFFSET = 0.8;
-  var DOWN_BASE_OFFSET = 13.0;
+  var EDGE_FADE_MS = 120;
+  var UP_BASE_OFFSET = 0.65;
+  var DOWN_BASE_OFFSET = 6.00;
   var phaseEndTimer = null;
 
   function ensureAudio(kind) {
@@ -174,38 +173,44 @@
 
     cancelFade(audio);
     try { audio.pause(); } catch (_) {}
-    audio.volume = 0;
 
     function begin() {
       if (token !== pendingToken || activeKey !== key || !state.rainstickEnabled) return;
 
-      // L'inspiration et l'expiration ont chacune leur propre zone du même enregistrement.
-      // La position dans le son suit aussi la position dans la phase : après une pause/reprise,
-      // le son reste calé sur la respiration au lieu de repartir de zéro.
       var baseOffset = kind === 'up' ? UP_BASE_OFFSET : DOWN_BASE_OFFSET;
       var phaseOffset = clamp(Number(offset) || 0, 0, seconds);
       try { audio.currentTime = baseOffset + phaseOffset; } catch (_) {}
+
+      var targetVolume = clamp(state.rainstickVolume, 0, 0.56);
+      var lowVolume = targetVolume * 0.12;
+      var remainingMs = Math.max(0, (seconds - phaseOffset) * 1000);
+      var breathingMs = Math.max(80, remainingMs - EDGE_FADE_MS);
+
+      // Inspiration : le grain apparaît doucement et prend de l'ampleur,
+      // comme une montée d'air.
+      // Expiration : il part plus présent puis s'apaise progressivement,
+      // comme un souffle qui se relâche.
+      audio.volume = kind === 'up' ? lowVolume : targetVolume;
 
       var p;
       try { p = audio.play(); } catch (_) { return; }
       if (p && typeof p.catch === 'function') p.catch(function () {});
 
-      var targetVolume = clamp(state.rainstickVolume, 0, 0.54);
-      fadeVolume(audio, 0, targetVolume, PHASE_FADE_IN_MS);
+      if (kind === 'up') {
+        fadeVolume(audio, lowVolume, targetVolume, breathingMs);
+      } else {
+        fadeVolume(audio, targetVolume, lowVolume, breathingMs);
+      }
 
-      // La durée sonore est calculée avec la durée réelle de cette phase.
-      // Ex. 4 s d'inspiration = 4 s de son ; 7 s d'expiration = 7 s de son.
-      var remainingMs = Math.max(0, (seconds - phaseOffset) * 1000);
-      var fadeDelay = Math.max(0, remainingMs - PHASE_FADE_OUT_MS);
-
+      var edgeDelay = Math.max(0, remainingMs - EDGE_FADE_MS);
       phaseEndTimer = setTimeout(function () {
         if (token !== pendingToken || activeAudio !== audio || activeKey !== key) return;
-        fadeVolume(audio, audio.volume, 0, Math.min(PHASE_FADE_OUT_MS, Math.max(60, remainingMs)), function () {
+        fadeVolume(audio, audio.volume, 0, Math.min(EDGE_FADE_MS, Math.max(50, remainingMs)), function () {
           if (token === pendingToken && activeAudio === audio && activeKey === key) {
             try { audio.pause(); } catch (_) {}
           }
         });
-      }, fadeDelay);
+      }, edgeDelay);
     }
 
     if (audio.readyState >= 1) begin();
@@ -327,7 +332,7 @@
     var row = document.createElement('div');
     row.className = 'setting-row rainstick-row';
     row.innerHTML =
-      '<div class="setting-label"><strong>Bâton de pluie</strong><span>Un son accompagne l’inspiration, un autre l’expiration.</span></div>' +
+      '<div class="setting-label"><strong>Bâton de pluie</strong><span>Le son monte avec l’inspiration et redescend avec l’expiration.</span></div>' +
       '<div class="rainstick-controls ' + (state.rainstickEnabled ? '' : 'off') + '">' +
         '<button type="button" class="rainstick-toggle ' + (state.rainstickEnabled ? 'active' : '') + '" id="rainstickToggle">' + (state.rainstickEnabled ? 'Activé' : 'Sans son') + '</button>' +
         '<input class="rainstick-volume" id="rainstickVolume" type="range" min="0" max="100" step="1" value="' + Math.round(state.rainstickVolume * 100) + '" aria-label="Volume du bâton de pluie">' +
