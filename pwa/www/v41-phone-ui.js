@@ -78,9 +78,8 @@
     addPhoneTabs(panel);
     updatePhoneTabs(panel);
 
-    /* Remonte toujours en haut après un changement de vue. Cela évite de
-       réafficher un menu au milieu de son ancienne position de défilement. */
-    panel.scrollTop = 0;
+    /* La position de défilement est conservée lors des changements de réglage.
+       Ne pas forcer un retour en haut du panneau. */
   }
 
   var baseRenderSettings = renderSettings;
