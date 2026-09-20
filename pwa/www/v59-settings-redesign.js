@@ -155,6 +155,24 @@
     }
 
     var ordered = [slow, calm, balance, energy, dynamic];
+
+    // Sélection visible : un seul choix actif, y compris pour Personnaliser.
+    for (var si = 0; si < ordered.length; si++) {
+      if (ordered[si]) ordered[si].classList.remove('v68-selected');
+    }
+    if (custom) custom.classList.remove('v68-selected');
+
+    if (state.sequenceMode === 'calm' && calm) calm.classList.add('v68-selected');
+    else if (state.sequenceMode === 'energy' && energy) energy.classList.add('v68-selected');
+    else if (state.sequenceMode === 'custom' && custom) custom.classList.add('v68-selected');
+    else if (!state.sequenceMode || state.sequenceMode === 'simple') {
+      var inh = Number(state.config && state.config.inhaleSec);
+      var exh = Number(state.config && state.config.exhaleSec);
+      if (inh === 4 && exh === 6 && slow) slow.classList.add('v68-selected');
+      else if (inh === 5 && exh === 5 && balance) balance.classList.add('v68-selected');
+      else if (inh === 6 && exh === 4 && dynamic) dynamic.classList.add('v68-selected');
+    }
+
     simpleGrid.classList.add('v59-preset-grid');
     simpleGrid.innerHTML = '';
     for (var p = 0; p < ordered.length; p++) {
