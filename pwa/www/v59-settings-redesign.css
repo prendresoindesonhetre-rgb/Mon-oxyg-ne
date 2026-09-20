@@ -598,3 +598,180 @@
   height:28px!important;
   margin-bottom:2px!important;
 }
+
+
+/* v67 — véritable mise en page téléphone paysage.
+   Ces règles sont volontairement plus spécifiques que l'ancien v41. */
+.ui-compact .v59-settings .v59-preset-grid,
+.ui-tiny .v59-settings .v59-preset-grid{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:4px!important;
+  align-items:stretch!important;
+}
+.ui-compact .v59-settings,
+.ui-tiny .v59-settings{
+  width:calc(100% - 8px)!important;
+  max-width:none!important;
+  height:calc(100% - 8px)!important;
+  max-height:calc(100% - 8px)!important;
+  margin:4px!important;
+  padding:8px 10px 10px!important;
+  border-radius:16px!important;
+  overflow-y:auto!important;
+}
+.ui-compact .v59-settings .settings-title,
+.ui-tiny .v59-settings .settings-title{
+  font-size:20px!important;
+  line-height:1!important;
+  margin:0 0 2px!important;
+}
+.ui-compact .v59-settings .settings-sub,
+.ui-tiny .v59-settings .settings-sub{
+  display:block!important;
+  font-size:8px!important;
+  line-height:1.1!important;
+  margin:0 0 4px!important;
+}
+.ui-compact .v59-settings .v59-section-head,
+.ui-tiny .v59-settings .v59-section-head{
+  margin:3px 0 0!important;
+  gap:1px!important;
+}
+.ui-compact .v59-settings .v59-section-head strong,
+.ui-tiny .v59-settings .v59-section-head strong,
+.ui-compact .v59-settings .v59-presets-head>div:first-child>strong,
+.ui-tiny .v59-settings .v59-presets-head>div:first-child>strong{
+  font-size:7.4px!important;
+  letter-spacing:.12em!important;
+}
+.ui-compact .v59-settings .v59-section-head span,
+.ui-tiny .v59-settings .v59-section-head span{
+  font-size:7px!important;
+}
+.ui-compact .v59-settings .setting-row,
+.ui-tiny .v59-settings .setting-row{
+  min-height:0!important;
+  padding:3px 0!important;
+  gap:6px!important;
+}
+.ui-compact .v59-settings .setting-label strong,
+.ui-tiny .v59-settings .setting-label strong{
+  font-size:9px!important;
+  line-height:1!important;
+}
+.ui-compact .v59-settings .stepper,
+.ui-tiny .v59-settings .stepper{
+  gap:2px!important;
+  padding:1px!important;
+}
+.ui-compact .v59-settings .stepper button,
+.ui-tiny .v59-settings .stepper button{
+  width:24px!important;
+  height:24px!important;
+  min-width:24px!important;
+  font-size:13px!important;
+}
+.ui-compact .v59-settings .stepper-value,
+.ui-tiny .v59-settings .stepper-value{
+  min-width:38px!important;
+  font-size:8.5px!important;
+}
+.ui-compact .v59-settings .pill-choice,
+.ui-tiny .v59-settings .pill-choice{
+  min-height:24px!important;
+  padding:4px 7px!important;
+  font-size:8.5px!important;
+}
+.ui-compact .v59-settings .v59-ambiance-head,
+.ui-tiny .v59-settings .v59-ambiance-head{
+  margin-top:4px!important;
+  padding-top:3px!important;
+}
+.ui-compact .v59-settings .rainstick-row,
+.ui-tiny .v59-settings .rainstick-row{
+  padding:3px 0 4px!important;
+}
+.ui-compact .v59-settings .rainstick-controls,
+.ui-tiny .v59-settings .rainstick-controls{
+  min-width:150px!important;
+  gap:4px!important;
+}
+.ui-compact .v59-settings .rainstick-toggle,
+.ui-tiny .v59-settings .rainstick-toggle{
+  padding:4px 7px!important;
+  font-size:8px!important;
+}
+.ui-compact .v59-settings .rainstick-volume,
+.ui-tiny .v59-settings .rainstick-volume{
+  width:62px!important;
+}
+.ui-compact .v59-settings .rainstick-volume-label,
+.ui-tiny .v59-settings .rainstick-volume-label{
+  display:block!important;
+  min-width:26px!important;
+  font-size:7px!important;
+}
+.ui-compact .v59-settings .v59-presets-head,
+.ui-tiny .v59-settings .v59-presets-head{
+  margin:4px 0 3px!important;
+  padding-top:4px!important;
+  gap:6px!important;
+}
+.ui-compact .v59-settings .v59-presets-head>div:first-child>span,
+.ui-tiny .v59-settings .v59-presets-head>div:first-child>span{
+  display:none!important;
+}
+.ui-compact .v59-settings .v60-custom-pill,
+.ui-tiny .v59-settings .v60-custom-pill{
+  padding:3px 6px!important;
+  gap:2px!important;
+  font-size:7.4px!important;
+}
+.ui-compact .v59-settings .v60-custom-icon,
+.ui-tiny .v59-settings .v60-custom-icon{
+  width:11px!important;
+  height:11px!important;
+}
+.ui-compact .v59-settings .v60-preset,
+.ui-tiny .v59-settings .v60-preset{
+  min-height:54px!important;
+  padding:4px 2px 4px!important;
+  border-radius:10px!important;
+}
+.ui-compact .v59-settings .v64-icon,
+.ui-tiny .v59-settings .v64-icon{
+  width:21px!important;
+  height:21px!important;
+  margin:0 auto 1px!important;
+}
+.ui-compact .v59-settings .v60-preset-label,
+.ui-tiny .v59-settings .v60-preset-label{
+  min-height:18px!important;
+  font-size:7.2px!important;
+  line-height:1.03!important;
+  margin:0 0 1px!important;
+}
+.ui-compact .v59-settings .v60-preset-rhythm,
+.ui-tiny .v59-settings .v60-preset-rhythm{
+  min-height:7px!important;
+  font-size:6.4px!important;
+  line-height:1!important;
+}
+.ui-compact .v59-settings .settings-bottom,
+.ui-tiny .v59-settings .settings-bottom{
+  margin-top:5px!important;
+  padding-top:3px!important;
+}
+.ui-compact .v59-settings .safety,
+.ui-tiny .v59-settings .safety{
+  display:block!important;
+  margin:0 0 3px!important;
+  font-size:6.6px!important;
+  line-height:1.08!important;
+}
+.ui-compact .v59-settings .start-session,
+.ui-tiny .v59-settings .start-session{
+  min-height:30px!important;
+  font-size:9px!important;
+}
