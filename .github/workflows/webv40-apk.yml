@@ -46,6 +46,8 @@ jobs:
 
       - name: Prepare PWA assets
         run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
           python -m pip install pillow
           python pwa/scripts/prepare_assets.py
           python scripts/process_rainstick_recordings.py
