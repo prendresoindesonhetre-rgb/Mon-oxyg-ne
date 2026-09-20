@@ -27,7 +27,7 @@ jobs:
       - name: Add enveloping rainstick recording
         run: |
           mkdir -p pwa/www/assets/rainstick
-          curl -L --fail --retry 3 -o pwa/www/assets/rainstick/ambient-rainstick.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d3/Rainstick_%281%29.ogg/Rainstick_%281%29.ogg.mp3?download="
+          curl -L --fail --retry 3 -o pwa/www/assets/rainstick/ambient-rainstick.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/27/Rainstick.ogg/Rainstick.ogg.mp3?download="
       - name: Validate PWA
         run: |
           set -e
@@ -43,8 +43,8 @@ jobs:
           test -f pwa/www/assets/rainstick/up-8.mp3
           test -f pwa/www/assets/rainstick/down-8.mp3
           test -f pwa/www/assets/rainstick/ambient-rainstick.mp3
-          grep -q 'v44-rainstick.js?v=54' pwa/www/index.html
-          grep -q 'mon-oxygene-pwa-v54-breath-synced-rainstick' pwa/www/sw.js
+          grep -q 'v44-rainstick.js?v=55' pwa/www/index.html
+          grep -q 'mon-oxygene-pwa-v55-breathing-rainstick' pwa/www/sw.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
