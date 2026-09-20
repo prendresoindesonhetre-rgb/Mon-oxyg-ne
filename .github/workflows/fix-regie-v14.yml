@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/patch_regie_v14.py'
       - 'scripts/add_bulle_session.py'
+      - 'scripts/soft_audio_transitions.py'
       - '.github/workflows/fix-regie-v14.yml'
   workflow_dispatch:
 
@@ -43,6 +44,9 @@ jobs:
       - name: Add Ma bulle session
         run: python scripts/add_bulle_session.py pwa-dist/regie-v14/index.html
 
+      - name: Soften audio transitions
+        run: python scripts/soft_audio_transitions.py pwa-dist/regie-v14/index.html
+
       - name: Validate restored Regie
         run: |
           grep -q '+ Créer une séance' pwa-dist/regie-v14/index.html
@@ -52,6 +56,7 @@ jobs:
           grep -q 'if(!playing||!running)return' pwa-dist/regie-v14/index.html
           grep -q 'Ma bulle — mon espace' pwa-dist/regie-v14/index.html
           grep -q 'BULLE_SESSION_20260914' pwa-dist/regie-v14/index.html
+          grep -q 'SOFT_AUDIO_TRANSITIONS_20260920' pwa-dist/regie-v14/index.html
           python - <<'PY'
           import re
           from pathlib import Path
