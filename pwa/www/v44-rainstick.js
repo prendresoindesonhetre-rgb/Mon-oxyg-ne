@@ -113,11 +113,11 @@
     }
   }
 
-  // v55 : retour au premier beau bâton de pluie naturel.
-  // Le son "respire" avec l'utilisateur : il monte pendant l'inspiration
-  // et redescend pendant l'expiration, tout en gardant deux passages distincts.
+  // v56 : même beau bâton de pluie, plus chaud et avec une transition moins nette.
+  // Inspiration et expiration restent bien distinctes, mais se raccordent doucement.
   var RAINSTICK_FILE = './assets/rainstick/ambient-rainstick.mp3';
-  var EDGE_FADE_MS = 120;
+  var TRANSITION_MS = 420;
+  var PLAYBACK_RATE = 0.92;
   var UP_BASE_OFFSET = 0.65;
   var DOWN_BASE_OFFSET = 6.00;
   var phaseEndTimer = null;
@@ -127,6 +127,12 @@
       var audio = new Audio(RAINSTICK_FILE);
       audio.preload = 'auto';
       audio.volume = 0;
+      try {
+        audio.playbackRate = PLAYBACK_RATE;
+        audio.preservesPitch = false;
+        audio.mozPreservesPitch = false;
+        audio.webkitPreservesPitch = false;
+      } catch (_) {}
       audioCache[kind] = audio;
       try { audio.load(); } catch (_) {}
     }
@@ -166,11 +172,6 @@
     var audio = ensureAudio(kind);
     activeAudio = audio;
 
-    if (previousAudio && previousAudio !== audio) {
-      cancelFade(previousAudio);
-      try { previousAudio.pause(); } catch (_) {}
-    }
-
     cancelFade(audio);
     try { audio.pause(); } catch (_) {}
 
@@ -179,38 +180,35 @@
 
       var baseOffset = kind === 'up' ? UP_BASE_OFFSET : DOWN_BASE_OFFSET;
       var phaseOffset = clamp(Number(offset) || 0, 0, seconds);
-      try { audio.currentTime = baseOffset + phaseOffset; } catch (_) {}
+      try { audio.currentTime = baseOffset + phaseOffset * PLAYBACK_RATE; } catch (_) {}
 
-      var targetVolume = clamp(state.rainstickVolume, 0, 0.56);
-      var lowVolume = targetVolume * 0.12;
+      var targetVolume = clamp(state.rainstickVolume, 0, 0.52);
+      var lowVolume = targetVolume * 0.14;
       var remainingMs = Math.max(0, (seconds - phaseOffset) * 1000);
-      var breathingMs = Math.max(80, remainingMs - EDGE_FADE_MS);
 
-      // Inspiration : le grain apparaît doucement et prend de l'ampleur,
-      // comme une montée d'air.
-      // Expiration : il part plus présent puis s'apaise progressivement,
-      // comme un souffle qui se relâche.
+      // Le nouveau mouvement démarre exactement au changement de respiration.
       audio.volume = kind === 'up' ? lowVolume : targetVolume;
 
       var p;
       try { p = audio.play(); } catch (_) { return; }
       if (p && typeof p.catch === 'function') p.catch(function () {});
 
-      if (kind === 'up') {
-        fadeVolume(audio, lowVolume, targetVolume, breathingMs);
-      } else {
-        fadeVolume(audio, targetVolume, lowVolume, breathingMs);
+      // L'ancien mouvement ne s'arrête plus net : il disparaît sur 420 ms
+      // pendant que le nouveau commence.
+      if (previousAudio && previousAudio !== audio) {
+        var previousVolume = clamp(previousAudio.volume, 0, 1);
+        fadeVolume(previousAudio, previousVolume, 0, TRANSITION_MS, function () {
+          try { previousAudio.pause(); } catch (_) {}
+        });
       }
 
-      var edgeDelay = Math.max(0, remainingMs - EDGE_FADE_MS);
-      phaseEndTimer = setTimeout(function () {
-        if (token !== pendingToken || activeAudio !== audio || activeKey !== key) return;
-        fadeVolume(audio, audio.volume, 0, Math.min(EDGE_FADE_MS, Math.max(50, remainingMs)), function () {
-          if (token === pendingToken && activeAudio === audio && activeKey === key) {
-            try { audio.pause(); } catch (_) {}
-          }
-        });
-      }, edgeDelay);
+      // Le son continue de "respirer" sur toute la durée réellement choisie.
+      var envelopeMs = Math.max(120, remainingMs);
+      if (kind === 'up') {
+        fadeVolume(audio, lowVolume, targetVolume, envelopeMs);
+      } else {
+        fadeVolume(audio, targetVolume, lowVolume, envelopeMs);
+      }
     }
 
     if (audio.readyState >= 1) begin();
@@ -380,7 +378,7 @@
       label.textContent = Math.round(state.rainstickVolume * 100) + '%';
       saveAudioPrefs();
       if (activeAudio && !activeAudio.paused) {
-        fadeVolume(activeAudio, clamp(activeAudio.volume, 0, 1), clamp(state.rainstickVolume, 0, 0.54), 180);
+        fadeVolume(activeAudio, clamp(activeAudio.volume, 0, 1), clamp(state.rainstickVolume, 0, 0.52), 180);
       }
     });
   }
