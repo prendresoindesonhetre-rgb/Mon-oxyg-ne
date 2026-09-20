@@ -8,11 +8,10 @@
   var activeAudio = null;
   var activeKey = null;
   var pendingToken = 0;
-  // v50 : fichiers personnels utilisés sans retraitement.
+  // v51 : fichiers personnels bruts, fondu croisé continu sans creux.
   // Le passage inspiration/expiration se fait maintenant en chevauchement,
   // afin qu'il n'y ait ni coupure ni "swap" audible.
-  var CROSSFADE_MS = 1200;
-  var PHASE_END_FADE_MS = 900;
+  var CROSSFADE_MS = 1500;
   var audioFadeTimers = new WeakMap();
 
   function cancelFade(audio) {
@@ -182,17 +181,8 @@
         });
       }
 
-      var remaining = Math.max(0, seconds - clamp(offset || 0, 0, seconds));
-      var fadeAt = Math.max(0, remaining * 1000 - PHASE_END_FADE_MS);
-
-      // On ne coupe jamais sèchement en fin de phase. Ce fondu n'est lancé
-      // que si aucune nouvelle phase n'a pris le relais entre-temps.
-      if (fadeAt > 0) {
-        setTimeout(function () {
-          if (token !== pendingToken || activeAudio !== audio || audio.paused) return;
-          fadeVolume(audio, audio.volume, 0, PHASE_END_FADE_MS);
-        }, fadeAt);
-      }
+      // Aucun fondu anticipé en fin de phase : l'ancien son reste naturel
+      // jusqu'à l'arrivée du suivant, puis les deux se croisent pendant 1,5 s.
     }
 
     if (audio.readyState >= 1) begin();
