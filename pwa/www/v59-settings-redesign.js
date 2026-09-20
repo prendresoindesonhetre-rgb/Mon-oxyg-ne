@@ -15,46 +15,47 @@
   function presetIcon(kind) {
     var icons = {
       slow:
-        '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-leaf-fill" d="M31 9c-6 .4-12 3.7-15.2 8.7-2.3 3.7-2.6 7.8-1.3 11.2 4.1.6 8.6-.6 12.1-3.4 4.9-3.9 7.1-10.5 6.6-16.1-.7-.3-1.4-.4-2.2-.4Z"/>' +
-          '<path class="i-leaf-line" d="M31.2 11.7c-4.7 4.7-8.5 9.4-11.4 14.3M25 17.5l-5.4-.4m8.8 5-5.6.7"/>' +
-          '<path class="i-violet-line i-dashed" d="M35 14c3 5.4 1.4 11.4-3.3 16.1-4.2 4.1-9.8 6.4-15.6 7"/>' +
-          '<circle class="i-violet-dot" cx="14.5" cy="37.2" r="1.35"/>' +
+        '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+          '<path class="h-fill" d="M39 10c-10 1-19 6-24 14-4 6-4 13-2 18 7 1 14-1 20-6 7-6 10-16 9-25-1 0-2-1-3-1Z"/>' +
+          '<path class="h-vein" d="M39 14c-7 7-13 15-17 23M32 22l-9-1m13 8-9 2"/>' +
+          '<path class="h-violet" d="M46 21c3 8 0 17-7 24-6 6-14 9-22 9"/>' +
+          '<path class="h-violet h-dash" d="M49 24c2 5 2 9 0 13"/>' +
+          '<path class="h-violet-fill" d="M14 52l7-2-4 6Z"/>' +
         '</svg>',
       calm:
-        '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-tree-fill" d="M21 12.5c0 5.1-.2 9.6-1.1 13.6-.8 3.5-2 6.8-3.8 10.3h15.8c-1.8-3.5-3-6.8-3.8-10.3-.9-4-1.1-8.5-1.1-13.6Z"/>' +
-          '<path class="i-tree-line" d="M24 13v17M24 19l-7-6M24 20l7-7M18.5 35.7 12 40m11-4.3L20 41m9.5-5.3L36 40m-11-4.3L28 41"/>' +
-          '<path class="i-leaf-fill small" d="M12.8 10.4c3.7.2 6.7 2.1 8.2 5-2.3 2.4-5.6 3.1-8.5 1.7-2.1-1-3.4-3-3.6-5.3 1.1-.8 2.4-1.3 3.9-1.4Z"/>' +
-          '<path class="i-leaf-fill small" d="M35.2 10.4c-3.7.2-6.7 2.1-8.2 5 2.3 2.4 5.6 3.1 8.5 1.7 2.1-1 3.4-3 3.6-5.3-1.1-.8-2.4-1.3-3.9-1.4Z"/>' +
-          '<path class="i-soft-line" d="M11 42h26"/>' +
+        '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+          '<ellipse class="h-ring" cx="32" cy="49" rx="22" ry="7"/>' +
+          '<ellipse class="h-ring2" cx="32" cy="49" rx="15" ry="4.5"/>' +
+          '<path class="h-fill" d="M38 13c-9 1-16 6-20 13-3 5-3 11-1 15 6 1 12-1 17-5 6-5 8-13 8-22-1 0-3-1-4-1Z"/>' +
+          '<path class="h-vein" d="M38 17c-6 6-11 12-14 20M32 24l-7-1m10 7-7 2"/>' +
         '</svg>',
       balance:
-        '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-soft-line" d="M24 10v27M12 35h24"/>' +
-          '<path class="i-leaf-fill" d="M12 14c5 .2 9.3 2.6 11.5 6.5-3.1 3.2-7.7 4.1-11.4 2.1-2.8-1.4-4.6-4-4.9-7 1.4-1 3-1.5 4.8-1.6Z"/>' +
-          '<path class="i-leaf-fill" d="M36 14c-5 .2-9.3 2.6-11.5 6.5 3.1 3.2 7.7 4.1 11.4 2.1 2.8-1.4 4.6-4 4.9-7-1.4-1-3-1.5-4.8-1.6Z"/>' +
-          '<path class="i-violet-line" d="M13 17.5c3.3 1.8 6.1 4.2 8.4 7.2M35 17.5c-3.3 1.8-6.1 4.2-8.4 7.2"/>' +
-          '<circle class="i-violet-dot" cx="24" cy="37.3" r="2"/>' +
+        '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+          '<path class="h-arc" d="M13 25c5-10 14-16 19-16s14 6 19 16"/>' +
+          '<path class="h-fill" d="M16 25c8 1 14 5 17 11-5 5-13 6-19 3-4-2-7-6-8-11 3-2 6-3 10-3Z"/>' +
+          '<path class="h-fill" d="M48 25c-8 1-14 5-17 11 5 5 13 6 19 3 4-2 7-6 8-11-3-2-6-3-10-3Z"/>' +
+          '<path class="h-vein" d="M14 29c6 3 11 7 16 13m20-13c-6 3-11 7-16 13"/>' +
+          '<circle class="h-violet-fill" cx="32" cy="36" r="3.5"/>' +
+          '<path class="h-violet" d="M32 40v10"/>' +
         '</svg>',
       energy:
-        '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-soft-line" d="M12 39c5-1.8 9-4.8 12-9.2 2.9-4.3 4.8-9.2 5.9-14.6"/>' +
-          '<path class="i-tree-line" d="M22 37c1-9.4 3.8-16.5 8.6-21.4"/>' +
-          '<path class="i-leaf-fill small" d="M31 12.5c4.1.1 7.4 2.1 9.2 5.3-2.5 2.8-6.1 3.7-9.4 2.1-2.3-1.1-3.8-3.2-4.1-5.8 1.2-1 2.6-1.5 4.3-1.6Z"/>' +
-          '<path class="i-leaf-fill small" d="M21 22c-3.8.2-6.8 2.2-8.2 5.2 2.4 2.4 5.7 3 8.7 1.5 2-1.1 3.3-3.1 3.4-5.5-1.1-.8-2.4-1.2-3.9-1.2Z"/>' +
-          '<path class="i-violet-line" d="M34 11l2.5-3M37.5 13h4M31.5 8.5V5"/>' +
+        '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+          '<path class="h-stem" d="M24 49c7-11 12-22 18-34"/>' +
+          '<path class="h-fill small" d="M42 13c8 0 14 4 17 10-5 5-12 7-18 4-4-2-7-6-7-11 2-2 5-3 8-3Z"/>' +
+          '<path class="h-fill small" d="M25 29c-7 0-13 4-15 10 5 5 11 6 17 3 4-2 6-6 6-10-2-2-5-3-8-3Z"/>' +
+          '<path class="h-violet" d="M15 53c12-2 22-8 29-19"/>' +
+          '<path class="h-violet-fill" d="M45 29l2-8 5 6Z"/>' +
+          '<path class="h-spark" d="M49 10v-5m0 5 4-3m-4 3-4-3"/>' +
         '</svg>',
       dynamic:
-        '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-tree-fill" d="M21.5 21c0 4.1-.4 7.5-1.3 10.3-.6 1.8-1.4 3.6-2.4 5.3h12.4c-1-1.7-1.8-3.5-2.4-5.3-.9-2.8-1.3-6.2-1.3-10.3Z"/>' +
-          '<path class="i-tree-line" d="M24 21v13M24 24l-6-5M24 25l6-6"/>' +
-          '<path class="i-leaf-fill small" d="M14 14c4 .2 7.4 2.1 9.1 5.2-2.4 2.7-6 3.5-9.1 1.9-2.3-1.2-3.7-3.2-4-5.7 1.1-.8 2.4-1.3 4-1.4Z"/>' +
-          '<path class="i-leaf-fill small" d="M34 14c-4 .2-7.4 2.1-9.1 5.2 2.4 2.7 6 3.5 9.1 1.9 2.3-1.2 3.7-3.2 4-5.7-1.1-.8-2.4-1.3-4-1.4Z"/>' +
-          '<path class="i-violet-line" d="M24 5v5M10 9l3.4 3M38 9l-3.4 3M6 20h5M37 20h5"/>' +
+        '<svg viewBox="0 0 64 64" aria-hidden="true">' +
+          '<path class="h-fill" d="M38 15c-9 1-16 6-20 13-3 5-3 11-1 15 6 1 12-1 17-5 6-5 8-13 8-22-1 0-3-1-4-1Z"/>' +
+          '<path class="h-vein" d="M38 19c-6 6-11 12-14 20M32 26l-7-1m10 7-7 2"/>' +
+          '<path class="h-rays" d="M32 4v7M32 49v7M9 30h7m32 0h7M15 13l5 5m24 24 5 5M49 13l-5 5M20 42l-5 5"/>' +
+          '<path class="h-rays-short" d="M20 7l3 6m18-6-3 6M8 19l6 3m36-3-6 3"/>' +
         '</svg>'
     };
-    return '<span class="v60-preset-icon v63-icon v63-icon-' + kind + '">' + icons[kind] + '</span>';
+    return '<span class="v60-preset-icon v64-icon v64-icon-' + kind + '">' + icons[kind] + '</span>';
   }
 
   function preparePreset(button, title, rhythm, iconKind) {
