@@ -372,3 +372,91 @@
   font-size:7.8px!important;
   padding:4px 7px!important;
 }
+
+
+/* v62 — rendu plus net : moins de flou, plus de contraste et contours plus propres. */
+.v59-settings{
+  background:rgba(252,252,250,.96)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  border:1px solid rgba(92,127,145,.18)!important;
+  box-shadow:0 14px 36px rgba(54,80,98,.18)!important;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.v59-settings .settings-title{
+  color:#2f5166!important;
+  text-shadow:none!important;
+}
+.v59-settings .settings-sub{
+  color:#647d8b!important;
+}
+.v59-settings .setting-label strong{
+  color:#3f6173!important;
+  font-weight:700!important;
+}
+.v59-settings .stepper,
+.v59-settings .pill-choice,
+.v59-settings .rainstick-toggle,
+.v59-custom-pill,
+.v60-preset{
+  background:#fff!important;
+  border-color:rgba(73,124,145,.18)!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.95),0 3px 10px rgba(64,90,107,.08)!important;
+}
+.v59-settings .pill-choice.active,
+.v59-settings .rainstick-toggle.active,
+.v59-custom-pill.active{
+  background:linear-gradient(90deg,#62bbca,#827ed9)!important;
+  color:#fff!important;
+  border-color:transparent!important;
+}
+.v59-section-head strong,
+.v59-presets-head>div:first-child>strong{
+  color:#5d8798!important;
+}
+.v59-section-head span,
+.v59-presets-head>div:first-child>span{
+  color:#78909c!important;
+}
+.v60-preset-label{
+  color:#3f6174!important;
+  text-shadow:none!important;
+}
+.v60-preset-rhythm{
+  color:#667f8d!important;
+  text-shadow:none!important;
+}
+.v60-preset-icon .i-main{
+  fill:rgba(73,181,195,.12)!important;
+  stroke:#419eae!important;
+}
+.v60-preset-icon .i-accent{
+  stroke:#7269cf!important;
+}
+.v60-preset-icon .i-soft{
+  stroke:#62a9bf!important;
+}
+.v60-preset-icon .i-ray{
+  stroke:#766bd0!important;
+}
+.v60-preset-icon .i-dot{
+  fill:#766bd0!important;
+}
+.v59-settings .setting-row,
+.v59-presets-head,
+.v59-settings .v59-ambiance-head{
+  border-color:rgba(77,119,139,.14)!important;
+}
+
+/* Sur écran large, empêcher l'effet légèrement flou lié à l'échelle du panneau. */
+@media (min-width:900px){
+  .v59-settings{
+    transform:none!important;
+    filter:none!important;
+  }
+  .v59-settings *{
+    filter:none!important;
+  }
+}
