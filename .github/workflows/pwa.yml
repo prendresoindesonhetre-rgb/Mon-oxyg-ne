@@ -23,6 +23,8 @@ jobs:
         with:
           python-version: '3.x'
       - run: pip install pillow
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Restore image assets
         run: python pwa/scripts/prepare_assets.py
       - name: Warm and extend personal rainstick recordings
