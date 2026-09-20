@@ -32,9 +32,12 @@
     root.style.setProperty('--ui-settings-width', settingsWidth + 'px');
     root.style.setProperty('--ui-aspect', aspect.toFixed(4));
 
-    var compact = shortSide < 410;
-    var tiny = shortSide < 345;
-    var roomy = shortSide > 700;
+    // Téléphones récents en paysage : le petit côté CSS dépasse souvent 410 px.
+    // On combine dimensions + ratio pour ne pas traiter une tablette comme un téléphone.
+    var phoneLandscape = shortSide <= 650 && longSide <= 1400 && aspect >= 1.55;
+    var compact = shortSide < 410 || phoneLandscape;
+    var tiny = shortSide < 345 || (phoneLandscape && shortSide <= 430);
+    var roomy = shortSide > 700 && !phoneLandscape;
     var classes = root.className.replace(/\bui-compact\b|\bui-tiny\b|\bui-roomy\b/g, '').replace(/\s+/g, ' ').replace(/^\s+|\s+$/g, '');
     if (compact) classes += (classes ? ' ' : '') + 'ui-compact';
     if (tiny) classes += (classes ? ' ' : '') + 'ui-tiny';
