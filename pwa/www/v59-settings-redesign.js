@@ -174,8 +174,22 @@
 
   var previousRenderSettings = renderSettings;
   renderSettings = function () {
+    var currentPanel = document.querySelector('.settings-panel');
+    var savedScrollTop = currentPanel ? currentPanel.scrollTop : 0;
+    var savedWindowY = window.scrollY || 0;
+
     previousRenderSettings();
     redesignSettings();
+
+    var restoredPanel = document.querySelector('.settings-panel');
+    if (restoredPanel) {
+      restoredPanel.scrollTop = savedScrollTop;
+      requestAnimationFrame(function () {
+        var panel = document.querySelector('.settings-panel');
+        if (panel) panel.scrollTop = savedScrollTop;
+        if (savedWindowY) window.scrollTo(0, savedWindowY);
+      });
+    }
   };
 
   if (state.screen === 'settings') renderSettings();
