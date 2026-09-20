@@ -33,8 +33,6 @@ jobs:
           test -f pwa/www/v44-rainstick.js
           test -f pwa/www/sw.js
           test -f pwa/www/assets/apple-touch-icon.png
-          test -f pwa/www/assets/mon-oxygene-splash.png
-          test -f pwa/www/assets/mon-oxygene-start.png
           test -f pwa/www/assets/settings_bg.jpg
           test -f pwa/www/assets/curve_bg.jpg
           test -f pwa/www/assets/lotus.png
