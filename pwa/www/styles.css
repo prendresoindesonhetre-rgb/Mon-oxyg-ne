@@ -21,7 +21,7 @@ button,input{font:inherit}
 button{border:0;cursor:pointer}
 #app{width:100%;height:100%}
 .screen{position:relative;width:100%;height:100%;overflow:hidden;background-size:cover;background-position:center}
-.settings-bg{background-image:linear-gradient(rgba(24,52,65,.03),rgba(24,52,65,.03)),url('./assets/settings_bg.jpg')}
+.settings-bg{background-image:url('./assets/settings_bg.webp');background-color:#dce8f3}
 .curve-bg{background-image:linear-gradient(rgba(20,46,65,.06),rgba(20,46,65,.06)),url('./assets/curve_bg.jpg')}
 .brand{font-family:Georgia,"Times New Roman",serif;font-style:italic;letter-spacing:.01em;color:white;text-shadow:0 2px 16px rgba(15,45,61,.35)}
 
