@@ -8,24 +8,37 @@
   var activeAudio = null;
   var activeKey = null;
   var pendingToken = 0;
-  var fadeTimer = null;
-  // v49 : enregistrements personnels du bâton de pluie conservés et adoucis.
-  var FADE_IN_MS = 700;
-  var FADE_OUT_MS = 900;
-  var FADE_OUT_LEAD_MS = 980;
+  // v50 : fichiers personnels utilisés sans retraitement.
+  // Le passage inspiration/expiration se fait maintenant en chevauchement,
+  // afin qu'il n'y ait ni coupure ni "swap" audible.
+  var CROSSFADE_MS = 1200;
+  var PHASE_END_FADE_MS = 900;
+  var audioFadeTimers = new WeakMap();
 
-  function cancelFade() { if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; } }
-  function fadeVolume(audio, from, to, durationMs, done) {
-    cancelFade();
+  function cancelFade(audio) {
     if (!audio) return;
+    var timer = audioFadeTimers.get(audio);
+    if (timer) {
+      clearInterval(timer);
+      audioFadeTimers.delete(audio);
+    }
+  }
+
+  function fadeVolume(audio, from, to, durationMs, done) {
+    if (!audio) return;
+    cancelFade(audio);
     var started = Date.now();
     audio.volume = clamp(from, 0, 1);
-    fadeTimer = setInterval(function () {
+    var timer = setInterval(function () {
       var t = Math.min(1, (Date.now() - started) / Math.max(1, durationMs));
       var eased = t * t * (3 - 2 * t);
       audio.volume = clamp(from + (to - from) * eased, 0, 1);
-      if (t >= 1) { cancelFade(); if (done) done(); }
+      if (t >= 1) {
+        cancelFade(audio);
+        if (done) done();
+      }
     }, 20);
+    audioFadeTimers.set(audio, timer);
   }
 
   function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -124,8 +137,8 @@
 
   function stopCurrent(clearKey) {
     pendingToken++;
-    cancelFade();
     if (activeAudio) {
+      cancelFade(activeAudio);
       try { activeAudio.pause(); } catch (_) {}
       activeAudio = null;
     }
@@ -133,33 +146,51 @@
   }
 
   function playPhase(kind, seconds, offset, key) {
-    stopCurrent(false);
+    var previousAudio = activeAudio;
+    var previousKey = activeKey;
+
     activeKey = key;
     var token = ++pendingToken;
     var audio = ensureAudio(kind);
     activeAudio = audio;
-    var targetVolume = clamp(state.rainstickVolume, 0, 0.54);
+    var targetVolume = clamp(state.rainstickVolume, 0, 0.58);
+
+    cancelFade(audio);
+    try { audio.pause(); } catch (_) {}
     audio.volume = 0;
 
     function begin() {
       if (token !== pendingToken || activeKey !== key || !state.rainstickEnabled) return;
+
       var maxOffset = Math.max(0, 8 - 0.04);
       var safeOffset = clamp(offset || 0, 0, maxOffset);
       try { audio.currentTime = safeOffset; } catch (_) {}
+
       var promise;
       try { promise = audio.play(); } catch (_) { return; }
       if (promise && typeof promise.catch === 'function') promise.catch(function () {});
-      fadeVolume(audio, 0, targetVolume, FADE_IN_MS);
+
+      // La nouvelle phase entre pendant que l'ancienne disparaît :
+      // aucun silence, aucune bascule brutale entre les deux enregistrements.
+      fadeVolume(audio, 0, targetVolume, CROSSFADE_MS);
+
+      if (previousAudio && previousAudio !== audio && previousKey !== key) {
+        var from = clamp(previousAudio.volume, 0, 1);
+        fadeVolume(previousAudio, from, 0, CROSSFADE_MS, function () {
+          try { previousAudio.pause(); } catch (_) {}
+          try { previousAudio.currentTime = 0; } catch (_) {}
+        });
+      }
+
       var remaining = Math.max(0, seconds - clamp(offset || 0, 0, seconds));
-      var fadeAt = Math.max(0, remaining * 1000 - FADE_OUT_LEAD_MS);
+      var fadeAt = Math.max(0, remaining * 1000 - PHASE_END_FADE_MS);
+
+      // On ne coupe jamais sèchement en fin de phase. Ce fondu n'est lancé
+      // que si aucune nouvelle phase n'a pris le relais entre-temps.
       if (fadeAt > 0) {
         setTimeout(function () {
           if (token !== pendingToken || activeAudio !== audio || audio.paused) return;
-          fadeVolume(audio, audio.volume, 0, FADE_OUT_MS, function () {
-            if (activeAudio === audio) {
-              try { audio.pause(); } catch (_) {}
-            }
-          });
+          fadeVolume(audio, audio.volume, 0, PHASE_END_FADE_MS);
         }, fadeAt);
       }
     }
