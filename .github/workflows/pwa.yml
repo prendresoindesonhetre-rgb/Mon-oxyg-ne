@@ -38,8 +38,9 @@ jobs:
           test -f pwa/www/assets/lotus.png
           test -f pwa/www/assets/rainstick/up-8.mp3
           test -f pwa/www/assets/rainstick/down-8.mp3
-          grep -q 'v44-rainstick.js?v=47' pwa/www/index.html
-          grep -q 'mon-oxygene-pwa-v47-soft-rainstick' pwa/www/sw.js
+          test -f pwa/www/assets/rainstick/natural-rainstick.mp3
+          grep -q 'v44-rainstick.js?v=48' pwa/www/index.html
+          grep -q 'mon-oxygene-pwa-v48-natural-rainstick' pwa/www/sw.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
