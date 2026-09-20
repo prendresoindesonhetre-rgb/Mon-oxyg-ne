@@ -15,8 +15,9 @@ settings_b64 = "".join(
     for p in sorted(settings_dir.glob("*.txt"))
 )
 settings_bytes = base64.b64decode(settings_b64)
-with Image.open(BytesIO(settings_bytes)) as im:
-    im.convert("RGB").save(OUT / "settings_bg.jpg", quality=90, optimize=True, progressive=True)
+# La ressource d'origine est déjà un WebP validé. On la conserve octet pour octet :
+# pas de reconversion JPEG, donc pas de perte de netteté ni de couleurs.
+(OUT / "settings_bg.webp").write_bytes(settings_bytes)
 
 # Fond de séance sans arbre : mêmes ressources que l'application Android.
 java_dir = ROOT / "app" / "src" / "main" / "java" / "fr" / "prendresoindesonhetre" / "monoxygene"
@@ -50,4 +51,4 @@ make_icon(192, "icon-192.png")
 make_icon(512, "icon-512.png")
 make_icon(180, "apple-touch-icon.png")
 
-print("Assets PWA préparés : settings_bg.jpg, curve_bg.jpg, lotus.png et icônes")
+print("Assets PWA préparés : settings_bg.webp exact, curve_bg.jpg, lotus.png et icônes")
