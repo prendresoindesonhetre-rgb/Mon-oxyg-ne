@@ -24,6 +24,10 @@ jobs:
       - run: pip install pillow
       - name: Restore image assets
         run: python pwa/scripts/prepare_assets.py
+      - name: Add natural rainstick recording
+        run: |
+          mkdir -p pwa/www/assets/rainstick
+          curl -L --fail --retry 3 -o pwa/www/assets/rainstick/natural-rainstick.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/27/Rainstick.ogg/Rainstick.ogg.mp3?download="
       - name: Validate PWA
         run: |
           set -e
