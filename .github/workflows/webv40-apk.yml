@@ -47,8 +47,10 @@ jobs:
         run: |
           python -m pip install pillow
           python pwa/scripts/prepare_assets.py
+          mkdir -p pwa/www/assets/rainstick
+          curl -L --fail --retry 3 -o pwa/www/assets/rainstick/ambient-rainstick.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/d/d3/Rainstick_%281%29.ogg/Rainstick_%281%29.ogg.mp3?download="
 
-      - name: Preserve current v50 service worker
+      - name: Preserve current v52 service worker
         run: |
           cp pwa/www/sw.js /tmp/sw-current.js
           cat > pwa/www/sw.js <<'EOF'
@@ -83,7 +85,7 @@ jobs:
           python scripts/apply_v38_true_responsive.py pwa
           python scripts/apply_v39_sideways_fit.py pwa
 
-      - name: Restore current v50 service worker
+      - name: Restore current v52 service worker
         run: cp /tmp/sw-current.js pwa/www/sw.js
 
       - name: Verify phone and sequence layers
