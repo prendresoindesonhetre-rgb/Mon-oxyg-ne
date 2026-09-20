@@ -4,7 +4,6 @@ on:
     branches: [main]
     paths:
       - 'pwa/**'
-      - 'scripts/process_rainstick_recordings.py'
       - '.github/workflows/pwa.yml'
   workflow_dispatch:
 permissions:
@@ -23,12 +22,8 @@ jobs:
         with:
           python-version: '3.x'
       - run: pip install pillow
-      - name: Install ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - name: Restore image assets
         run: python pwa/scripts/prepare_assets.py
-      - name: Warm and extend personal rainstick recordings
-        run: python scripts/process_rainstick_recordings.py
       - name: Validate PWA
         run: |
           set -e
@@ -43,10 +38,8 @@ jobs:
           test -f pwa/www/assets/lotus.png
           test -f pwa/www/assets/rainstick/up-8.mp3
           test -f pwa/www/assets/rainstick/down-8.mp3
-          grep -q 'v44-rainstick.js?v=49' pwa/www/index.html
-          grep -q 'mon-oxygene-pwa-v49-personal-rainstick' pwa/www/sw.js
-          test "$(ffprobe -v error -show_entries format=duration -of csv=p=0 pwa/www/assets/rainstick/up-8.mp3 | cut -d. -f1)" -ge 7
-          test "$(ffprobe -v error -show_entries format=duration -of csv=p=0 pwa/www/assets/rainstick/down-8.mp3 | cut -d. -f1)" -ge 7
+          grep -q 'v44-rainstick.js?v=50' pwa/www/index.html
+          grep -q 'mon-oxygene-pwa-v50-personal-crossfade' pwa/www/sw.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
