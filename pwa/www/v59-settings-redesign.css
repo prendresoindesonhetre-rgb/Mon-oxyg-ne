@@ -166,3 +166,120 @@
 .ui-tiny .v59-preset span{
   font-size:7.2px!important;
 }
+
+
+/* v60 — icônes visibles et typographie homogène des cinq choix. */
+.v60-preset{
+  min-height:104px!important;
+  padding:9px 5px 10px!important;
+}
+.v60-preset-icon{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 5px;
+  flex:0 0 auto;
+}
+.v60-preset-icon svg{
+  width:100%;
+  height:100%;
+  overflow:visible;
+}
+.v60-preset-icon .i-main{
+  fill:rgba(89,190,202,.18);
+  stroke:#55aeba;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v60-preset-icon .i-accent{
+  fill:none;
+  stroke:#8177d8;
+  stroke-width:1.55;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v60-preset-icon .i-soft{
+  fill:none;
+  stroke:#76bcd0;
+  stroke-width:1.4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v60-preset-icon .i-ray{
+  fill:none;
+  stroke:#8879dc;
+  stroke-width:1.35;
+  stroke-linecap:round;
+}
+.v60-preset-icon .i-dot{
+  fill:#8a7bdc;
+  stroke:none;
+}
+.v60-preset-label{
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  min-height:30px;
+  width:100%;
+  font-size:12.5px!important;
+  line-height:1.14!important;
+  font-weight:700!important;
+  color:#4d6d7d!important;
+  margin:0 0 3px!important;
+}
+.v60-preset-rhythm{
+  font-size:11px!important;
+  line-height:1!important;
+  color:#718a96!important;
+}
+.v60-custom-pill{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  font-size:11.5px!important;
+}
+.v60-custom-icon{
+  width:18px;
+  height:18px;
+  flex:0 0 auto;
+  fill:rgba(89,190,202,.14);
+  stroke:#5caebe;
+  stroke-width:1.4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* Même échelle typographique pour les cinq cartes sur petit écran. */
+.ui-compact .v60-preset,
+.ui-tiny .v60-preset{
+  min-height:70px!important;
+  padding:5px 2px 6px!important;
+}
+.ui-compact .v60-preset-icon,
+.ui-tiny .v60-preset-icon{
+  width:22px!important;
+  height:22px!important;
+  margin-bottom:3px!important;
+}
+.ui-compact .v60-preset-label,
+.ui-tiny .v60-preset-label{
+  min-height:22px!important;
+  font-size:8.7px!important;
+  line-height:1.08!important;
+}
+.ui-compact .v60-preset-rhythm,
+.ui-tiny .v60-preset-rhythm{
+  font-size:8px!important;
+}
+.ui-compact .v60-custom-pill,
+.ui-tiny .v60-custom-pill{
+  font-size:8.8px!important;
+  gap:3px!important;
+}
+.ui-compact .v60-custom-icon,
+.ui-tiny .v60-custom-icon{
+  width:13px!important;
+  height:13px!important;
+}
