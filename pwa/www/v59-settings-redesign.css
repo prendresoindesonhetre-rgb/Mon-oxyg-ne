@@ -1,0 +1,168 @@
+/* Mon Oxygène v59 — réglages réorganisés après validation visuelle. */
+.v59-settings .settings-title{
+  margin:0 0 4px!important;
+  font-style:normal!important;
+  font-size:clamp(28px,3.2vw,46px)!important;
+  color:#35566d!important;
+}
+.v59-settings .settings-sub{
+  margin:0 0 12px!important;
+  color:#758c99!important;
+}
+.v59-section-head{
+  margin:7px 0 1px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.v59-section-head strong,
+.v59-presets-head>div:first-child>strong{
+  font-size:10.5px;
+  letter-spacing:.17em;
+  color:#6c94a6;
+  font-weight:800;
+}
+.v59-section-head span,
+.v59-presets-head>div:first-child>span{
+  font-size:10px;
+  color:#8aa0aa;
+}
+.v59-settings .setting-row{
+  padding:14px 0!important;
+}
+.v59-settings .setting-label span{
+  display:none!important;
+}
+.v59-settings .v59-ambiance-head{
+  margin-top:10px;
+  padding-top:7px;
+  border-top:1px solid rgba(85,143,166,.10);
+}
+.v59-settings .rainstick-row{
+  border-top:0!important;
+  padding-top:8px!important;
+  padding-bottom:12px!important;
+}
+.v59-presets-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin:12px 0 7px;
+  padding-top:9px;
+  border-top:1px solid rgba(85,143,166,.10);
+}
+.v59-presets-head>div:first-child{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+}
+.v59-custom-pill{
+  flex:0 0 auto;
+  border:1px solid rgba(91,155,180,.18);
+  background:rgba(255,255,255,.68);
+  border-radius:999px;
+  padding:7px 12px;
+  color:#507184;
+  font-size:10.5px;
+  box-shadow:none;
+  white-space:nowrap;
+}
+.v59-custom-pill.active{
+  background:linear-gradient(90deg,rgba(91,191,205,.92),rgba(130,126,218,.92));
+  color:#fff;
+  border-color:transparent;
+}
+.v59-preset-grid{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+.v59-preset{
+  min-width:0!important;
+  min-height:72px!important;
+  padding:9px 6px!important;
+  border-radius:15px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.v59-preset strong{
+  font-size:11px!important;
+  line-height:1.12!important;
+  margin:0 0 4px!important;
+  white-space:normal!important;
+}
+.v59-preset span{
+  font-size:9.5px!important;
+  line-height:1.05!important;
+  white-space:normal!important;
+}
+.v59-custom-editor{
+  margin-top:8px!important;
+}
+.v59-settings .settings-bottom{
+  margin-top:12px!important;
+  padding-top:8px!important;
+}
+
+/* Téléphone : conserver les cinq choix sur une seule ligne, mais compacts. */
+.ui-compact .v59-settings,
+.ui-tiny .v59-settings{
+  padding:10px 14px 14px!important;
+}
+.ui-compact .v59-settings .settings-title,
+.ui-tiny .v59-settings .settings-title{
+  font-size:clamp(22px,5.5vmin,30px)!important;
+}
+.ui-compact .v59-settings .settings-sub,
+.ui-tiny .v59-settings .settings-sub{
+  display:block!important;
+  font-size:9.5px!important;
+  margin-bottom:7px!important;
+}
+.ui-compact .v59-settings .setting-row,
+.ui-tiny .v59-settings .setting-row{
+  padding:6px 0!important;
+}
+.ui-compact .v59-section-head,
+.ui-tiny .v59-section-head{
+  margin-top:4px!important;
+}
+.ui-compact .v59-presets-head,
+.ui-tiny .v59-presets-head{
+  margin:7px 0 5px!important;
+  padding-top:6px!important;
+}
+.ui-compact .v59-presets-head>div:first-child>span,
+.ui-tiny .v59-presets-head>div:first-child>span{
+  display:none;
+}
+.ui-compact .v59-custom-pill,
+.ui-tiny .v59-custom-pill{
+  padding:5px 8px!important;
+  font-size:8.5px!important;
+}
+.ui-compact .v59-preset-grid,
+.ui-tiny .v59-preset-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:4px!important;
+}
+.ui-compact .v59-preset,
+.ui-tiny .v59-preset{
+  min-height:52px!important;
+  padding:5px 2px!important;
+  border-radius:11px!important;
+}
+.ui-compact .v59-preset strong,
+.ui-tiny .v59-preset strong{
+  font-size:7.8px!important;
+  line-height:1.08!important;
+}
+.ui-compact .v59-preset span,
+.ui-tiny .v59-preset span{
+  font-size:7.2px!important;
+}
