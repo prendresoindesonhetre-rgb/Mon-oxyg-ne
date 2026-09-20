@@ -283,3 +283,92 @@
   width:13px!important;
   height:13px!important;
 }
+
+
+/* v61 — tailles de texte équilibrées et toutes les informations visibles. */
+.v59-preset-grid{
+  align-items:stretch!important;
+}
+.v60-preset{
+  min-height:96px!important;
+  padding:8px 5px 9px!important;
+  overflow:visible!important;
+}
+.v60-preset-icon{
+  width:28px!important;
+  height:28px!important;
+  margin-bottom:4px!important;
+}
+.v60-preset-label{
+  width:100%!important;
+  min-height:28px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:10.5px!important;
+  line-height:1.08!important;
+  font-weight:700!important;
+  margin:0 0 4px!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+.v60-preset-rhythm{
+  display:block!important;
+  width:100%!important;
+  min-height:12px!important;
+  font-size:9px!important;
+  line-height:1.1!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+.v59-presets-head>div:first-child>strong{
+  font-size:10px!important;
+}
+.v59-presets-head>div:first-child>span{
+  font-size:9px!important;
+}
+.v60-custom-pill{
+  font-size:10px!important;
+  padding:6px 10px!important;
+}
+.v60-custom-icon{
+  width:15px!important;
+  height:15px!important;
+}
+
+/* Écrans compacts : garder les cinq cartes lisibles sans masquer de texte. */
+.ui-compact .v60-preset,
+.ui-tiny .v60-preset{
+  min-height:62px!important;
+  padding:4px 2px 5px!important;
+}
+.ui-compact .v60-preset-icon,
+.ui-tiny .v60-preset-icon{
+  width:18px!important;
+  height:18px!important;
+  margin-bottom:2px!important;
+}
+.ui-compact .v60-preset-label,
+.ui-tiny .v60-preset-label{
+  min-height:20px!important;
+  font-size:7.6px!important;
+  line-height:1.06!important;
+  margin-bottom:2px!important;
+}
+.ui-compact .v60-preset-rhythm,
+.ui-tiny .v60-preset-rhythm{
+  min-height:9px!important;
+  font-size:6.9px!important;
+  line-height:1!important;
+}
+.ui-compact .v59-presets-head>div:first-child>strong,
+.ui-tiny .v59-presets-head>div:first-child>strong{
+  font-size:8.2px!important;
+}
+.ui-compact .v60-custom-pill,
+.ui-tiny .v60-custom-pill{
+  font-size:7.8px!important;
+  padding:4px 7px!important;
+}
