@@ -526,3 +526,75 @@
   width:20px!important;
   height:20px!important;
 }
+
+
+/* v64 — icônes conformes à la maquette validée. */
+.v64-icon{
+  width:44px!important;
+  height:44px!important;
+  margin-bottom:4px!important;
+}
+.v64-icon svg{
+  width:100%;
+  height:100%;
+  display:block;
+  overflow:visible;
+  shape-rendering:geometricPrecision;
+}
+.v64-icon .h-fill{
+  fill:rgba(92,210,220,.32);
+  stroke:#43aebd;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v64-icon .h-fill.small{fill:rgba(92,210,220,.27);}
+.v64-icon .h-vein,
+.v64-icon .h-stem{
+  fill:none;
+  stroke:#397da5;
+  stroke-width:1.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v64-icon .h-violet,
+.v64-icon .h-arc{
+  fill:none;
+  stroke:#8b72e1;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.v64-icon .h-dash{stroke-dasharray:2.8 3;}
+.v64-icon .h-violet-fill{
+  fill:#8b72e1;
+  stroke:none;
+}
+.v64-icon .h-ring{
+  fill:none;
+  stroke:#4faed3;
+  stroke-width:1.8;
+}
+.v64-icon .h-ring2{
+  fill:none;
+  stroke:#9277e3;
+  stroke-width:1.55;
+}
+.v64-icon .h-spark,
+.v64-icon .h-rays,
+.v64-icon .h-rays-short{
+  fill:none;
+  stroke:#8b72e1;
+  stroke-width:1.55;
+  stroke-linecap:round;
+}
+.v64-icon-energy .h-fill{fill:rgba(89,207,210,.30);}
+.v64-icon-dynamic .h-fill{fill:rgba(95,211,219,.34);}
+
+/* Les icônes restent réellement visibles sur téléphone. */
+.ui-compact .v64-icon,
+.ui-tiny .v64-icon{
+  width:28px!important;
+  height:28px!important;
+  margin-bottom:2px!important;
+}
