@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'pwa/**'
+      - 'scripts/process_rainstick_recordings.py'
       - '.github/workflows/pwa.yml'
   workflow_dispatch:
 permissions:
@@ -24,10 +25,8 @@ jobs:
       - run: pip install pillow
       - name: Restore image assets
         run: python pwa/scripts/prepare_assets.py
-      - name: Add natural rainstick recording
-        run: |
-          mkdir -p pwa/www/assets/rainstick
-          curl -L --fail --retry 3 -o pwa/www/assets/rainstick/natural-rainstick.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/27/Rainstick.ogg/Rainstick.ogg.mp3?download="
+      - name: Warm and extend personal rainstick recordings
+        run: python scripts/process_rainstick_recordings.py
       - name: Validate PWA
         run: |
           set -e
@@ -42,9 +41,10 @@ jobs:
           test -f pwa/www/assets/lotus.png
           test -f pwa/www/assets/rainstick/up-8.mp3
           test -f pwa/www/assets/rainstick/down-8.mp3
-          test -f pwa/www/assets/rainstick/natural-rainstick.mp3
-          grep -q 'v44-rainstick.js?v=48' pwa/www/index.html
-          grep -q 'mon-oxygene-pwa-v48-natural-rainstick' pwa/www/sw.js
+          grep -q 'v44-rainstick.js?v=49' pwa/www/index.html
+          grep -q 'mon-oxygene-pwa-v49-personal-rainstick' pwa/www/sw.js
+          test "$(ffprobe -v error -show_entries format=duration -of csv=p=0 pwa/www/assets/rainstick/up-8.mp3 | cut -d. -f1)" -ge 7
+          test "$(ffprobe -v error -show_entries format=duration -of csv=p=0 pwa/www/assets/rainstick/down-8.mp3 | cut -d. -f1)" -ge 7
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
