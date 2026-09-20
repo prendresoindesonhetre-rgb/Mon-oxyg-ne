@@ -21,7 +21,6 @@ on:
       - 'scripts/apply_v37_install_and_fresh_link.py'
       - 'scripts/apply_v38_true_responsive.py'
       - 'scripts/apply_v39_sideways_fit.py'
-      - 'scripts/process_rainstick_recordings.py'
       - '.github/workflows/webv40-apk.yml'
   workflow_dispatch:
 
@@ -46,13 +45,10 @@ jobs:
 
       - name: Prepare PWA assets
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
           python -m pip install pillow
           python pwa/scripts/prepare_assets.py
-          python scripts/process_rainstick_recordings.py
 
-      - name: Preserve current v49 service worker
+      - name: Preserve current v50 service worker
         run: |
           cp pwa/www/sw.js /tmp/sw-current.js
           cat > pwa/www/sw.js <<'EOF'
@@ -87,7 +83,7 @@ jobs:
           python scripts/apply_v38_true_responsive.py pwa
           python scripts/apply_v39_sideways_fit.py pwa
 
-      - name: Restore current v49 service worker
+      - name: Restore current v50 service worker
         run: cp /tmp/sw-current.js pwa/www/sw.js
 
       - name: Verify phone and sequence layers
