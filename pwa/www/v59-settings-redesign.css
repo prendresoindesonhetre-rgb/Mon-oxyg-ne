@@ -460,3 +460,69 @@
     filter:none!important;
   }
 }
+
+
+/* v63 — nouvelle famille d'icônes Hêtre, nette et réellement distincte. */
+.v63-icon{
+  width:30px!important;
+  height:30px!important;
+}
+.v63-icon svg{
+  shape-rendering:geometricPrecision;
+}
+.v63-icon .i-leaf-fill{
+  fill:#dff5f7!important;
+  stroke:#4baebb!important;
+  stroke-width:1.55!important;
+  stroke-linejoin:round!important;
+}
+.v63-icon .i-tree-fill{
+  fill:#e5f4fb!important;
+  stroke:#5aa8c3!important;
+  stroke-width:1.55!important;
+  stroke-linejoin:round!important;
+}
+.v63-icon .i-leaf-line,
+.v63-icon .i-tree-line{
+  fill:none!important;
+  stroke:#487f9c!important;
+  stroke-width:1.45!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.v63-icon .i-soft-line{
+  fill:none!important;
+  stroke:#6bbfd0!important;
+  stroke-width:1.35!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.v63-icon .i-violet-line{
+  fill:none!important;
+  stroke:#7d72d7!important;
+  stroke-width:1.4!important;
+  stroke-linecap:round!important;
+  stroke-linejoin:round!important;
+}
+.v63-icon .i-violet-dot{
+  fill:#7d72d7!important;
+  stroke:none!important;
+}
+.v63-icon .i-dashed{
+  stroke-dasharray:2.5 2.2;
+}
+.v63-icon .small{
+  fill:#d9f2f5!important;
+}
+.v63-icon-calm .i-tree-fill,
+.v63-icon-dynamic .i-tree-fill{
+  fill:#dceef8!important;
+}
+.v63-icon-energy .i-leaf-fill{
+  fill:#ddf6f6!important;
+}
+.ui-compact .v63-icon,
+.ui-tiny .v63-icon{
+  width:20px!important;
+  height:20px!important;
+}
