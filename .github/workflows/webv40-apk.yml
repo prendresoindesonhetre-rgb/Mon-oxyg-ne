@@ -51,14 +51,19 @@ jobs:
       - name: Preserve current v47 service worker
         run: |
           cp pwa/www/sw.js /tmp/sw-current.js
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('pwa/www/sw.js')
-          s=p.read_text(encoding='utf-8')
-          lines=s.splitlines()
-          lines[0]="const CACHE_NAME = 'mon-oxygene-pwa-v3-landscape';"
-          p.write_text('\n'.join(lines)+'\n',encoding='utf-8')
-          PY
+          cat > pwa/www/sw.js <<'EOF'
+          const CACHE_NAME = 'mon-oxygene-pwa-v3-landscape';
+          const CORE = [
+            './',
+            './index.html',
+            './app.js',
+            './styles.css',
+            './manifest.webmanifest'
+          ];
+          self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(CORE)))});
+          self.addEventListener('activate',e=>{e.waitUntil(self.clients.claim())});
+          self.addEventListener('fetch',e=>{if(e.request.method==='GET')e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});
+          EOF
 
       - name: Apply validated Mon Oxygene visual patches
         run: |
