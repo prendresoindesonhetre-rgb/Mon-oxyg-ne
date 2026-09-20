@@ -113,130 +113,171 @@
     }
   }
 
-  // v52 : un seul très beau son de bâton de pluie, continu.
-  // Plus aucun changement de fichier entre inspiration et expiration.
-  var AMBIENT_RAINSTICK = './assets/rainstick/ambient-rainstick.mp3';
-  var ambientPlayers = null;
-  var ambientCurrent = 0;
-  var ambientRunning = false;
-  var ambientGeneration = 0;
-  var handoffTimer = null;
-  var LOOP_CROSSFADE_MS = 2400;
-  var START_FADE_MS = 1800;
-  var STOP_FADE_MS = 900;
+  // v53 : le beau bâton de pluie reste, mais il est recadré exactement
+  // sur la respiration : un passage pour l'inspiration, un autre pour l'expiration.
+  var RAINSTICK_FILE = './assets/rainstick/ambient-rainstick.mp3';
+  var PHASE_FADE_IN_MS = 320;
+  var PHASE_CROSSFADE_MS = 220;
+  var UP_BASE_OFFSET = 0.8;
+  var DOWN_BASE_OFFSET = 13.0;
 
-  function clearHandoff() {
-    if (handoffTimer) {
-      clearTimeout(handoffTimer);
-      handoffTimer = null;
-    }
-  }
-
-  function targetRainstickVolume() {
-    return clamp(state.rainstickVolume, 0, 0.52);
-  }
-
-  function ensureAmbientPlayers() {
-    if (ambientPlayers) return ambientPlayers;
-    ambientPlayers = [0, 1].map(function () {
-      var audio = new Audio(AMBIENT_RAINSTICK);
+  function ensureAudio(kind) {
+    if (!audioCache[kind]) {
+      var audio = new Audio(RAINSTICK_FILE);
       audio.preload = 'auto';
       audio.volume = 0;
+      audioCache[kind] = audio;
       try { audio.load(); } catch (_) {}
-      return audio;
-    });
-    return ambientPlayers;
+    }
+    return audioCache[kind];
   }
 
   function preloadUsefulAudio() {
     if (!state.rainstickEnabled) return;
-    ensureAmbientPlayers();
+    ensureAudio('up');
+    ensureAudio('down');
   }
 
-  function scheduleHandoff(audio, index, generation) {
-    clearHandoff();
+  function stopCurrent(clearKey) {
+    pendingToken++;
+    if (activeAudio) {
+      cancelFade(activeAudio);
+      try { activeAudio.pause(); } catch (_) {}
+      activeAudio = null;
+    }
+    if (clearKey !== false) activeKey = null;
+  }
 
-    function arm() {
-      if (!ambientRunning || generation !== ambientGeneration || ambientCurrent !== index) return;
-      var duration = Number(audio.duration);
-      if (!Number.isFinite(duration) || duration < 5) duration = 24.9;
-      var delay = Math.max(1000, duration * 1000 - LOOP_CROSSFADE_MS);
-      handoffTimer = setTimeout(function () {
-        if (!ambientRunning || generation !== ambientGeneration || ambientCurrent !== index) return;
+  function playPhase(kind, seconds, offset, key) {
+    var previousAudio = activeAudio;
+    var previousKey = activeKey;
 
-        var players = ensureAmbientPlayers();
-        var nextIndex = index === 0 ? 1 : 0;
-        var next = players[nextIndex];
-        cancelFade(next);
-        try { next.pause(); next.currentTime = 0; } catch (_) {}
-        next.volume = 0;
+    activeKey = key;
+    var token = ++pendingToken;
+    var audio = ensureAudio(kind);
+    activeAudio = audio;
 
-        var p;
-        try { p = next.play(); } catch (_) { return; }
-        if (p && typeof p.catch === 'function') p.catch(function () {});
+    cancelFade(audio);
+    try { audio.pause(); } catch (_) {}
+    audio.volume = 0;
 
-        var target = targetRainstickVolume();
-        fadeVolume(next, 0, target, LOOP_CROSSFADE_MS);
-        fadeVolume(audio, clamp(audio.volume, 0, 1), 0, LOOP_CROSSFADE_MS, function () {
-          try { audio.pause(); audio.currentTime = 0; } catch (_) {}
+    function begin() {
+      if (token !== pendingToken || activeKey !== key || !state.rainstickEnabled) return;
+
+      // Deux zones bien distinctes du même bel enregistrement :
+      // l'une accompagne la montée, l'autre la descente.
+      var baseOffset = kind === 'up' ? UP_BASE_OFFSET : DOWN_BASE_OFFSET;
+      var phaseOffset = clamp(offset || 0, 0, seconds);
+      try { audio.currentTime = baseOffset + phaseOffset; } catch (_) {}
+
+      var p;
+      try { p = audio.play(); } catch (_) { return; }
+      if (p && typeof p.catch === 'function') p.catch(function () {});
+
+      var targetVolume = clamp(state.rainstickVolume, 0, 0.54);
+      fadeVolume(audio, 0, targetVolume, PHASE_FADE_IN_MS);
+
+      // Très court chevauchement uniquement pour éviter le clic :
+      // le changement reste perceptible exactement au changement de respiration.
+      if (previousAudio && previousAudio !== audio && previousKey !== key) {
+        var from = clamp(previousAudio.volume, 0, 1);
+        fadeVolume(previousAudio, from, 0, PHASE_CROSSFADE_MS, function () {
+          try { previousAudio.pause(); } catch (_) {}
         });
-
-        ambientCurrent = nextIndex;
-        scheduleHandoff(next, nextIndex, generation);
-      }, delay);
+      }
     }
 
-    if (audio.readyState >= 1 && Number.isFinite(audio.duration)) arm();
+    if (audio.readyState >= 1) begin();
     else {
-      audio.addEventListener('loadedmetadata', arm, { once: true });
+      audio.addEventListener('loadedmetadata', begin, { once: true });
       try { audio.load(); } catch (_) {}
     }
   }
 
-  function startAmbient() {
-    if (ambientRunning) return;
-    ambientRunning = true;
-    var generation = ++ambientGeneration;
-    var players = ensureAmbientPlayers();
-    ambientCurrent = 0;
+  function phaseAt(now) {
+    var s = state.session;
+    if (!s || state.screen !== 'session') return null;
 
-    for (var i = 0; i < players.length; i++) {
-      cancelFade(players[i]);
-      try { players[i].pause(); players[i].currentTime = 0; } catch (_) {}
-      players[i].volume = 0;
+    var elapsed = typeof elapsedSeconds === 'function'
+      ? elapsedSeconds(now)
+      : Math.max(0, (now - s.startedAt - (s.pausedTotal || 0)) / 1000);
+
+    var plan = Array.isArray(s.plan) && s.plan.length ? s.plan : [{
+      inhaleSec: state.config.inhaleSec,
+      exhaleSec: state.config.exhaleSec,
+      startSec: 0,
+      endSec: Number(state.config.durationMin || 5) * 60
+    }];
+
+    var item = plan[plan.length - 1];
+    var planIndex = plan.length - 1;
+    for (var i = 0; i < plan.length; i++) {
+      if (elapsed < plan[i].endSec) {
+        item = plan[i];
+        planIndex = i;
+        break;
+      }
+    }
+    if (elapsed >= item.endSec && planIndex === plan.length - 1) return null;
+
+    var inhale = clamp(Math.round(Number(item.inhaleSec) || 5), 2, 8);
+    var exhale = clamp(Math.round(Number(item.exhaleSec) || 5), 2, 8);
+    var local = Math.max(0, elapsed - Number(item.startSec || 0));
+    var cycle = inhale + exhale;
+    var cycleNo = Math.floor(local / cycle);
+    var m = local - cycleNo * cycle;
+    var firstInhale = !!state.config.startWithInhale;
+    var isInhale, phaseElapsed, duration, half;
+
+    if (firstInhale) {
+      isInhale = m < inhale;
+      if (isInhale) {
+        phaseElapsed = m;
+        duration = inhale;
+        half = 0;
+      } else {
+        phaseElapsed = m - inhale;
+        duration = exhale;
+        half = 1;
+      }
+    } else {
+      isInhale = !(m < exhale);
+      if (!isInhale) {
+        phaseElapsed = m;
+        duration = exhale;
+        half = 0;
+      } else {
+        phaseElapsed = m - exhale;
+        duration = inhale;
+        half = 1;
+      }
     }
 
-    var audio = players[ambientCurrent];
-    var p;
-    try { p = audio.play(); } catch (_) { return; }
-    if (p && typeof p.catch === 'function') p.catch(function () {});
-    fadeVolume(audio, 0, targetRainstickVolume(), START_FADE_MS);
-    scheduleHandoff(audio, ambientCurrent, generation);
-  }
-
-  function stopCurrent(clearKey) {
-    ambientRunning = false;
-    ambientGeneration++;
-    clearHandoff();
-    activeAudio = null;
-    activeKey = null;
-
-    if (!ambientPlayers) return;
-    ambientPlayers.forEach(function (audio) {
-      cancelFade(audio);
-      var from = clamp(audio.volume, 0, 1);
-      fadeVolume(audio, from, 0, STOP_FADE_MS, function () {
-        try { audio.pause(); audio.currentTime = 0; } catch (_) {}
-      });
-    });
+    return {
+      key: planIndex + ':' + cycleNo + ':' + half + ':' + (isInhale ? 'up' : 'down'),
+      kind: isInhale ? 'up' : 'down',
+      duration: duration,
+      offset: phaseElapsed
+    };
   }
 
   function syncRainstick(now) {
-    if (!state.rainstickEnabled || !state.session || state.screen !== 'session' || state.session.paused) {
-      if (ambientRunning) stopCurrent();
+    if (!state.rainstickEnabled || !state.session || state.screen !== 'session') {
+      stopCurrent();
       return;
     }
-    startAmbient();
+    if (state.session.paused) {
+      stopCurrent(false);
+      return;
+    }
+    var phase = phaseAt(now);
+    if (!phase) {
+      stopCurrent();
+      return;
+    }
+    if (phase.key !== activeKey) {
+      playPhase(phase.kind, phase.duration, phase.offset, phase.key);
+    }
   }
 
   function ensureStyles() {
@@ -265,7 +306,7 @@
     var row = document.createElement('div');
     row.className = 'setting-row rainstick-row';
     row.innerHTML =
-      '<div class="setting-label"><strong>Bâton de pluie</strong><span>Un son continu et enveloppant accompagne toute la respiration.</span></div>' +
+      '<div class="setting-label"><strong>Bâton de pluie</strong><span>Un son accompagne l’inspiration, un autre l’expiration.</span></div>' +
       '<div class="rainstick-controls ' + (state.rainstickEnabled ? '' : 'off') + '">' +
         '<button type="button" class="rainstick-toggle ' + (state.rainstickEnabled ? 'active' : '') + '" id="rainstickToggle">' + (state.rainstickEnabled ? 'Activé' : 'Sans son') + '</button>' +
         '<input class="rainstick-volume" id="rainstickVolume" type="range" min="0" max="100" step="1" value="' + Math.round(state.rainstickVolume * 100) + '" aria-label="Volume du bâton de pluie">' +
@@ -299,7 +340,10 @@
       controls.classList.toggle('off', !state.rainstickEnabled);
       if (state.rainstickEnabled) {
         preloadUsefulAudio();
-        if (state.session && state.screen === 'session' && !state.session.paused) startAmbient();
+        if (state.session && state.screen === 'session' && !state.session.paused) {
+          activeKey = null;
+          syncRainstick(performance.now());
+        }
       } else {
         stopCurrent();
       }
@@ -309,9 +353,8 @@
       state.rainstickVolume = clamp(Number(volume.value) / 100, 0, 1);
       label.textContent = Math.round(state.rainstickVolume * 100) + '%';
       saveAudioPrefs();
-      if (ambientRunning && ambientPlayers) {
-        var current = ambientPlayers[ambientCurrent];
-        fadeVolume(current, clamp(current.volume, 0, 1), targetRainstickVolume(), 180);
+      if (activeAudio && !activeAudio.paused) {
+        fadeVolume(activeAudio, clamp(activeAudio.volume, 0, 1), clamp(state.rainstickVolume, 0, 0.54), 180);
       }
     });
   }
