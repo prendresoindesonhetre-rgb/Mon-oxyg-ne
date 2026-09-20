@@ -16,41 +16,45 @@
     var icons = {
       slow:
         '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-main" d="M29 10c-8 2-14 8-15 17 7 1 14-2 18-8 2-3 3-6 3-9-2 0-4 0-6 0Z"/>' +
-          '<path class="i-accent" d="M31 14c-5 5-9 10-12 17"/>' +
-          '<path class="i-soft" d="M11 35c6 3 16 3 23-1"/>' +
-          '<path class="i-soft" d="M14 40c5 2 12 2 17 0"/>' +
+          '<path class="i-leaf-fill" d="M31 9c-6 .4-12 3.7-15.2 8.7-2.3 3.7-2.6 7.8-1.3 11.2 4.1.6 8.6-.6 12.1-3.4 4.9-3.9 7.1-10.5 6.6-16.1-.7-.3-1.4-.4-2.2-.4Z"/>' +
+          '<path class="i-leaf-line" d="M31.2 11.7c-4.7 4.7-8.5 9.4-11.4 14.3M25 17.5l-5.4-.4m8.8 5-5.6.7"/>' +
+          '<path class="i-violet-line i-dashed" d="M35 14c3 5.4 1.4 11.4-3.3 16.1-4.2 4.1-9.8 6.4-15.6 7"/>' +
+          '<circle class="i-violet-dot" cx="14.5" cy="37.2" r="1.35"/>' +
         '</svg>',
       calm:
         '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<ellipse class="i-soft" cx="24" cy="36" rx="15" ry="5"/>' +
-          '<ellipse class="i-soft" cx="24" cy="36" rx="9" ry="3"/>' +
-          '<path class="i-main" d="M28 13c-7 2-11 7-11 14 6 1 11-1 14-6 2-3 2-6 2-9-2 0-3 0-5 1Z"/>' +
-          '<path class="i-accent" d="M29 16c-4 4-7 8-9 13"/>' +
+          '<path class="i-tree-fill" d="M21 12.5c0 5.1-.2 9.6-1.1 13.6-.8 3.5-2 6.8-3.8 10.3h15.8c-1.8-3.5-3-6.8-3.8-10.3-.9-4-1.1-8.5-1.1-13.6Z"/>' +
+          '<path class="i-tree-line" d="M24 13v17M24 19l-7-6M24 20l7-7M18.5 35.7 12 40m11-4.3L20 41m9.5-5.3L36 40m-11-4.3L28 41"/>' +
+          '<path class="i-leaf-fill small" d="M12.8 10.4c3.7.2 6.7 2.1 8.2 5-2.3 2.4-5.6 3.1-8.5 1.7-2.1-1-3.4-3-3.6-5.3 1.1-.8 2.4-1.3 3.9-1.4Z"/>' +
+          '<path class="i-leaf-fill small" d="M35.2 10.4c-3.7.2-6.7 2.1-8.2 5 2.3 2.4 5.6 3.1 8.5 1.7 2.1-1 3.4-3 3.6-5.3-1.1-.8-2.4-1.3-3.9-1.4Z"/>' +
+          '<path class="i-soft-line" d="M11 42h26"/>' +
         '</svg>',
       balance:
         '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-main" d="M12 14c7 1 12 5 13 12-6 1-12-2-15-7-1-2-1-4-1-6 1 0 2 0 3 1Z"/>' +
-          '<path class="i-main" d="M36 14c-7 1-12 5-13 12 6 1 12-2 15-7 1-2 1-4 1-6-1 0-2 0-3 1Z"/>' +
-          '<path class="i-accent" d="M16 17c4 3 7 7 8 12m8-12c-4 3-7 7-8 12"/>' +
-          '<circle class="i-dot" cx="24" cy="34" r="2.4"/>' +
+          '<path class="i-soft-line" d="M24 10v27M12 35h24"/>' +
+          '<path class="i-leaf-fill" d="M12 14c5 .2 9.3 2.6 11.5 6.5-3.1 3.2-7.7 4.1-11.4 2.1-2.8-1.4-4.6-4-4.9-7 1.4-1 3-1.5 4.8-1.6Z"/>' +
+          '<path class="i-leaf-fill" d="M36 14c-5 .2-9.3 2.6-11.5 6.5 3.1 3.2 7.7 4.1 11.4 2.1 2.8-1.4 4.6-4 4.9-7-1.4-1-3-1.5-4.8-1.6Z"/>' +
+          '<path class="i-violet-line" d="M13 17.5c3.3 1.8 6.1 4.2 8.4 7.2M35 17.5c-3.3 1.8-6.1 4.2-8.4 7.2"/>' +
+          '<circle class="i-violet-dot" cx="24" cy="37.3" r="2"/>' +
         '</svg>',
       energy:
         '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-main" d="M22 30c0-8 3-14 10-18 4 7 3 14-2 19-3 3-6 4-8 4Z"/>' +
-          '<path class="i-main small-leaf" d="M20 31c-5-1-8-4-9-9 5-1 9 1 11 5 1 2 1 3 1 5Z"/>' +
-          '<path class="i-accent" d="M23 35c2-9 6-15 11-20"/>' +
-          '<path class="i-soft" d="M14 38c8-1 14-5 19-12"/>' +
-          '<path class="i-soft" d="M31 12l3-2m-1 5 3 0"/>' +
+          '<path class="i-soft-line" d="M12 39c5-1.8 9-4.8 12-9.2 2.9-4.3 4.8-9.2 5.9-14.6"/>' +
+          '<path class="i-tree-line" d="M22 37c1-9.4 3.8-16.5 8.6-21.4"/>' +
+          '<path class="i-leaf-fill small" d="M31 12.5c4.1.1 7.4 2.1 9.2 5.3-2.5 2.8-6.1 3.7-9.4 2.1-2.3-1.1-3.8-3.2-4.1-5.8 1.2-1 2.6-1.5 4.3-1.6Z"/>' +
+          '<path class="i-leaf-fill small" d="M21 22c-3.8.2-6.8 2.2-8.2 5.2 2.4 2.4 5.7 3 8.7 1.5 2-1.1 3.3-3.1 3.4-5.5-1.1-.8-2.4-1.2-3.9-1.2Z"/>' +
+          '<path class="i-violet-line" d="M34 11l2.5-3M37.5 13h4M31.5 8.5V5"/>' +
         '</svg>',
       dynamic:
         '<svg viewBox="0 0 48 48" aria-hidden="true">' +
-          '<path class="i-main" d="M28 16c-7 2-11 7-11 14 6 1 12-2 15-7 1-2 2-5 2-8-2 0-4 0-6 1Z"/>' +
-          '<path class="i-accent" d="M29 19c-4 4-7 8-9 13"/>' +
-          '<path class="i-ray" d="M24 6v5m0 26v5M8 24h5m22 0h5M12 12l4 4m16 16 4 4m0-24-4 4M16 32l-4 4"/>' +
+          '<path class="i-tree-fill" d="M21.5 21c0 4.1-.4 7.5-1.3 10.3-.6 1.8-1.4 3.6-2.4 5.3h12.4c-1-1.7-1.8-3.5-2.4-5.3-.9-2.8-1.3-6.2-1.3-10.3Z"/>' +
+          '<path class="i-tree-line" d="M24 21v13M24 24l-6-5M24 25l6-6"/>' +
+          '<path class="i-leaf-fill small" d="M14 14c4 .2 7.4 2.1 9.1 5.2-2.4 2.7-6 3.5-9.1 1.9-2.3-1.2-3.7-3.2-4-5.7 1.1-.8 2.4-1.3 4-1.4Z"/>' +
+          '<path class="i-leaf-fill small" d="M34 14c-4 .2-7.4 2.1-9.1 5.2 2.4 2.7 6 3.5 9.1 1.9 2.3-1.2 3.7-3.2 4-5.7-1.1-.8-2.4-1.3-4-1.4Z"/>' +
+          '<path class="i-violet-line" d="M24 5v5M10 9l3.4 3M38 9l-3.4 3M6 20h5M37 20h5"/>' +
         '</svg>'
     };
-    return '<span class="v60-preset-icon v60-icon-' + kind + '">' + icons[kind] + '</span>';
+    return '<span class="v60-preset-icon v63-icon v63-icon-' + kind + '">' + icons[kind] + '</span>';
   }
 
   function preparePreset(button, title, rhythm, iconKind) {
