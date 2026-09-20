@@ -113,13 +113,15 @@
     }
   }
 
-  // v53 : le beau bâton de pluie reste, mais il est recadré exactement
-  // sur la respiration : un passage pour l'inspiration, un autre pour l'expiration.
+  // v54 : deux passages distincts du même beau bâton de pluie.
+  // Chaque passage dure EXACTEMENT le temps choisi pour la respiration,
+  // y compris lorsque l'utilisateur modifie inspiration et expiration.
   var RAINSTICK_FILE = './assets/rainstick/ambient-rainstick.mp3';
-  var PHASE_FADE_IN_MS = 320;
-  var PHASE_CROSSFADE_MS = 220;
+  var PHASE_FADE_IN_MS = 180;
+  var PHASE_FADE_OUT_MS = 180;
   var UP_BASE_OFFSET = 0.8;
   var DOWN_BASE_OFFSET = 13.0;
+  var phaseEndTimer = null;
 
   function ensureAudio(kind) {
     if (!audioCache[kind]) {
@@ -138,8 +140,16 @@
     ensureAudio('down');
   }
 
+  function clearPhaseEndTimer() {
+    if (phaseEndTimer) {
+      clearTimeout(phaseEndTimer);
+      phaseEndTimer = null;
+    }
+  }
+
   function stopCurrent(clearKey) {
     pendingToken++;
+    clearPhaseEndTimer();
     if (activeAudio) {
       cancelFade(activeAudio);
       try { activeAudio.pause(); } catch (_) {}
@@ -150,12 +160,17 @@
 
   function playPhase(kind, seconds, offset, key) {
     var previousAudio = activeAudio;
-    var previousKey = activeKey;
 
+    clearPhaseEndTimer();
     activeKey = key;
     var token = ++pendingToken;
     var audio = ensureAudio(kind);
     activeAudio = audio;
+
+    if (previousAudio && previousAudio !== audio) {
+      cancelFade(previousAudio);
+      try { previousAudio.pause(); } catch (_) {}
+    }
 
     cancelFade(audio);
     try { audio.pause(); } catch (_) {}
@@ -164,10 +179,11 @@
     function begin() {
       if (token !== pendingToken || activeKey !== key || !state.rainstickEnabled) return;
 
-      // Deux zones bien distinctes du même bel enregistrement :
-      // l'une accompagne la montée, l'autre la descente.
+      // L'inspiration et l'expiration ont chacune leur propre zone du même enregistrement.
+      // La position dans le son suit aussi la position dans la phase : après une pause/reprise,
+      // le son reste calé sur la respiration au lieu de repartir de zéro.
       var baseOffset = kind === 'up' ? UP_BASE_OFFSET : DOWN_BASE_OFFSET;
-      var phaseOffset = clamp(offset || 0, 0, seconds);
+      var phaseOffset = clamp(Number(offset) || 0, 0, seconds);
       try { audio.currentTime = baseOffset + phaseOffset; } catch (_) {}
 
       var p;
@@ -177,14 +193,19 @@
       var targetVolume = clamp(state.rainstickVolume, 0, 0.54);
       fadeVolume(audio, 0, targetVolume, PHASE_FADE_IN_MS);
 
-      // Très court chevauchement uniquement pour éviter le clic :
-      // le changement reste perceptible exactement au changement de respiration.
-      if (previousAudio && previousAudio !== audio && previousKey !== key) {
-        var from = clamp(previousAudio.volume, 0, 1);
-        fadeVolume(previousAudio, from, 0, PHASE_CROSSFADE_MS, function () {
-          try { previousAudio.pause(); } catch (_) {}
+      // La durée sonore est calculée avec la durée réelle de cette phase.
+      // Ex. 4 s d'inspiration = 4 s de son ; 7 s d'expiration = 7 s de son.
+      var remainingMs = Math.max(0, (seconds - phaseOffset) * 1000);
+      var fadeDelay = Math.max(0, remainingMs - PHASE_FADE_OUT_MS);
+
+      phaseEndTimer = setTimeout(function () {
+        if (token !== pendingToken || activeAudio !== audio || activeKey !== key) return;
+        fadeVolume(audio, audio.volume, 0, Math.min(PHASE_FADE_OUT_MS, Math.max(60, remainingMs)), function () {
+          if (token === pendingToken && activeAudio === audio && activeKey === key) {
+            try { audio.pause(); } catch (_) {}
+          }
         });
-      }
+      }, fadeDelay);
     }
 
     if (audio.readyState >= 1) begin();
