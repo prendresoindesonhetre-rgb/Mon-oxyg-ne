@@ -24,6 +24,10 @@ jobs:
       - run: pip install pillow
       - name: Restore image assets
         run: python pwa/scripts/prepare_assets.py
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
       - name: Add enveloping rainstick recording
         run: |
           mkdir -p pwa/www/assets/rainstick
