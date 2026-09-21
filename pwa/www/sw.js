@@ -1,4 +1,4 @@
-const CACHE='mon-oxygene-pwa-v74-intro-tree';
+const CACHE='mon-oxygene-pwa-v75-intro-safe';
 const CORE=[
   './','./index.html','./app.js','./sequence.js','./orientation.js','./compat-init.js','./responsive.js','./v41-phone-ui.js','./v44-rainstick.js',
   './styles.css','./v59-settings-redesign.css','./v59-settings-redesign.js','./landscape-force.css','./legacy.css','./responsive.css','./v37-fixes.css','./v38-responsive.css','./v39-landscape-fit.css','./v40-mobile-sequence.css','./v41-phone-ui.css','./v72-phone-web.css',
