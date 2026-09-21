@@ -438,3 +438,84 @@ body.legacy-browser #app,
     transform:none!important;
   }
 }
+
+
+/* v75 — URGENCE : restaurer le cadre d'introduction sans toucher au reste.
+   En portrait, le cadre redevient large et le bouton Suivant reste toujours visible. */
+@media (orientation:portrait){
+  .intro-shell{
+    width:100%!important;
+    height:100dvh!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    padding:
+      max(10px,env(safe-area-inset-top))
+      max(10px,env(safe-area-inset-right))
+      max(10px,env(safe-area-inset-bottom))
+      max(10px,env(safe-area-inset-left))!important;
+    overflow:hidden!important;
+  }
+
+  .intro-panel{
+    width:calc(100% - 12px)!important;
+    max-width:none!important;
+    height:calc(100dvh - 20px)!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:20px 22px 16px!important;
+    border-radius:24px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+    background:rgba(251,250,247,.86)!important;
+  }
+
+  .intro-copy{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    justify-content:center!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding-right:4px!important;
+  }
+
+  .intro-nav{
+    position:static!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    min-height:46px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:8px!important;
+    margin:8px 0 0!important;
+    padding:6px 0 0!important;
+    background:transparent!important;
+  }
+
+  .intro-nav .nav-btn{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    min-width:94px!important;
+    min-height:38px!important;
+    padding:0 12px!important;
+    font-size:10px!important;
+    flex:0 0 auto!important;
+  }
+
+  .intro-nav .slide-dots{
+    display:flex!important;
+    min-width:0!important;
+    flex:1 1 auto!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+  }
+
+  .intro-nav #nextSlide{
+    visibility:visible!important;
+    opacity:1!important;
+  }
+}
