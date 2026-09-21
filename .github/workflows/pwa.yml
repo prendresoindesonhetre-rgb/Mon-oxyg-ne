@@ -27,7 +27,8 @@ jobs:
       - name: Add enveloping rainstick recording
         run: |
           mkdir -p pwa/www/assets/rainstick
-          curl -L --fail --retry 3 -o pwa/www/assets/rainstick/ambient-rainstick.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/27/Rainstick.ogg/Rainstick.ogg.mp3?download="
+          curl -L --fail --retry 3 -o /tmp/ambient-rainstick-source.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/27/Rainstick.ogg/Rainstick.ogg.mp3?download="
+          ffmpeg -hide_banner -loglevel error -y -i /tmp/ambient-rainstick-source.mp3 -af "lowpass=f=6000,equalizer=f=4000:t=q:w=1:g=-2.8,volume=0.97" pwa/www/assets/rainstick/ambient-rainstick.mp3
       - name: Validate PWA
         run: |
           set -e
@@ -45,8 +46,8 @@ jobs:
           test -f pwa/www/assets/rainstick/up-8.mp3
           test -f pwa/www/assets/rainstick/down-8.mp3
           test -f pwa/www/assets/rainstick/ambient-rainstick.mp3
-          grep -q 'v44-rainstick.js?v=78' pwa/www/index.html
-          grep -q 'mon-oxygene-pwa-v78-split-phone' pwa/www/sw.js
+          grep -q 'v44-rainstick.js?v=79' pwa/www/index.html
+          grep -q 'mon-oxygene-pwa-v79-softer-rainstick' pwa/www/sw.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
