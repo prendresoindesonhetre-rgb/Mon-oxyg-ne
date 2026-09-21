@@ -8,40 +8,49 @@
     return { w: Math.max(1, Math.round(w)), h: Math.max(1, Math.round(h)) };
   }
 
+  function ensureRotateHint() {
+    var hint = document.getElementById('rotate-phone-hint');
+    if (hint) return hint;
+    hint = document.createElement('div');
+    hint.id = 'rotate-phone-hint';
+    hint.setAttribute('aria-live', 'polite');
+    hint.innerHTML =
+      '<div class="rotate-phone-card">' +
+        '<div class="rotate-phone-icon" aria-hidden="true">' +
+          '<svg viewBox="0 0 64 64"><rect x="23" y="12" width="18" height="36" rx="4"/><path d="M13 29c2-9 9-16 18-19"/><path d="M13 29l-3-7m3 7 7-2"/></svg>' +
+        '</div>' +
+        '<strong>Tourne ton téléphone</strong>' +
+        '<span>Mon Oxygène s’utilise en mode paysage.</span>' +
+      '</div>';
+    document.body.appendChild(hint);
+    return hint;
+  }
+
   function applyLandscapeFit() {
     var app = document.getElementById('app');
     if (!app) return;
 
     var size = viewportSize();
     var portrait = size.h > size.w;
-    var landscapeW = Math.max(size.w, size.h);
-    var landscapeH = Math.min(size.w, size.h);
     var root = document.documentElement;
+    var hint = ensureRotateHint();
 
     root.style.setProperty('--visible-width', size.w + 'px');
     root.style.setProperty('--visible-height', size.h + 'px');
-    root.style.setProperty('--landscape-width', landscapeW + 'px');
-    root.style.setProperty('--landscape-height', landscapeH + 'px');
 
-    if (portrait) {
-      root.classList.add('physical-portrait');
-      app.style.position = 'fixed';
-      app.style.left = '50%';
-      app.style.top = '50%';
-      app.style.width = landscapeW + 'px';
-      app.style.height = landscapeH + 'px';
-      app.style.transform = 'translate(-50%, -50%) rotate(90deg)';
-      app.style.transformOrigin = 'center center';
-    } else {
-      root.classList.remove('physical-portrait');
-      app.style.position = 'relative';
-      app.style.left = '0';
-      app.style.top = '0';
-      app.style.width = '100%';
-      app.style.height = '100%';
-      app.style.transform = 'none';
-      app.style.transformOrigin = 'center center';
-    }
+    /* Important : on ne tourne plus artificiellement toute l'application.
+       Dans un navigateur en portrait, on demande simplement de tourner le téléphone.
+       En paysage, l'application utilise le viewport réel. */
+    app.style.position = 'relative';
+    app.style.left = '0';
+    app.style.top = '0';
+    app.style.width = '100%';
+    app.style.height = '100%';
+    app.style.transform = 'none';
+    app.style.transformOrigin = 'center center';
+
+    root.classList.toggle('physical-portrait', portrait);
+    if (hint) hint.classList.toggle('show', portrait);
   }
 
   function tryNativeLandscapeLock() {
@@ -70,7 +79,6 @@
   });
   if (window.visualViewport) {
     window.visualViewport.addEventListener('resize', refresh);
-    window.visualViewport.addEventListener('scroll', refresh);
   }
   document.addEventListener('pointerdown', tryNativeLandscapeLock, { once: true, passive: true });
 })();
