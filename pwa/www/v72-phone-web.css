@@ -372,3 +372,69 @@ html,body{
     margin-top:8px!important;
   }
 }
+
+
+/* v74 — correction définitive du navigateur mobile :
+   aucune rotation forcée + grand cadre explicatif rapproché de l'arbre. */
+
+/* Neutraliser les anciennes règles qui faisaient pivoter tout le site en portrait. */
+html #app,
+body #app,
+html.legacy-browser #app,
+body.legacy-browser #app,
+.legacy-browser #app{
+  position:relative!important;
+  left:0!important;
+  top:0!important;
+  width:100%!important;
+  height:100%!important;
+  transform:none!important;
+  transform-origin:center center!important;
+}
+
+/* En paysage, le cadre explicatif s'étend davantage vers la gauche :
+   son bord gauche arrive presque au niveau de l'arbre, sans masquer tout le décor. */
+@media (orientation:landscape) and (max-height:760px){
+  .intro-shell,
+  .install-shell{
+    justify-content:flex-end!important;
+    padding-left:max(16px,env(safe-area-inset-left))!important;
+    padding-right:max(16px,env(safe-area-inset-right))!important;
+  }
+
+  .intro-panel,
+  .install-panel{
+    width:min(58vw,900px)!important;
+    max-width:60vw!important;
+    margin-right:1.5vw!important;
+    margin-left:0!important;
+    padding:20px 24px 18px!important;
+  }
+
+  .intro-copy{
+    overflow:auto!important;
+    min-height:0!important;
+  }
+
+  .intro-nav{
+    width:100%!important;
+    flex:0 0 auto!important;
+    margin-top:9px!important;
+    padding-top:7px!important;
+  }
+}
+
+/* En portrait, pas de rotation : lecture normale dans le navigateur. */
+@media (orientation:portrait){
+  html #app,
+  body #app,
+  html.legacy-browser #app,
+  body.legacy-browser #app,
+  .legacy-browser #app{
+    position:relative!important;
+    inset:auto!important;
+    width:100%!important;
+    height:100%!important;
+    transform:none!important;
+  }
+}
