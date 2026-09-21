@@ -117,9 +117,9 @@
   // Le son diminue naturellement AVANT le changement, s'arrête au pic,
   // puis l'autre passage démarre à zéro et augmente APRÈS le changement.
   var RAINSTICK_FILE = './assets/rainstick/ambient-rainstick.mp3';
-  var FADE_OUT_BEFORE_SWITCH_MS = 480;
-  var FADE_IN_AFTER_SWITCH_MS = 480;
-  var PLAYBACK_RATE = 0.92;
+  var FADE_OUT_BEFORE_SWITCH_MS = 1100;
+  var FADE_IN_AFTER_SWITCH_MS = 650;
+  var PLAYBACK_RATE = 0.88;
   var UP_BASE_OFFSET = 0.65;
   var DOWN_BASE_OFFSET = 6.00;
   var phaseEndTimer = null;
@@ -202,12 +202,12 @@
       try { p = audio.play(); } catch (_) { return; }
       if (p && typeof p.catch === 'function') p.catch(function () {});
 
-      var fadeInMs = Math.min(FADE_IN_AFTER_SWITCH_MS, Math.max(80, remainingMs * 0.35));
+      var fadeInMs = Math.min(FADE_IN_AFTER_SWITCH_MS, Math.max(120, remainingMs * 0.22));
       fadeVolume(audio, 0, targetVolume, fadeInMs);
 
       // Le son reste présent pendant la phase puis redescend AVANT le changement.
       // Il atteint zéro exactement au pic, sans jamais se superposer au son suivant.
-      var fadeOutMs = Math.min(FADE_OUT_BEFORE_SWITCH_MS, Math.max(80, remainingMs * 0.35));
+      var fadeOutMs = Math.min(FADE_OUT_BEFORE_SWITCH_MS, Math.max(180, remainingMs * 0.28));
       var fadeOutDelay = Math.max(fadeInMs, remainingMs - fadeOutMs);
 
       phaseEndTimer = setTimeout(function () {
