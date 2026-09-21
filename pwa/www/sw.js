@@ -1,7 +1,7 @@
-const CACHE='mon-oxygene-pwa-v71-browser-orientation';
+const CACHE='mon-oxygene-pwa-v72-phone-web';
 const CORE=[
   './','./index.html','./app.js','./sequence.js','./orientation.js','./compat-init.js','./responsive.js','./v41-phone-ui.js','./v44-rainstick.js',
-  './styles.css','./v59-settings-redesign.css','./v59-settings-redesign.js','./landscape-force.css','./legacy.css','./responsive.css','./v37-fixes.css','./v38-responsive.css','./v39-landscape-fit.css','./v40-mobile-sequence.css','./v41-phone-ui.css',
+  './styles.css','./v59-settings-redesign.css','./v59-settings-redesign.js','./landscape-force.css','./legacy.css','./responsive.css','./v37-fixes.css','./v38-responsive.css','./v39-landscape-fit.css','./v40-mobile-sequence.css','./v41-phone-ui.css','./v72-phone-web.css',
   './manifest.webmanifest','./assets/icon-192.png','./assets/icon-512.png','./assets/apple-touch-icon.png','./assets/mon-oxygene-splash.png','./assets/mon-oxygene-start.png','./assets/settings_bg.webp','./assets/curve_bg.jpg','./assets/lotus.png',
   './assets/rainstick/up-8.mp3','./assets/rainstick/down-8.mp3','./assets/rainstick/ambient-rainstick.mp3'
 ];
