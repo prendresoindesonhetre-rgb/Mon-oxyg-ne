@@ -198,6 +198,14 @@ function renderIntro() {
   });
 }
 
+function formatBreathDuration(totalSeconds) {
+  const seconds = Math.max(0, Math.round(Number(totalSeconds) || 0));
+  if (seconds < 60) return seconds + ' s';
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return minutes + ' min' + (rest ? ' ' + rest + ' s' : '');
+}
+
 function renderSettings() {
   const c = state.config;
   app.innerHTML = `
@@ -236,7 +244,7 @@ function renderSettings() {
   document.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => {
     const key = button.dataset.step;
     const delta = Number(button.dataset.delta);
-    const limits = key === 'durationMin' ? [1, 20] : [2, 10];
+    const limits = key === 'durationMin' ? [1, 20] : [2, 600];
     state.config[key] = Math.max(limits[0], Math.min(limits[1], state.config[key] + delta));
     renderSettings();
   }));
@@ -254,12 +262,15 @@ function renderSettings() {
 }
 
 function settingRow(title, subtitle, key, value, unit) {
+  const displayValue = (key === 'inhaleSec' || key === 'exhaleSec')
+    ? formatBreathDuration(value)
+    : value + ' ' + unit;
   return `
     <div class="setting-row">
       <div class="setting-label"><strong>${title}</strong><span>${subtitle}</span></div>
       <div class="stepper">
         <button aria-label="Diminuer" data-step="${key}" data-delta="-1">−</button>
-        <div class="stepper-value">${value} ${unit}</div>
+        <div class="stepper-value">${displayValue}</div>
         <button aria-label="Augmenter" data-step="${key}" data-delta="1">+</button>
       </div>
     </div>`;
