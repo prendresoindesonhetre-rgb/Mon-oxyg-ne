@@ -244,7 +244,7 @@ function renderSettings() {
   document.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => {
     const key = button.dataset.step;
     const delta = Number(button.dataset.delta);
-    const limits = key === 'durationMin' ? [1, 20] : [2, 600];
+    const limits = key === 'durationMin' ? [1, 20] : [2, 8];
     state.config[key] = Math.max(limits[0], Math.min(limits[1], state.config[key] + delta));
     renderSettings();
   }));
