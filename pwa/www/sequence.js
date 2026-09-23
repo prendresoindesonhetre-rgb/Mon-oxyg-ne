@@ -22,10 +22,16 @@
     return minutes + ' min' + (rest ? ' ' + rest + ' s' : '');
   }
 
-  function customTotalMinutes() {
+  function customTotalSeconds() {
     var total = 0;
-    for (var i = 0; i < state.customStages.length; i++) total += state.customStages[i].durationMin;
+    for (var i = 0; i < state.customStages.length; i++) {
+      total += Math.round(Number(state.customStages[i].durationMin || 0) * 60);
+    }
     return total;
+  }
+
+  function customTotalMinutes() {
+    return customTotalSeconds() / 60;
   }
 
   function currentModeLabel() {
@@ -48,7 +54,7 @@
       (state.customStages.length > 2 ? '<button class="sequence-remove" data-remove-stage="' + index + '" aria-label="Supprimer cette étape">×</button>' : '') +
       '</div>' +
       '<div class="sequence-stage-controls">' +
-        '<div class="sequence-mini"><span>Durée</span><div><button data-custom-step="durationMin" data-stage="' + index + '" data-delta="-0.5">−</button><b>' + formatMinutes(stage.durationMin) + ' min</b><button data-custom-step="durationMin" data-stage="' + index + '" data-delta="0.5">+</button></div></div>' +
+        '<div class="sequence-mini"><span>Durée</span><div><button data-custom-step="durationMin" data-stage="' + index + '" data-delta="-1">−</button><b>' + formatBreathDuration(Math.round(stage.durationMin * 60)) + '</b><button data-custom-step="durationMin" data-stage="' + index + '" data-delta="1">+</button></div></div>' +
         '<div class="sequence-mini"><span>Inspire</span><div><button data-custom-step="inhaleSec" data-stage="' + index + '" data-delta="-1">−</button><b>' + formatBreathDuration(stage.inhaleSec) + '</b><button data-custom-step="inhaleSec" data-stage="' + index + '" data-delta="1">+</button></div></div>' +
         '<div class="sequence-mini"><span>Expire</span><div><button data-custom-step="exhaleSec" data-stage="' + index + '" data-delta="-1">−</button><b>' + formatBreathDuration(stage.exhaleSec) + '</b><button data-custom-step="exhaleSec" data-stage="' + index + '" data-delta="1">+</button></div></div>' +
       '</div>' +
@@ -96,7 +102,7 @@
       var stages = '';
       for (var i = 0; i < state.customStages.length; i++) stages += stageEditor(state.customStages[i], i);
       customHtml = '<div class="sequence-custom">' +
-        '<div class="sequence-custom-title"><strong>Mon enchaînement</strong><span>Durée totale : ' + formatMinutes(customTotalMinutes()) + ' min</span></div>' +
+        '<div class="sequence-custom-title"><strong>Mon enchaînement</strong><span>Durée totale : ' + formatBreathDuration(customTotalSeconds()) + '</span></div>' +
         stages +
         '<button class="sequence-add" id="addSequenceStage">+ Ajouter une étape</button>' +
       '</div>';
@@ -136,8 +142,15 @@
         var delta = Number(this.getAttribute('data-delta'));
         var stage = state.customStages[index];
         if (!stage) return;
-        if (key === 'durationMin') stage[key] = Math.max(0.5, Math.min(20, Math.round((stage[key] + delta) * 2) / 2));
-        else stage[key] = Math.max(2, Math.min(600, stage[key] + delta));
+        if (key === 'durationMin') {
+          var cycleSec = Math.max(4, Number(stage.inhaleSec || 5) + Number(stage.exhaleSec || 5));
+          var currentSec = Math.max(cycleSec, Math.round(Number(stage.durationMin || 0) * 60));
+          var nextSec = currentSec + (delta > 0 ? cycleSec : -cycleSec);
+          nextSec = Math.max(cycleSec, Math.min(1200, nextSec));
+          stage.durationMin = nextSec / 60;
+        } else {
+          stage[key] = Math.max(2, Math.min(600, stage[key] + delta));
+        }
         state.config.durationMin = customTotalMinutes();
         renderSettings();
       });
@@ -228,7 +241,8 @@
       var start = 0;
       for (var i = 0; i < state.customStages.length; i++) {
         var stage = state.customStages[i];
-        var duration = Math.max(30, Number(stage.durationMin) * 60);
+        var minimumCycle = Math.max(4, Number(stage.inhaleSec || 5) + Number(stage.exhaleSec || 5));
+        var duration = Math.max(minimumCycle, Math.round(Number(stage.durationMin) * 60));
         appendPlanItem(plan, stage.inhaleSec, stage.exhaleSec, duration, start);
         start += duration;
       }
