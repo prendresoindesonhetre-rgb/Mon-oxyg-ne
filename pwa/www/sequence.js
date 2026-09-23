@@ -149,7 +149,7 @@
           nextSec = Math.max(cycleSec, Math.min(1200, nextSec));
           stage.durationMin = nextSec / 60;
         } else {
-          stage[key] = Math.max(2, Math.min(600, stage[key] + delta));
+          stage[key] = Math.max(2, Math.min(8, stage[key] + delta));
         }
         state.config.durationMin = customTotalMinutes();
         renderSettings();
