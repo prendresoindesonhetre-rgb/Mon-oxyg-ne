@@ -14,6 +14,14 @@
     return String(Math.round(value * 10) / 10).replace('.', ',');
   }
 
+  function formatBreathDuration(totalSeconds) {
+    var seconds = Math.max(0, Math.round(Number(totalSeconds) || 0));
+    if (seconds < 60) return seconds + ' s';
+    var minutes = Math.floor(seconds / 60);
+    var rest = seconds % 60;
+    return minutes + ' min' + (rest ? ' ' + rest + ' s' : '');
+  }
+
   function customTotalMinutes() {
     var total = 0;
     for (var i = 0; i < state.customStages.length; i++) total += state.customStages[i].durationMin;
@@ -41,8 +49,8 @@
       '</div>' +
       '<div class="sequence-stage-controls">' +
         '<div class="sequence-mini"><span>Durée</span><div><button data-custom-step="durationMin" data-stage="' + index + '" data-delta="-0.5">−</button><b>' + formatMinutes(stage.durationMin) + ' min</b><button data-custom-step="durationMin" data-stage="' + index + '" data-delta="0.5">+</button></div></div>' +
-        '<div class="sequence-mini"><span>Inspire</span><div><button data-custom-step="inhaleSec" data-stage="' + index + '" data-delta="-1">−</button><b>' + stage.inhaleSec + ' s</b><button data-custom-step="inhaleSec" data-stage="' + index + '" data-delta="1">+</button></div></div>' +
-        '<div class="sequence-mini"><span>Expire</span><div><button data-custom-step="exhaleSec" data-stage="' + index + '" data-delta="-1">−</button><b>' + stage.exhaleSec + ' s</b><button data-custom-step="exhaleSec" data-stage="' + index + '" data-delta="1">+</button></div></div>' +
+        '<div class="sequence-mini"><span>Inspire</span><div><button data-custom-step="inhaleSec" data-stage="' + index + '" data-delta="-1">−</button><b>' + formatBreathDuration(stage.inhaleSec) + '</b><button data-custom-step="inhaleSec" data-stage="' + index + '" data-delta="1">+</button></div></div>' +
+        '<div class="sequence-mini"><span>Expire</span><div><button data-custom-step="exhaleSec" data-stage="' + index + '" data-delta="-1">−</button><b>' + formatBreathDuration(stage.exhaleSec) + '</b><button data-custom-step="exhaleSec" data-stage="' + index + '" data-delta="1">+</button></div></div>' +
       '</div>' +
     '</div>';
   }
@@ -129,7 +137,7 @@
         var stage = state.customStages[index];
         if (!stage) return;
         if (key === 'durationMin') stage[key] = Math.max(0.5, Math.min(20, Math.round((stage[key] + delta) * 2) / 2));
-        else stage[key] = Math.max(2, Math.min(10, stage[key] + delta));
+        else stage[key] = Math.max(2, Math.min(600, stage[key] + delta));
         state.config.durationMin = customTotalMinutes();
         renderSettings();
       });
@@ -158,19 +166,53 @@
     injectSequenceControls();
   };
 
+  function mappedPhaseOffset(previous, nextInhale, nextExhale) {
+    if (!previous) return 0;
+
+    var prevInhale = Math.max(2, Number(previous.inhaleSec) || 5);
+    var prevExhale = Math.max(2, Number(previous.exhaleSec) || 5);
+    var prevCycle = prevInhale + prevExhale;
+    var shifted = (Number(previous.phaseOffsetSec) || 0) + Number(previous.durationSec || 0);
+    var m = ((shifted % prevCycle) + prevCycle) % prevCycle;
+    if (m < 0.000001 || prevCycle - m < 0.000001) m = 0;
+
+    var firstInhale = !!state.config.startWithInhale;
+    if (firstInhale) {
+      if (m < prevInhale) {
+        return (m / prevInhale) * nextInhale;
+      }
+      return nextInhale + ((m - prevInhale) / prevExhale) * nextExhale;
+    }
+
+    if (m < prevExhale) {
+      return (m / prevExhale) * nextExhale;
+    }
+    return nextExhale + ((m - prevExhale) / prevInhale) * nextInhale;
+  }
+
+  function appendPlanItem(plan, inhaleSec, exhaleSec, durationSec, startSec) {
+    var inhale = Math.max(2, Number(inhaleSec) || 5);
+    var exhale = Math.max(2, Number(exhaleSec) || 5);
+    var previous = plan.length ? plan[plan.length - 1] : null;
+    var phaseOffset = mappedPhaseOffset(previous, inhale, exhale);
+
+    plan.push({
+      inhaleSec: inhale,
+      exhaleSec: exhale,
+      durationSec: durationSec,
+      startSec: startSec,
+      endSec: startSec + durationSec,
+      phaseOffsetSec: phaseOffset
+    });
+  }
+
   function splitPlan(defs, totalSeconds) {
     var plan = [];
     var start = 0;
     for (var i = 0; i < defs.length; i++) {
       var duration = i === defs.length - 1 ? totalSeconds - start : totalSeconds / defs.length;
       if (duration < 0) duration = 0;
-      plan.push({
-        inhaleSec: defs[i][0],
-        exhaleSec: defs[i][1],
-        durationSec: duration,
-        startSec: start,
-        endSec: start + duration
-      });
+      appendPlanItem(plan, defs[i][0], defs[i][1], duration, start);
       start += duration;
     }
     return plan;
@@ -187,13 +229,7 @@
       for (var i = 0; i < state.customStages.length; i++) {
         var stage = state.customStages[i];
         var duration = Math.max(30, Number(stage.durationMin) * 60);
-        plan.push({
-          inhaleSec: stage.inhaleSec,
-          exhaleSec: stage.exhaleSec,
-          durationSec: duration,
-          startSec: start,
-          endSec: start + duration
-        });
+        appendPlanItem(plan, stage.inhaleSec, stage.exhaleSec, duration, start);
         start += duration;
       }
       return plan;
@@ -231,6 +267,7 @@
         startSec: 0,
         endSec: Number(state.config.durationMin) * 60,
         localT: t,
+        phaseOffsetSec: 0,
         index: 0,
         count: 1
       };
@@ -242,6 +279,7 @@
         startSec: plan[0].startSec,
         endSec: plan[0].endSec,
         localT: t,
+        phaseOffsetSec: Number(plan[0].phaseOffsetSec) || 0,
         index: 0,
         count: plan.length
       };
@@ -257,6 +295,7 @@
       startSec: item.startSec,
       endSec: item.endSec,
       localT: t - item.startSec,
+      phaseOffsetSec: Number(item.phaseOffsetSec) || 0,
       index: index,
       count: plan.length
     };
@@ -271,7 +310,8 @@
   cyclePosition = function (t) {
     var r = activeRhythmAt(t);
     var cycle = r.inhaleSec + r.exhaleSec;
-    return ((r.localT % cycle) + cycle) % cycle;
+    var shifted = r.localT + (Number(r.phaseOffsetSec) || 0);
+    return ((shifted % cycle) + cycle) % cycle;
   };
 
   isInhaleAt = function (t) {
@@ -316,7 +356,8 @@
   guidanceAt = function (t, inhale) {
     var r = activeRhythmAt(t);
     var cycle = r.inhaleSec + r.exhaleSec;
-    var cycleIndex = Math.floor(Math.max(0, r.localT) / cycle);
+    var shifted = Math.max(0, r.localT + (Number(r.phaseOffsetSec) || 0));
+    var cycleIndex = Math.floor(shifted / cycle);
     if (cycleIndex >= 4) return '';
     var visual = cycleIndex % 2 === 1;
     if (visual) return inhale
