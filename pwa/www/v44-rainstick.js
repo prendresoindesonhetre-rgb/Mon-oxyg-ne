@@ -63,13 +63,13 @@
 
   function clampBreathingTimes() {
     if (state.config) {
-      state.config.inhaleSec = clamp(Number(state.config.inhaleSec) || 5, 2, 8);
-      state.config.exhaleSec = clamp(Number(state.config.exhaleSec) || 5, 2, 8);
+      state.config.inhaleSec = clamp(Number(state.config.inhaleSec) || 5, 2, 600);
+      state.config.exhaleSec = clamp(Number(state.config.exhaleSec) || 5, 2, 600);
     }
     if (Array.isArray(state.customStages)) {
       for (var i = 0; i < state.customStages.length; i++) {
-        state.customStages[i].inhaleSec = clamp(Number(state.customStages[i].inhaleSec) || 5, 2, 8);
-        state.customStages[i].exhaleSec = clamp(Number(state.customStages[i].exhaleSec) || 5, 2, 8);
+        state.customStages[i].inhaleSec = clamp(Number(state.customStages[i].inhaleSec) || 5, 2, 600);
+        state.customStages[i].exhaleSec = clamp(Number(state.customStages[i].exhaleSec) || 5, 2, 600);
       }
     }
   }
@@ -94,7 +94,7 @@
     var button = event.target && event.target.closest ? event.target.closest('button') : null;
     if (!button || button.getAttribute('data-delta') !== '1') return;
     var value = getStepValue(button);
-    if (value !== null && value >= 8) {
+    if (value !== null && value >= 600) {
       event.preventDefault();
       event.stopImmediatePropagation();
     }
@@ -106,7 +106,7 @@
       '[data-custom-step="inhaleSec"][data-delta="1"], [data-custom-step="exhaleSec"][data-delta="1"]'
     );
     for (var i = 0; i < buttons.length; i++) {
-      var atMax = getStepValue(buttons[i]) >= 8;
+      var atMax = getStepValue(buttons[i]) >= 600;
       buttons[i].disabled = atMax;
       buttons[i].setAttribute('aria-disabled', atMax ? 'true' : 'false');
       buttons[i].style.opacity = atMax ? '0.35' : '';
@@ -128,6 +128,7 @@
     if (!audioCache[kind]) {
       var audio = new Audio(RAINSTICK_FILE);
       audio.preload = 'auto';
+      audio.loop = true;
       audio.volume = 0;
       try {
         audio.playbackRate = PLAYBACK_RATE;
@@ -190,7 +191,13 @@
 
       var baseOffset = kind === 'up' ? UP_BASE_OFFSET : DOWN_BASE_OFFSET;
       var phaseOffset = clamp(Number(offset) || 0, 0, seconds);
-      try { audio.currentTime = baseOffset + phaseOffset * PLAYBACK_RATE; } catch (_) {}
+      try {
+        var sourceTime = baseOffset + phaseOffset * PLAYBACK_RATE;
+        if (Number.isFinite(audio.duration) && audio.duration > 0.5) {
+          sourceTime = sourceTime % Math.max(0.5, audio.duration - 0.05);
+        }
+        audio.currentTime = sourceTime;
+      } catch (_) {}
 
       var targetVolume = clamp(state.rainstickVolume, 0, 0.52);
       var remainingMs = Math.max(0, (seconds - phaseOffset) * 1000);
@@ -253,12 +260,13 @@
     }
     if (elapsed >= item.endSec && planIndex === plan.length - 1) return null;
 
-    var inhale = clamp(Math.round(Number(item.inhaleSec) || 5), 2, 8);
-    var exhale = clamp(Math.round(Number(item.exhaleSec) || 5), 2, 8);
+    var inhale = clamp(Math.round(Number(item.inhaleSec) || 5), 2, 600);
+    var exhale = clamp(Math.round(Number(item.exhaleSec) || 5), 2, 600);
     var local = Math.max(0, elapsed - Number(item.startSec || 0));
     var cycle = inhale + exhale;
-    var cycleNo = Math.floor(local / cycle);
-    var m = local - cycleNo * cycle;
+    var shifted = local + (Number(item.phaseOffsetSec) || 0);
+    var cycleNo = Math.floor(shifted / cycle);
+    var m = shifted - cycleNo * cycle;
     var firstInhale = !!state.config.startWithInhale;
     var isInhale, phaseElapsed, duration, half;
 
