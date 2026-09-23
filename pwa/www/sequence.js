@@ -409,7 +409,7 @@
     if (phaseCount) phaseCount.textContent = phaseRemaining(elapsed).toFixed(1) + ' s';
 
     var rhythmLabel = document.querySelector('.rhythm-label');
-    if (rhythmLabel) rhythmLabel.textContent = 'Inspire ' + r.inhaleSec + ' s   ·   Expire ' + r.exhaleSec + ' s';
+    if (rhythmLabel) rhythmLabel.textContent = 'Inspire ' + formatBreathDuration(r.inhaleSec) + '   ·   Expire ' + formatBreathDuration(r.exhaleSec);
 
     var path = buildWavePath(elapsed);
     var waveLine = document.getElementById('waveLine');
