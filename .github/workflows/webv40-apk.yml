@@ -53,7 +53,7 @@ jobs:
           curl -L --fail --retry 3 -o /tmp/ambient-rainstick-source.mp3 "https://upload.wikimedia.org/wikipedia/commons/transcoded/2/27/Rainstick.ogg/Rainstick.ogg.mp3?download="
           ffmpeg -hide_banner -loglevel error -y -i /tmp/ambient-rainstick-source.mp3 -af "lowpass=f=6000,equalizer=f=4000:t=q:w=1:g=-2.8,volume=0.97" pwa/www/assets/rainstick/ambient-rainstick.mp3
 
-      - name: Preserve current v79 service worker
+      - name: Preserve current v80 service worker
         run: |
           cp pwa/www/sw.js /tmp/sw-current.js
           cat > pwa/www/sw.js <<'EOF'
@@ -88,7 +88,7 @@ jobs:
           python scripts/apply_v38_true_responsive.py pwa
           python scripts/apply_v39_sideways_fit.py pwa
 
-      - name: Restore current v79 service worker
+      - name: Restore current v80 service worker
         run: cp /tmp/sw-current.js pwa/www/sw.js
 
       - name: Verify phone and sequence layers
