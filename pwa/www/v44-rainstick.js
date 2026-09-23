@@ -63,13 +63,13 @@
 
   function clampBreathingTimes() {
     if (state.config) {
-      state.config.inhaleSec = clamp(Number(state.config.inhaleSec) || 5, 2, 600);
-      state.config.exhaleSec = clamp(Number(state.config.exhaleSec) || 5, 2, 600);
+      state.config.inhaleSec = clamp(Number(state.config.inhaleSec) || 5, 2, 8);
+      state.config.exhaleSec = clamp(Number(state.config.exhaleSec) || 5, 2, 8);
     }
     if (Array.isArray(state.customStages)) {
       for (var i = 0; i < state.customStages.length; i++) {
-        state.customStages[i].inhaleSec = clamp(Number(state.customStages[i].inhaleSec) || 5, 2, 600);
-        state.customStages[i].exhaleSec = clamp(Number(state.customStages[i].exhaleSec) || 5, 2, 600);
+        state.customStages[i].inhaleSec = clamp(Number(state.customStages[i].inhaleSec) || 5, 2, 8);
+        state.customStages[i].exhaleSec = clamp(Number(state.customStages[i].exhaleSec) || 5, 2, 8);
       }
     }
   }
@@ -94,7 +94,7 @@
     var button = event.target && event.target.closest ? event.target.closest('button') : null;
     if (!button || button.getAttribute('data-delta') !== '1') return;
     var value = getStepValue(button);
-    if (value !== null && value >= 600) {
+    if (value !== null && value >= 8) {
       event.preventDefault();
       event.stopImmediatePropagation();
     }
@@ -106,7 +106,7 @@
       '[data-custom-step="inhaleSec"][data-delta="1"], [data-custom-step="exhaleSec"][data-delta="1"]'
     );
     for (var i = 0; i < buttons.length; i++) {
-      var atMax = getStepValue(buttons[i]) >= 600;
+      var atMax = getStepValue(buttons[i]) >= 8;
       buttons[i].disabled = atMax;
       buttons[i].setAttribute('aria-disabled', atMax ? 'true' : 'false');
       buttons[i].style.opacity = atMax ? '0.35' : '';
@@ -260,8 +260,8 @@
     }
     if (elapsed >= item.endSec && planIndex === plan.length - 1) return null;
 
-    var inhale = clamp(Math.round(Number(item.inhaleSec) || 5), 2, 600);
-    var exhale = clamp(Math.round(Number(item.exhaleSec) || 5), 2, 600);
+    var inhale = clamp(Math.round(Number(item.inhaleSec) || 5), 2, 8);
+    var exhale = clamp(Math.round(Number(item.exhaleSec) || 5), 2, 8);
     var local = Math.max(0, elapsed - Number(item.startSec || 0));
     var cycle = inhale + exhale;
     var shifted = local + (Number(item.phaseOffsetSec) || 0);
