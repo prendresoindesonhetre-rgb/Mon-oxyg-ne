@@ -121,11 +121,15 @@
   var FADE_IN_AFTER_SWITCH_MS = 650;
   var PLAYBACK_RATE = 0.88;
   var UP_BASE_OFFSET = 0.65;
-  var DOWN_BASE_OFFSET = 6.00;
+  var DOWN_BASE_OFFSET = 6.00; // portion distincte et bien audible pour l'expiration
   var phaseEndTimer = null;
 
   function ensureAudio(kind) {
-    if (!audioCache[kind]) {
+    // Un seul lecteur audio est réutilisé pour Inspire ET Expire.
+    // Sur certains téléphones, un deuxième élément Audio lancé plus tard
+    // peut être bloqué par la politique de lecture automatique : cela
+    // expliquait l'Expire silencieux alors que l'Inspire fonctionnait.
+    if (!audioCache.shared) {
       var audio = new Audio(RAINSTICK_FILE);
       audio.preload = 'auto';
       audio.loop = true;
@@ -136,10 +140,10 @@
         audio.mozPreservesPitch = false;
         audio.webkitPreservesPitch = false;
       } catch (_) {}
-      audioCache[kind] = audio;
+      audioCache.shared = audio;
       try { audio.load(); } catch (_) {}
     }
-    return audioCache[kind];
+    return audioCache.shared;
   }
 
   function preloadUsefulAudio() {
