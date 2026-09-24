@@ -1,8 +1,8 @@
-const CACHE='mon-oxygene-pwa-v82-breath-2-8';
+const CACHE='mon-oxygene-pwa-v83-icons-expire-audio';
 const CORE=[
   './','./index.html','./app.js','./sequence.js','./orientation.js','./compat-init.js','./responsive.js','./v41-phone-ui.js','./v44-rainstick.js',
   './styles.css','./v59-settings-redesign.css','./v59-settings-redesign.js','./landscape-force.css','./legacy.css','./responsive.css','./v37-fixes.css','./v38-responsive.css','./v39-landscape-fit.css','./v40-mobile-sequence.css','./v41-phone-ui.css',
-  './manifest.webmanifest','./assets/icon-192.png','./assets/icon-512.png','./assets/apple-touch-icon.png','./assets/mon-oxygene-splash.png','./assets/mon-oxygene-start.png','./assets/settings_bg.webp','./assets/curve_bg.jpg','./assets/lotus.png',
+  './manifest.webmanifest','./assets/presets/ralentir.png','./assets/presets/retrouver-calme.png','./assets/presets/equilibre.png','./assets/presets/retrouver-dynamisme.png','./assets/presets/dynamiser.png','./assets/icon-192.png','./assets/icon-512.png','./assets/apple-touch-icon.png','./assets/mon-oxygene-splash.png','./assets/mon-oxygene-start.png','./assets/settings_bg.webp','./assets/curve_bg.jpg','./assets/lotus.png',
   './assets/rainstick/up-8.mp3','./assets/rainstick/down-8.mp3','./assets/rainstick/ambient-rainstick.mp3'
 ];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
