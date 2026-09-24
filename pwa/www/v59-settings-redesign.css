@@ -1114,3 +1114,15 @@
   flex:0 0 auto!important;
   box-sizing:border-box!important;
 }
+
+
+/* v83 — vraies icônes des cinq rythmes. */
+.v60-preset-icon .v83-preset-image{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  user-select:none;
+  -webkit-user-drag:none;
+}
