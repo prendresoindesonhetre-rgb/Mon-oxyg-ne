@@ -43,7 +43,7 @@ Avec un compte organisation, le test fermé obligatoire (12 testeurs pendant 14 
 ## Étape 4 — Créer l'appli dans la Play Console
 
 **Créer une application** :
-- Nom : `Mon Oxygène – Respiration` (ou simplement `Mon Oxygène`)
+- Nom : `Mon Oxygène`
 - Langue par défaut : Français (France)
 - Application ou jeu : **Application**
 - Gratuite ou payante : **Gratuite**
@@ -68,7 +68,7 @@ Avec un compte organisation, le test fermé obligatoire (12 testeurs pendant 14 
 
 **Nom de l'application** (30 caractères maximum)
 ```
-Mon Oxygène – Respiration
+Mon Oxygène
 ```
 
 **Description courte** (80 caractères maximum)
