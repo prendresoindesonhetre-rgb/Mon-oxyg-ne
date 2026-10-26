@@ -1,0 +1,63 @@
+# Construit Mon Oxygène pour le Play Store (dossier playstore/) :
+# - Mon-Oxygene-PlayStore-vN.aab : le fichier à envoyer dans la Play Console ;
+# - Mon-Oxygene-essai-vN.apk : la même appli, à installer directement sur un téléphone pour l'essayer.
+# Les deux sont signés avec la clé d'envoi, donnée par les secrets MON_OXYGENE_CLE et MON_OXYGENE_MOT_DE_PASSE
+# (Settings → Secrets and variables → Actions). Sans eux, ils sont signés avec une clé de test : le Play Store les refuse.
+name: Mon Oxygène pour le Play Store
+
+on:
+  push:
+    branches: [main, 'claude/**']
+    paths: ['playstore/**', '.github/workflows/playstore.yml']
+  workflow_dispatch:
+
+jobs:
+  construire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+
+      - name: Préparer la clé d'envoi
+        env:
+          CLE: ${{ secrets.MON_OXYGENE_CLE }}
+        run: |
+          if [ -n "$CLE" ]; then
+            printf '%s' "$CLE" | tr -d ' \r\n' | base64 -d > "$RUNNER_TEMP/cle-envoi.p12"
+            echo "MON_OXYGENE_CLE_FICHIER=$RUNNER_TEMP/cle-envoi.p12" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Secrets MON_OXYGENE_CLE et MON_OXYGENE_MOT_DE_PASSE absents : fichiers signés avec la clé de test, refusés par le Play Store."
+          fi
+
+      - name: Construire l'AAB et l'APK d'essai
+        env:
+          MON_OXYGENE_MOT_DE_PASSE: ${{ secrets.MON_OXYGENE_MOT_DE_PASSE }}
+        run: gradle -p playstore :app:bundleRelease :app:assembleRelease -PnumeroVersion=${{ github.run_number }} --stacktrace
+
+      - name: Vérifier et rassembler
+        run: |
+          OUTILS="$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)"
+          mkdir sortie
+          cp playstore/app/build/outputs/bundle/release/app-release.aab "sortie/Mon-Oxygene-PlayStore-v${{ github.run_number }}.aab"
+          cp playstore/app/build/outputs/apk/release/app-release.apk "sortie/Mon-Oxygene-essai-v${{ github.run_number }}.apk"
+          "$OUTILS/aapt2" dump badging sortie/*.apk | grep -E "^(package|sdkVersion|targetSdkVersion|application-label|uses-permission)"
+          "$OUTILS/aapt2" dump badging sortie/*.apk | grep -q "targetSdkVersion:'36'"
+          echo "Certificat de l'APK d'essai :"
+          "$OUTILS/apksigner" verify --print-certs sortie/*.apk | grep -E "DN|SHA-256"
+          echo "Certificat de l'AAB (à comparer au « certificat de clé d'importation » de la Play Console) :"
+          keytool -printcert -jarfile sortie/*.aab | grep -E "Owner|Propriétaire|SHA256"
+          rm -f "$RUNNER_TEMP/cle-envoi.p12"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Mon-Oxygene-PlayStore-v${{ github.run_number }}
+          path: sortie/
+          if-no-files-found: error

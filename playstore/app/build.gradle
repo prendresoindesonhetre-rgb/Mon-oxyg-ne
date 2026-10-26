@@ -1,0 +1,38 @@
+plugins { id 'com.android.application' }
+
+// Numéro de version : donné par GitHub (un de plus à chaque construction), 1 en local.
+def numeroVersion = (project.findProperty('numeroVersion') ?: '1').toString().toInteger()
+// Clé d'envoi au Play Store : fournie par les secrets GitHub, jamais rangée dans le dépôt.
+def cleEnvoi = System.getenv('MON_OXYGENE_CLE_FICHIER')
+
+android {
+    namespace 'fr.prendresoindesonhetre.monoxygene'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'fr.prendresoindesonhetre.monoxygene'
+        minSdk 23
+        targetSdk 36
+        versionCode numeroVersion
+        versionName "1.0.$numeroVersion"
+    }
+
+    signingConfigs {
+        envoi {
+            if (cleEnvoi) {
+                storeFile file(cleEnvoi)
+                storePassword System.getenv('MON_OXYGENE_MOT_DE_PASSE')
+                keyAlias 'envoi'
+                keyPassword System.getenv('MON_OXYGENE_MOT_DE_PASSE')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Sans la clé, le fichier est signé avec la clé de test : installable, mais refusé par le Play Store.
+            signingConfig = cleEnvoi ? signingConfigs.envoi : signingConfigs.debug
+        }
+    }
+}
