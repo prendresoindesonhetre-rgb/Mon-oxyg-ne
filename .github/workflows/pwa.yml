@@ -56,7 +56,7 @@ jobs:
           test -f pwa/www/assets/rainstick/down-8.mp3
           test -f pwa/www/assets/rainstick/ambient-rainstick.mp3
           grep -q 'v44-rainstick.js?v=83' pwa/www/index.html
-          grep -q 'mon-oxygene-pwa-v83-icons-expire-audio' pwa/www/sw.js
+          grep -q 'mon-oxygene-pwa-v84-boutons-volume' pwa/www/sw.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
