@@ -3,6 +3,7 @@
 # - Mon-Oxygene-essai-vN.apk : la même appli, à installer directement sur un téléphone pour l'essayer.
 # Les deux sont signés avec la clé d'envoi, donnée par les secrets MON_OXYGENE_CLE et MON_OXYGENE_MOT_DE_PASSE
 # (Settings → Secrets and variables → Actions). Sans eux, ils sont signés avec une clé de test : le Play Store les refuse.
+# L'APK d'essai est aussi déposé seul sur la branche apk-essai, d'où il est récupéré pour l'installer.
 name: Mon Oxygène pour le Play Store
 
 on:
@@ -10,6 +11,9 @@ on:
     branches: [main, 'claude/**']
     paths: ['playstore/**', '.github/workflows/playstore.yml']
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   construire:
@@ -61,3 +65,11 @@ jobs:
           name: Mon-Oxygene-PlayStore-v${{ github.run_number }}
           path: sortie/
           if-no-files-found: error
+
+      - name: Déposer l'APK d'essai sur la branche apk-essai
+        run: |
+          mkdir -p "$RUNNER_TEMP/apk-essai" && cd "$RUNNER_TEMP/apk-essai"
+          cp "$GITHUB_WORKSPACE"/sortie/*.apk Mon-Oxygene-essai.apk
+          git init -q && git checkout -q -b apk-essai && git add .
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -q -m "APK d'essai Mon Oxygène, version ${{ github.run_number }} (${{ github.sha }})"
+          git push -q -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" apk-essai
