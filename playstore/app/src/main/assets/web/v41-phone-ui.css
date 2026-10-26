@@ -1,0 +1,325 @@
+/* Mon Oxygène v41 — véritable interface de réglages dédiée au téléphone. */
+
+/* responsive.js applique ui-compact quand le petit côté de l'écran est < 410 px.
+   Cela couvre les téléphones en paysage et les téléphones portrait dont l'app est
+   présentée dans son viewport paysage logique. */
+.ui-compact .settings-logo,
+.ui-tiny .settings-logo {
+  display:none !important;
+}
+
+.ui-compact .settings-shell,
+.ui-tiny .settings-shell,
+.ui-compact .intro-shell,
+.ui-tiny .intro-shell,
+.ui-compact .install-shell,
+.ui-tiny .install-shell {
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  align-items:stretch !important;
+  justify-content:center !important;
+  overflow:hidden !important;
+}
+
+.ui-compact .settings-panel,
+.ui-tiny .settings-panel {
+  width:calc(100% - 10px) !important;
+  max-width:none !important;
+  height:calc(100% - 10px) !important;
+  max-height:calc(100% - 10px) !important;
+  margin:5px !important;
+  padding:10px 14px 16px !important;
+  border-radius:18px !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  overscroll-behavior:contain !important;
+  -webkit-overflow-scrolling:touch;
+  box-sizing:border-box !important;
+}
+
+.ui-compact .settings-title,
+.ui-tiny .settings-title {
+  font-size:clamp(21px,5.6vmin,31px) !important;
+  line-height:1.05 !important;
+  margin:0 0 2px !important;
+}
+
+.ui-compact .settings-sub,
+.ui-tiny .settings-sub {
+  font-size:clamp(9px,2.15vmin,12px) !important;
+  line-height:1.25 !important;
+  margin:0 0 7px !important;
+}
+
+/* Deux entrées claires au lieu de montrer tous les réglages en même temps. */
+.phone-mode-tabs {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
+  margin:2px 0 6px;
+}
+.phone-mode-tab {
+  min-width:0;
+  min-height:34px;
+  padding:6px 10px;
+  border:1px solid rgba(65,151,175,.20);
+  border-radius:999px;
+  background:rgba(255,255,255,.66);
+  color:rgb(50,84,104);
+  font-size:clamp(10px,2.2vmin,13px);
+  line-height:1.05;
+  font-weight:700;
+  box-shadow:none;
+}
+.phone-mode-tab.active {
+  background:rgb(85,183,196);
+  color:#fff;
+  border-color:transparent;
+}
+
+.ui-compact .setting-row,
+.ui-tiny .setting-row {
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  align-items:center !important;
+  gap:8px !important;
+  padding:4px 0 !important;
+  min-height:0 !important;
+}
+.ui-compact .setting-label strong,
+.ui-tiny .setting-label strong {
+  font-size:clamp(10px,2.25vmin,13px) !important;
+  line-height:1.05 !important;
+}
+.ui-compact .setting-label span,
+.ui-tiny .setting-label span {
+  display:none !important;
+}
+.ui-compact .stepper,
+.ui-tiny .stepper {
+  gap:4px !important;
+  padding:2px !important;
+}
+.ui-compact .stepper button,
+.ui-tiny .stepper button {
+  width:30px !important;
+  height:30px !important;
+  min-width:30px !important;
+}
+.ui-compact .stepper-value,
+.ui-tiny .stepper-value {
+  min-width:46px !important;
+  font-size:10px !important;
+}
+.ui-compact .pill-choice,
+.ui-tiny .pill-choice {
+  min-height:30px !important;
+  padding:5px 10px !important;
+  font-size:10px !important;
+}
+
+/* Mode simple : on garde exactement les trois propositions validées. */
+.phone-settings.phone-simple .sequence-section {
+  display:none !important;
+}
+
+.ui-compact .preset-title,
+.ui-tiny .preset-title {
+  margin:4px 0 4px !important;
+  font-size:9px !important;
+}
+.ui-compact .preset-grid:not(.sequence-grid),
+.ui-tiny .preset-grid:not(.sequence-grid) {
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:5px !important;
+}
+.ui-compact .preset,
+.ui-tiny .preset {
+  min-width:0 !important;
+  min-height:42px !important;
+  padding:5px 4px !important;
+  border-radius:12px !important;
+}
+.ui-compact .preset strong,
+.ui-tiny .preset strong {
+  display:block;
+  font-size:9px !important;
+  line-height:1.05 !important;
+  white-space:normal !important;
+}
+.ui-compact .preset span,
+.ui-tiny .preset span {
+  display:block !important;
+  margin-top:2px;
+  font-size:8px !important;
+  line-height:1 !important;
+  white-space:normal !important;
+}
+
+/* Mode enchaînement : les réglages simples inutiles disparaissent. */
+.phone-settings.phone-sequence .phone-inhale,
+.phone-settings.phone-sequence .phone-exhale,
+.phone-settings.phone-sequence > .preset-title,
+.phone-settings.phone-sequence > .preset-grid:not(.sequence-grid) {
+  display:none !important;
+}
+.phone-settings.phone-sequence .sequence-section {
+  display:block !important;
+  margin:4px 0 0 !important;
+  padding:6px 0 0 !important;
+  border-top:1px solid rgba(65,151,175,.12) !important;
+}
+.phone-settings.phone-sequence .sequence-heading {
+  display:block !important;
+  margin:0 0 5px !important;
+}
+.phone-settings.phone-sequence .sequence-heading strong {
+  font-size:10px !important;
+}
+.phone-settings.phone-sequence .sequence-heading span {
+  display:none !important;
+}
+.phone-settings.phone-sequence .sequence-grid {
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:5px !important;
+}
+.phone-settings.phone-sequence .sequence-note {
+  margin:5px 2px 0 !important;
+  font-size:9px !important;
+  line-height:1.15 !important;
+}
+
+.phone-settings.phone-sequence .sequence-custom {
+  margin-top:6px !important;
+  padding:6px 8px !important;
+  border-radius:12px !important;
+}
+.phone-settings.phone-sequence .sequence-custom-title {
+  margin-bottom:4px !important;
+  font-size:9px !important;
+}
+.phone-settings.phone-sequence .sequence-stage {
+  padding:5px 0 !important;
+}
+.phone-settings.phone-sequence .sequence-stage-head {
+  margin-bottom:4px !important;
+  font-size:9px !important;
+}
+.phone-settings.phone-sequence .sequence-stage-controls {
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:4px !important;
+}
+.phone-settings.phone-sequence .sequence-mini {
+  min-width:0 !important;
+  padding:4px 3px !important;
+}
+.phone-settings.phone-sequence .sequence-mini > span {
+  margin-bottom:2px !important;
+  font-size:8px !important;
+}
+.phone-settings.phone-sequence .sequence-mini > div {
+  gap:3px !important;
+}
+.phone-settings.phone-sequence .sequence-mini button {
+  width:23px !important;
+  height:23px !important;
+  min-width:23px !important;
+  padding:0 !important;
+}
+.phone-settings.phone-sequence .sequence-mini b {
+  min-width:34px !important;
+  font-size:8.5px !important;
+  white-space:nowrap !important;
+}
+.phone-settings.phone-sequence .sequence-add {
+  margin-top:5px !important;
+  padding:6px 10px !important;
+  font-size:9px !important;
+}
+
+.ui-compact .settings-bottom,
+.ui-tiny .settings-bottom {
+  padding-top:5px !important;
+}
+.ui-compact .safety,
+.ui-tiny .safety {
+  margin:0 0 4px !important;
+  font-size:7.5px !important;
+  line-height:1.15 !important;
+}
+.ui-compact .start-session,
+.ui-tiny .start-session {
+  min-height:36px !important;
+  font-size:11px !important;
+}
+
+/* Les écrans d'information et d'installation utilisent aussi toute la largeur
+   disponible du téléphone, au lieu d'un panneau prévu pour tablette. */
+.ui-compact .intro-panel,
+.ui-tiny .intro-panel,
+.ui-compact .install-panel,
+.ui-tiny .install-panel {
+  width:calc(100% - 10px) !important;
+  max-width:none !important;
+  height:calc(100% - 10px) !important;
+  max-height:calc(100% - 10px) !important;
+  margin:5px !important;
+  padding:12px 18px !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+  box-sizing:border-box !important;
+}
+.ui-compact .slide-title,
+.ui-tiny .slide-title,
+.ui-compact .install-title,
+.ui-tiny .install-title {
+  font-size:clamp(22px,5.8vmin,32px) !important;
+  line-height:1.05 !important;
+}
+.ui-compact .slide-body,
+.ui-tiny .slide-body,
+.ui-compact .install-copy,
+.ui-tiny .install-copy {
+  font-size:clamp(10px,2.25vmin,13px) !important;
+  line-height:1.3 !important;
+}
+.ui-compact .slide-body .two-cols,
+.ui-tiny .slide-body .two-cols,
+.ui-compact .rhythm-grid,
+.ui-tiny .rhythm-grid {
+  gap:6px !important;
+}
+.ui-compact .intro-nav,
+.ui-tiny .intro-nav {
+  position:sticky;
+  bottom:0;
+  z-index:2;
+  margin-top:8px;
+  padding:6px 0 1px !important;
+  background:linear-gradient(to bottom,rgba(250,252,255,0),rgba(250,252,255,.95) 25%);
+}
+.ui-compact .nav-btn,
+.ui-tiny .nav-btn {
+  min-width:90px !important;
+  min-height:36px !important;
+  font-size:10px !important;
+}
+
+/* Très petits téléphones : l'éditeur personnalisé passe sur trois lignes
+   pour conserver de gros boutons tactiles. */
+.ui-tiny .phone-settings.phone-sequence .sequence-stage-controls {
+  grid-template-columns:1fr !important;
+}
+.ui-tiny .phone-settings.phone-sequence .sequence-mini {
+  display:grid !important;
+  grid-template-columns:50px 1fr !important;
+  align-items:center !important;
+  text-align:left !important;
+}
+.ui-tiny .phone-settings.phone-sequence .sequence-mini > span {
+  margin:0 !important;
+}

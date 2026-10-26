@@ -1,0 +1,9 @@
+.gradle/
+build/
+app/build/
+local.properties
+# La clé d'envoi ne doit jamais être mise dans le dépôt (il est public) :
+# elle est donnée à GitHub par les secrets MON_OXYGENE_CLE et MON_OXYGENE_MOT_DE_PASSE.
+*.jks
+*.p12
+*.keystore

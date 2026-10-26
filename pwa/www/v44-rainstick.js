@@ -46,7 +46,8 @@
   }
   function loadVolume() {
     try {
-      var v = Number(localStorage.getItem(STORE_VOLUME));
+      var brut = localStorage.getItem(STORE_VOLUME);
+      var v = brut === null || brut === '' ? NaN : Number(brut);
       return Number.isFinite(v) && v >= 0 ? clamp(v, 0, 1) : 0.55;
     } catch (_) { return 0.55; }
   }

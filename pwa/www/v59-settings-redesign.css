@@ -986,6 +986,15 @@
 .ui-tiny .v59-settings .v60-custom-pill{
   background:rgba(255,255,255,.88)!important;
 }
+/* Sur petit écran, le bouton choisi garde son dégradé (sinon texte blanc sur fond blanc). */
+.ui-compact .v59-settings .pill-choice.active,
+.ui-tiny .v59-settings .pill-choice.active,
+.ui-compact .v59-settings .rainstick-toggle.active,
+.ui-tiny .v59-settings .rainstick-toggle.active,
+.ui-compact .v59-settings .v60-custom-pill.active,
+.ui-tiny .v59-settings .v60-custom-pill.active{
+  background:linear-gradient(90deg,#62bbca,#827ed9)!important;
+}
 
 /* Ajustement fin des proportions verticales. */
 .ui-compact .v59-settings .settings-title,

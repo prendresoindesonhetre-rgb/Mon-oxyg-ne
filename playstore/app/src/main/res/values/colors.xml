@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Le bleu-vert de l'icône (et de theme_color dans le manifeste web). -->
+    <color name="fond">#114652</color>
+</resources>

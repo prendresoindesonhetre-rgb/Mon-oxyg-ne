@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Le fond bleu-vert sert aussi d'écran de démarrage, sous le lotus de l'icône. -->
+    <style name="Theme.MonOxygene" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/fond</item>
+    </style>
+</resources>
