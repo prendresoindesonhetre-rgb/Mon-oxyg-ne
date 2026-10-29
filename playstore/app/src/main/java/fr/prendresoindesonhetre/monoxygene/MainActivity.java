@@ -17,13 +17,16 @@ import android.webkit.WebViewClient;
 
 /**
  * Mon Oxygène pour le Play Store : affiche en plein écran la version web v83 validée,
- * rangée dans l'appli (assets/web). Même fonctionnement que l'APK v83 (webv40), avec en plus :
- * l'écran reste allumé pendant une séance, et un lien vers l'extérieur s'ouvre dans le navigateur.
+ * rangée dans l'appli (assets/web, copiée depuis pwa/www à la construction).
+ * L'écran reste allumé pendant une séance, un lien vers l'extérieur s'ouvre dans le navigateur,
+ * et les achats Mon Oxygène Plus passent par Google Play (voir Achats).
  */
 public class MainActivity extends Activity {
     private static final String DOSSIER_WEB = "file:///android_asset/web/";
 
     private WebView webView;
+    private Achats achats;
+    private boolean dejaAffichee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,8 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         webView.setBackgroundColor(Color.TRANSPARENT);
         webView.addJavascriptInterface(new Ecran(), "MonOxygeneEcran");
+        achats = new Achats(this, webView);
+        webView.addJavascriptInterface(achats, "MonOxygeneAchats");
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -54,9 +59,6 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                view.evaluateJavascript(
-                        "try{state.screen=localStorage.getItem('mon-oxygene-intro-seen')?'settings':'intro';render();}catch(e){}",
-                        null);
                 // La WebView d'Android ne connaît pas navigator.wakeLock, que la séance demande
                 // pour garder l'écran allumé : l'appli le fournit elle-même.
                 view.evaluateJavascript(
@@ -135,6 +137,9 @@ public class MainActivity extends Activity {
         super.onResume();
         enterImmersiveMode();
         if (webView != null) webView.onResume();
+        // De retour dans l'appli (après Google Play par exemple) : on relit les achats.
+        if (dejaAffichee && achats != null) achats.actualiser();
+        dejaAffichee = true;
     }
 
     @Override
@@ -145,6 +150,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (achats != null) achats.fermer();
         if (webView != null) {
             webView.loadUrl("about:blank");
             webView.stopLoading();

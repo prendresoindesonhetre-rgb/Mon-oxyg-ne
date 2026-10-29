@@ -9,7 +9,7 @@ name: Mon Oxygène pour le Play Store
 on:
   push:
     branches: [main, 'claude/**']
-    paths: ['playstore/**', '.github/workflows/playstore.yml']
+    paths: ['playstore/**', 'pwa/www/**', '.github/workflows/playstore.yml']
   workflow_dispatch:
 
 permissions:
@@ -54,6 +54,8 @@ jobs:
           cp playstore/app/build/outputs/apk/release/app-release.apk "sortie/Mon-Oxygene-essai-v${{ github.run_number }}.apk"
           "$OUTILS/aapt2" dump badging sortie/*.apk | grep -E "^(package|sdkVersion|targetSdkVersion|application-label|uses-permission)"
           "$OUTILS/aapt2" dump badging sortie/*.apk | grep -q "targetSdkVersion:'36'"
+          unzip -l sortie/*.apk | grep -q "assets/web/plus.js" || { echo "Contenu web absent de l'appli"; exit 1; }
+          unzip -l sortie/*.apk | grep -q "assets/web/regie-v14" && { echo "La Régie ne doit pas être dans l'appli"; exit 1; } || true
           echo "Certificat de l'APK d'essai :"
           "$OUTILS/apksigner" verify --print-certs sortie/*.apk | grep -E "DN|SHA-256"
           echo "Certificat de l'AAB (à comparer au « certificat de clé d'importation » de la Play Console) :"

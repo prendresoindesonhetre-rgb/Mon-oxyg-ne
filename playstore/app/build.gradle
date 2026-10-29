@@ -4,6 +4,15 @@ plugins { id 'com.android.application' }
 def numeroVersion = (project.findProperty('numeroVersion') ?: '1').toString().toInteger()
 // Clé d'envoi au Play Store : fournie par les secrets GitHub, jamais rangée dans le dépôt.
 def cleEnvoi = System.getenv('MON_OXYGENE_CLE_FICHIER')
+// Le contenu web vient de pwa/www : une seule source pour le site et pour l'appli (sans la Régie).
+def dossierWeb = layout.buildDirectory.dir('contenu-web').get().asFile
+def copierWeb = tasks.register('copierWeb', Sync) {
+    from(rootProject.file('../pwa/www')) {
+        exclude 'regie-v14/**', 'sw.js', 'manifest.webmanifest', 'assets/rainstick/up-8.mp3', 'assets/rainstick/down-8.mp3'
+    }
+    into new File(dossierWeb, 'web')
+}
+tasks.named('preBuild') { dependsOn copierWeb }
 
 android {
     namespace 'fr.prendresoindesonhetre.monoxygene'
@@ -28,6 +37,10 @@ android {
         }
     }
 
+    sourceSets {
+        main.assets.srcDirs += dossierWeb
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -35,4 +48,9 @@ android {
             signingConfig = cleEnvoi ? signingConfigs.envoi : signingConfigs.debug
         }
     }
+}
+
+dependencies {
+    // Paiements Google Play (version 8 ou plus exigée pour publier depuis le 31 août 2026).
+    implementation 'com.android.billingclient:billing:8.0.0'
 }

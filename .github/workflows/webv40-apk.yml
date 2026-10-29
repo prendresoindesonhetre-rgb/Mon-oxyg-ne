@@ -1,27 +1,8 @@
 name: Build Mon Oxygene Enchainements APK
 
+# Remplacée par « Mon Oxygène pour le Play Store » (playstore.yml) : ses scripts visaient l'ancienne version web.
+# Gardée pour mémoire, lancement à la main seulement.
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'webv40/**'
-      - 'pwa/**'
-      - 'scripts/apply_seconds_labels.py'
-      - 'scripts/apply_v24_lotus_scale.py'
-      - 'scripts/apply_v25_lotus_balance.py'
-      - 'scripts/apply_v26_lotus_slightly_larger.py'
-      - 'scripts/apply_v27_thinner_sinusoid.py'
-      - 'scripts/apply_v28_thinner_line_only.py'
-      - 'scripts/apply_v29_final_thinner_line.py'
-      - 'scripts/apply_v31_lotus_slightly_smaller.py'
-      - 'scripts/apply_v32_lotus_slightly_larger.py'
-      - 'scripts/apply_v33_thinner_sinusoid_all.py'
-      - 'scripts/apply_v34_wide_compat.py'
-      - 'scripts/apply_v35_responsive_layout.py'
-      - 'scripts/apply_v37_install_and_fresh_link.py'
-      - 'scripts/apply_v38_true_responsive.py'
-      - 'scripts/apply_v39_sideways_fit.py'
-      - '.github/workflows/webv40-apk.yml'
   workflow_dispatch:
 
 jobs:
