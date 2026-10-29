@@ -158,9 +158,7 @@ button:disabled { cursor: default; opacity: .35; }
 .pastille-plus.active { color: #fff; background: var(--degrade); border-color: transparent; }
 .etoile { width: 1.2em; height: 1.2em; fill: currentColor; flex: none; }
 
-/* Cadre plus haut que large (tablette, ordinateur) : une colonne.
-   Cadre plus large que haut (téléphone) : réglages à gauche, « Commencer par » et bâton de pluie à droite,
-   puis les préréglages sur toute la largeur. */
+/* Une seule colonne partout : la respiration, « Commencer par », le bâton de pluie, puis les préréglages. */
 .reglages-corps {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 1.4em;
   grid-template-areas: "respiration" "debut" "baton" "choix";
@@ -238,26 +236,31 @@ button:disabled { cursor: default; opacity: .35; }
 .icone-perso path:first-child { fill: rgba(89, 190, 202, .18); }
 .icone-perso circle { fill: #8177d8; stroke: none; }
 
-/* Téléphone (cadre plus large que haut) : plus serré, sur deux colonnes. */
+/* Téléphone (cadre plus large que haut) : la même colonne que sur tablette, en plus serré,
+   pour que tout tienne sur un seul écran avec un texte aussi grand que possible. */
 @container reglages (min-aspect-ratio: 1/1) {
-  .reglages-corps {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas: "respiration debut" "respiration baton" "choix choix";
-  }
-  .sous-titre { margin-bottom: .35em; }
-  .ligne { min-height: 2.85em; padding: .3em 0; }
-  .zone-debut { padding-top: 1.7em; }
-  .mode-perso { grid-template-rows: auto auto auto; grid-template-areas: "respiration respiration" "debut baton" "choix choix"; }
-  .mode-perso .zone-debut { padding-top: .5em; }
+  .titre-reglages { font-size: 1.75em; }
+  .sous-titre { margin: .15em 0 0; }
   .panneau-reglages:has(.mode-perso) .sous-titre { display: none; }
-  .zone-baton .bloc-titre { margin-top: .5em; }
-  .choix-debut .pilule { padding: 0 .75em; }
-  .tuiles { gap: .4em; }
-  .tuile { gap: .25em; min-height: 4.6em; padding: .45em .25em; }
-  .tuile-icone { width: 1.75em; height: 1.75em; }
-  .tuile-texte span { font-size: .74em; }
+  .bloc-titre { margin: .6em 0 0; }
+  .ligne { min-height: 2.2em; padding: .1em 0; }
+  .compteur { padding: .1em; }
+  .compteur button { width: 1.45em; height: 1.45em; }
+  .compteur.verrouille { height: 1.95em; }
+  .pilule { height: 1.95em; }
+  .choix-debut .pilule { padding: 0 .8em; }
+  .ligne-baton .pilule { height: 1.85em; }
+  .pilule.pastille-perso { height: 1.8em; }
+  .zone-choix .bloc-titre { margin-top: .45em; }
+  .tuiles { gap: .4em; margin: .3em 0 0; }
+  .tuile { gap: .15em; min-height: 0; padding: .35em .25em; }
+  .tuile-icone { width: 1.4em; height: 1.4em; }
+  .tuile-texte span { margin-top: .1em; font-size: .74em; }
   .tuile .cadenas { top: .3em; right: .3em; width: .75em; height: .75em; }
+  .etapes { max-height: 5.2em; }
+  .reglages-pied { padding-top: .45em; }
+  .securite { margin-bottom: .4em; line-height: 1.3; }
+  .bouton-commencer { height: 2.45em; }
 }
 
 .ligne-baton { flex-wrap: wrap; border-bottom: 0; }
