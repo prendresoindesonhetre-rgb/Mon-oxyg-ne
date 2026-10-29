@@ -322,6 +322,7 @@ button:disabled { cursor: default; opacity: .35; }
 .offre strong { font-size: 1em; }
 .offre span { font-size: .82em; opacity: .95; }
 .mentions { margin: .1em 0 0; font-size: .76em; line-height: 1.4; color: #6f8792; }
+.mentions a { color: #4a8a9c; }
 .plus-info { margin: 0; font-size: .9em; line-height: 1.45; color: var(--encre-texte); }
 .plus-etat { display: flex; align-items: flex-start; gap: .5em; margin: 0; font-weight: 700; line-height: 1.35; color: #3c6174; }
 .lien { align-self: flex-start; font-size: .82em; font-weight: 700; color: #4a8a9c; text-decoration: underline; text-underline-offset: .2em; }

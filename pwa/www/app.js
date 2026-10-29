@@ -90,6 +90,8 @@
     'Le bâton de pluie qui accompagne ton souffle'
   ];
 
+  var CONFIDENTIALITE = 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/confidentialite.html';
+
   // Séance offerte : la cohérence cardiaque de base.
   var GRATUIT = { mode: 'simple', durationMin: 5, inhaleSec: 5, exhaleSec: 5, startWithInhale: true, etapes: [] };
 
@@ -394,6 +396,7 @@
     if (!html) html = '<p class="plus-info">Les offres arrivent très bientôt.</p>';
     if (g.enAttente) html += '<p class="plus-info">Ton paiement est en attente de validation par Google Play.</p>';
     if (abonnement) html += '<p class="mentions">Renouvellement automatique, sans engagement : tu peux annuler à tout moment dans Google Play, rubrique Abonnements. L’essai gratuit est réservé à une première souscription.</p>';
+    html += '<p class="mentions"><a href="' + CONFIDENTIALITE + '" target="_blank" rel="noopener">Politique de confidentialité</a></p>';
     return '<div class="offres">' + html + '</div><button class="lien" data-action="restaurer">Restaurer mes achats</button>';
   }
 
