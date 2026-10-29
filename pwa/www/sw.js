@@ -1,10 +1,50 @@
-const CACHE='mon-oxygene-pwa-v84-boutons-volume';
-const CORE=[
-  './','./index.html','./app.js','./sequence.js','./orientation.js','./compat-init.js','./responsive.js','./v41-phone-ui.js','./v44-rainstick.js',
-  './styles.css','./v59-settings-redesign.css','./v59-settings-redesign.js','./landscape-force.css','./legacy.css','./responsive.css','./v37-fixes.css','./v38-responsive.css','./v39-landscape-fit.css','./v40-mobile-sequence.css','./v41-phone-ui.css',
-  './manifest.webmanifest','./assets/presets/ralentir.png','./assets/presets/retrouver-calme.png','./assets/presets/equilibre.png','./assets/presets/retrouver-dynamisme.png','./assets/presets/dynamiser.png','./assets/icon-192.png','./assets/icon-512.png','./assets/apple-touch-icon.png','./assets/mon-oxygene-splash.png','./assets/mon-oxygene-start.png','./assets/settings_bg.webp','./assets/curve_bg.jpg','./assets/lotus.png',
-  './assets/rainstick/up-8.mp3','./assets/rainstick/down-8.mp3','./assets/rainstick/ambient-rainstick.mp3'
+// Service worker de Mon Oxygène : l'appli web reste utilisable sans connexion.
+// Il ne s'occupe que des fichiers de l'appli ; les autres pages du site (confidentialité, Régie) passent sans être touchées.
+const CACHE = 'mon-oxygene-v100';
+const VERSION = '?v=100';
+const CODE = ['style.css', 'respiration.js', 'baton-de-pluie.js', 'plus.js', 'app.js'];
+const FICHIERS = [
+  './', './index.html', './manifest.webmanifest',
+  ...CODE.map(f => './' + f + VERSION),
+  './assets/settings_bg.webp', './assets/curve_bg.jpg', './assets/lotus.png',
+  './assets/icon-192.png', './assets/icon-512.png', './assets/apple-touch-icon.png',
+  './assets/presets/ralentir.png', './assets/presets/retrouver-calme.png', './assets/presets/equilibre.png',
+  './assets/presets/retrouver-dynamisme.png', './assets/presets/dynamiser.png',
+  './assets/rainstick/ambient-rainstick.mp3'
 ];
-self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const u=new URL(e.request.url);if(u.pathname.endsWith('/confidentialite.html'))return;const nav=e.request.mode==='navigate'||u.pathname.endsWith('/index.html')||u.pathname.endsWith('/Mon-oxyg-ne/');if(nav){e.respondWith(fetch(e.request,{cache:'no-store'}).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put('./index.html',copy));return r}).catch(()=>caches.match('./index.html')));return;}e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}))) });
+
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FICHIERS)));
+});
+
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys()
+    .then(cles => Promise.all(cles.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(() => self.clients.claim()));
+});
+
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET' || req.headers.has('range')) return;
+  const url = new URL(req.url);
+  const portee = new URL(self.registration.scope);
+  if (url.origin !== portee.origin || !url.pathname.startsWith(portee.pathname)) return;
+  const chemin = url.pathname.slice(portee.pathname.length);
+
+  // La page de l'appli : d'abord le réseau (pour les mises à jour), sinon la copie gardée.
+  if (chemin === '' || chemin === 'index.html') {
+    e.respondWith(fetch(req, { cache: 'no-store' })
+      .then(r => { const copie = r.clone(); caches.open(CACHE).then(c => c.put('./index.html', copie)); return r; })
+      .catch(() => caches.match('./index.html')));
+    return;
+  }
+
+  // Code et images de l'appli : la copie gardée, sinon le réseau.
+  if (CODE.includes(chemin) || chemin === 'manifest.webmanifest' || chemin.startsWith('assets/')) {
+    e.respondWith(caches.match(req).then(trouve => trouve || fetch(req).then(r => {
+      if (r.ok) { const copie = r.clone(); caches.open(CACHE).then(c => c.put(req, copie)); }
+      return r;
+    })));
+  }
+});
