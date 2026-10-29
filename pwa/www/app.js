@@ -72,6 +72,9 @@
     }
   ];
 
+  // La page « Inspire & Expire » : l'explication de la respiration.
+  var DIAPO_RESPIRATION = 3;
+
   var PRESELECTIONS = [
     { id: 'ralentir', nom: 'Ralentir', rythme: '4 / 6', icone: 'ralentir', mode: 'simple', inspire: 4, expire: 6 },
     { id: 'calme', nom: 'Retrouver le calme', rythme: '4 / 6 → 5 / 5', icone: 'retrouver-calme', mode: 'calme' },
@@ -91,6 +94,10 @@
   ];
 
   var CONFIDENTIALITE = 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/confidentialite.html';
+  // Avant la séance : 3 s pour s'installer, puis un décompte doux 3, 2, 1.
+  var INSTALLATION = 3;
+  var DECOMPTE = 3;
+  var PREPARATION = INSTALLATION + DECOMPTE;
 
   // Séance offerte : la cohérence cardiaque de base.
   var GRATUIT = { mode: 'simple', durationMin: 5, inhaleSec: 5, exhaleSec: 5, startWithInhale: true, etapes: [] };
@@ -100,6 +107,8 @@
     etoile: '<svg class="etoile" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5Z"/><path d="M19 15.5c.25 1.9 1.1 2.75 3 3-1.9.25-2.75 1.1-3 3-.25-1.9-1.1-2.75-3-3 1.9-.25 2.75-1.1 3-3Z"/></svg>',
     coche: '<svg class="coche" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
     personnaliser: '<svg class="icone-perso" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 7c6 1 10 5 10 11-5 1-10-2-12-6-1-2-1-4-1-5h3Z"/><path d="M11 9c3 3 5 6 6 10"/><path d="M20 9h8M22 16h6M19 23h9"/><circle cx="23" cy="9" r="1.7"/><circle cx="25" cy="16" r="1.7"/><circle cx="22" cy="23" r="1.7"/></svg>',
+    livre: '<svg class="icone-relire" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7.2 4.6 4 5v13c3.2-.4 6 0 8 1.5 2-1.5 4.8-1.9 8-1.5V5c-3.2-.4-6 0-8 1.5Z"/><path d="M12 6.5v13"/></svg>',
+    souffle: '<svg class="icone-relire" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 17h6"/></svg>',
     pause: '<rect x="8" y="5" width="8" height="30" rx="3"></rect><rect x="24" y="5" width="8" height="30" rx="3"></rect>',
     lecture: '<path d="M11 6 L32 20 L11 34 Z"></path>'
   };
@@ -118,6 +127,7 @@
       etapes: [{ durationMin: 2.5, inhaleSec: 4, exhaleSec: 6 }, { durationMin: 2.5, inhaleSec: 5, exhaleSec: 5 }]
     },
     seance: null,
+    relecture: false,
     plusOuvert: false,
     codeSaisi: '',
     messageCode: null,
@@ -273,9 +283,12 @@
     var d = DIAPOS[etat.diapo];
     var derniere = etat.diapo === DIAPOS.length - 1;
     var points = '';
-    for (var i = 0; i < DIAPOS.length; i++) points += '<span class="point' + (i === etat.diapo ? ' actif' : '') + '"></span>';
+    for (var i = 0; i < DIAPOS.length; i++) {
+      points += '<button class="point' + (i === etat.diapo ? ' actif' : '') + '" data-action="diapo" data-index="' + i + '" aria-label="Page ' + (i + 1) + '"></button>';
+    }
     return '<section class="ecran fond-arbre">' +
       '<div class="panneau panneau-intro" data-ajuster>' +
+        (etat.relecture ? '<button class="fermer" data-action="fermer-intro" aria-label="Revenir à ma respiration">×</button>' : '') +
         '<div class="intro-texte">' +
           '<div class="surtitre">' + d.surtitre + '</div>' +
           '<h1 class="grand-titre">' + d.titre + '</h1>' +
@@ -284,7 +297,7 @@
         '<nav class="intro-nav">' +
           '<button class="bouton-nav" data-action="precedent"' + (etat.diapo === 0 ? ' disabled' : '') + '>Précédent</button>' +
           '<div class="points">' + points + '</div>' +
-          '<button class="bouton-nav suivant" data-action="suivant">' + (derniere ? 'Configurer' : 'Suivant') + '</button>' +
+          '<button class="bouton-nav suivant" data-action="suivant">' + (derniere ? (etat.relecture ? 'Ma respiration' : 'Configurer') : 'Suivant') + '</button>' +
         '</nav>' +
       '</div></section>';
   }
@@ -293,7 +306,13 @@
     var verrouille = !Plus.actif;
     var r = reglagesEnCours();
     return '<section class="ecran fond-arbre">' +
-      '<div class="marque">Mon Oxygène</div>' +
+      '<div class="coin">' +
+        '<div class="marque">Mon Oxygène</div>' +
+        '<nav class="relire">' +
+          '<button data-action="relire" data-index="0">' + ICONES.livre + 'Relire l’introduction</button>' +
+          '<button data-action="relire" data-index="' + DIAPO_RESPIRATION + '">' + ICONES.souffle + 'Comment respirer</button>' +
+        '</nav>' +
+      '</div>' +
       '<div class="panneau panneau-reglages" data-ajuster>' +
         '<header class="reglages-tete"><h1 class="titre-reglages">Créer ma respiration</h1>' + pastillePlus() + '</header>' +
         '<p class="sous-titre">Prends le temps qui te semble juste.</p>' +
@@ -329,11 +348,11 @@
         '<button class="rond" data-action="arreter" aria-label="Arrêter"><svg viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24" rx="4"></rect></svg></button>' +
       '</div>' +
       '<div class="phase">' +
-        '<div class="phase-titre" id="phaseTitre">Inspire</div>' +
-        '<div class="phase-consigne" id="phaseConsigne"></div>' +
+        '<div class="phase-titre fondu" id="phaseTitre"></div>' +
+        '<div class="phase-consigne fondu" id="phaseConsigne"></div>' +
         '<div class="phase-compte" id="phaseCompte"></div>' +
       '</div>' +
-      '<div class="scene-vague">' +
+      '<div class="scene-vague" id="sceneVague"' + (etat.seance.commencee ? '' : ' style="opacity:0"') + '>' +
         '<svg viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true">' +
           '<defs><linearGradient id="degradeVague" x1="0" y1="0" x2="1" y2="0">' +
             '<stop offset="0%" stop-color="#48d3dc"></stop><stop offset="52%" stop-color="#69beeb"></stop><stop offset="100%" stop-color="#9e80e2"></stop>' +
@@ -503,7 +522,8 @@
       plan: R.construirePlan(r),
       debutInspire: !!r.startWithInhale,
       sonAutorise: Plus.actif,
-      debut: performance.now(),
+      // Le temps de la séance commence après la préparation : il est négatif pendant celle-ci.
+      debut: performance.now() + PREPARATION * 1000,
       pauseTotale: 0,
       pauseDebut: 0,
       enPause: false,
@@ -549,7 +569,44 @@
 
   function tempsEcoule(s, maintenant) {
     var instant = s.enPause ? s.pauseDebut : maintenant;
-    return Math.max(0, (instant - s.debut - s.pauseTotale) / 1000);
+    return (instant - s.debut - s.pauseTotale) / 1000;
+  }
+
+  // Change un texte de la séance, avec un fondu quand il change vraiment.
+  function ecrire(id, texte) {
+    var el = document.getElementById(id);
+    if (el.textContent === texte) return;
+    el.textContent = texte;
+    if (el.classList.contains('fondu')) {
+      el.classList.remove('apparition');
+      void el.offsetWidth;
+      el.classList.add('apparition');
+    }
+  }
+
+  // Préparation : la courbe apparaît en fondu, le lotus attend là où le souffle va commencer
+  // et respire tout doucement ; rien ne défile et le minuteur ne compte pas encore.
+  function animerPreparation(s, avantDepart) {
+    var titre = document.getElementById('phaseTitre');
+    var installation = avantDepart > DECOMPTE;
+    titre.classList.toggle('compte', !installation);
+    ecrire('phaseTitre', installation ? 'Installe-toi' : String(Math.ceil(avantDepart)));
+    ecrire('phaseConsigne', installation
+      ? 'Relâche les épaules et laisse ton souffle se poser'
+      : (s.debutInspire ? 'Prépare-toi à inspirer par le nez' : 'Prépare-toi à expirer par la bouche'));
+    ecrire('phaseCompte', '');
+
+    var ecouleDepuisDebut = PREPARATION - avantDepart;
+    document.getElementById('sceneVague').style.opacity = Math.min(1, Math.max(0, ecouleDepuisDebut / 1.6)).toFixed(3);
+    var chemin = R.cheminVague(s.plan, 0, s.debutInspire);
+    document.getElementById('vagueLigne').setAttribute('d', chemin);
+    document.getElementById('vagueHalo').setAttribute('d', chemin);
+
+    var lotus = document.getElementById('lotus');
+    var y = 250 - 190.5 * R.vague(s.plan, 0, s.debutInspire);
+    var echelle = 0.655 + 0.28 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
+    lotus.style.top = (y / 5) + '%';
+    lotus.style.transform = 'translate(-50%,-50%) scale(' + echelle.toFixed(4) + ')';
   }
 
   function animer(maintenant) {
@@ -557,6 +614,17 @@
     if (!s || etat.ecran !== 'seance') return;
     var ecoule = tempsEcoule(s, maintenant);
     var total = R.dureePlan(s.plan);
+
+    if (ecoule < 0) {
+      animerPreparation(s, -ecoule);
+      s.image = requestAnimationFrame(animer);
+      return;
+    }
+    if (!s.commencee) {
+      s.commencee = true;
+      document.getElementById('sceneVague').style.opacity = '';
+      document.getElementById('phaseTitre').classList.remove('compte');
+    }
 
     Baton.synchroniser({ ecoule: ecoule, plan: s.plan, debutInspire: s.debutInspire, enPause: s.enPause, sonAutorise: s.sonAutorise });
 
@@ -569,8 +637,8 @@
 
     var r = R.rythmeA(s.plan, ecoule);
     var inspiration = R.estInspiration(s.plan, ecoule, s.debutInspire);
-    document.getElementById('phaseTitre').textContent = inspiration ? 'Inspire' : 'Expire';
-    document.getElementById('phaseConsigne').textContent = R.consigne(s.plan, ecoule, inspiration);
+    ecrire('phaseTitre', inspiration ? 'Inspire' : 'Expire');
+    ecrire('phaseConsigne', R.consigne(s.plan, ecoule, inspiration));
     document.getElementById('phaseCompte').textContent = R.resteDePhase(s.plan, ecoule, s.debutInspire).toFixed(1) + ' s';
     document.getElementById('rythme').textContent = 'Inspire ' + R.formaterDuree(r.inhaleSec) + '   ·   Expire ' + R.formaterDuree(r.exhaleSec);
 
@@ -645,8 +713,12 @@
         if (etat.diapo === DIAPOS.length - 1) {
           try { localStorage.setItem('mon-oxygene-intro-seen', '1'); } catch (_) {}
           etat.ecran = 'reglages';
+          etat.relecture = false;
         } else etat.diapo++;
         break;
+      case 'diapo': etat.diapo = Number(d.index); break;
+      case 'relire': etat.diapo = Number(d.index); etat.relecture = true; etat.ecran = 'intro'; break;
+      case 'fermer-intro': etat.relecture = false; etat.ecran = 'reglages'; break;
       case 'pas': if (!Plus.actif) return ouvrirPlus(); changerReglage(d.cle, Number(d.sens)); break;
       case 'debut': if (!Plus.actif) return ouvrirPlus(); etat.reglages.startWithInhale = d.valeur === 'inspire'; break;
       case 'preselection': if (!Plus.actif) return ouvrirPlus(); choisirPreselection(d.id); break;
