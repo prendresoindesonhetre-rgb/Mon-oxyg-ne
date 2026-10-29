@@ -93,8 +93,8 @@ button:disabled { cursor: default; opacity: .35; }
 
 /* ---------- Accueil (version web) ---------- */
 
-.panneau-accueil > :first-child { margin-top: auto; }
-.panneau-accueil > :last-child { margin-bottom: auto; }
+/* Comme partout : le titre reste en haut du cadre, jamais au milieu. */
+.panneau-accueil > :first-child { margin-top: .2em; }
 .accueil-texte { margin: 0 0 1.3em; font-size: 1.1em; line-height: 1.55; color: var(--encre-texte); }
 .accueil-boutons { display: flex; flex-wrap: wrap; gap: .7em; }
 .accueil-conseil {
@@ -327,7 +327,7 @@ button:disabled { cursor: default; opacity: .35; }
 .plus-tete .etoile { width: 2.2em; height: 2.2em; color: #8a7fdc; }
 .plus-tete h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 1.85em; line-height: 1.1; color: #2f5166; }
 .plus-tete p { margin: .1em 0 0; font-size: .9em; color: #647d8b; }
-.plus-corps { margin: auto 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: .8em 1.8em; padding-top: .9em; }
+.plus-corps { display: grid; grid-template-columns: minmax(0, 1fr); gap: .8em 1.8em; padding-top: .9em; }
 @container plus (min-width: 36em) {
   .plus-corps { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
 }
