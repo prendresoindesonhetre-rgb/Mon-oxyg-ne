@@ -160,7 +160,8 @@ button:disabled { cursor: default; opacity: .35; }
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .3em .6em;
   min-height: 2.85em; padding: .3em 0; border-bottom: 1px solid rgba(85, 143, 166, .12);
 }
-.ligne-nom { font-weight: 700; line-height: 1.15; color: var(--encre-forte); }
+/* L'intitulé passe sur deux lignes plutôt que de repousser le réglage en dessous. */
+.ligne-nom { flex: 1 1 6em; min-width: 0; font-weight: 700; line-height: 1.15; color: var(--encre-forte); }
 .ligne > :last-child { margin-left: auto; }
 
 .compteur {
@@ -232,6 +233,7 @@ button:disabled { cursor: default; opacity: .35; }
   .zone-debut { padding-top: 1.7em; }
   .mode-perso { grid-template-rows: auto auto auto; grid-template-areas: "respiration respiration" "debut baton" "choix choix"; }
   .mode-perso .zone-debut { padding-top: .5em; }
+  .panneau-reglages:has(.mode-perso) .sous-titre { display: none; }
   .zone-baton .bloc-titre { margin-top: .5em; }
   .choix-debut .pilule { padding: 0 .75em; }
   .pilule.pastille-perso { display: inline-flex; }
