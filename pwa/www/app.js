@@ -221,7 +221,7 @@
     var html = '';
     function tuile(id, icone, nom, rythme, action) {
       var bloquee = verrouille && id !== 'equilibre';
-      return '<button class="tuile' + (id === 'perso' ? ' tuile-perso' : '') + (choisie === id ? ' choisie' : '') + (bloquee ? ' verrouillee' : '') + '" data-action="' + (bloquee ? 'plus-requis' : action) + '" data-id="' + id + '" aria-pressed="' + (choisie === id) + '">' +
+      return '<button class="tuile' + (choisie === id ? ' choisie' : '') + (bloquee ? ' verrouillee' : '') + '" data-action="' + (bloquee ? 'plus-requis' : action) + '" data-id="' + id + '" aria-pressed="' + (choisie === id) + '">' +
         '<span class="tuile-icone">' + icone + '</span>' +
         '<span class="tuile-texte"><strong>' + nom + '</strong><span>' + rythme + '</span></span>' +
         (bloquee ? ICONES.cadenas : '') +
@@ -231,11 +231,10 @@
       var p = PRESELECTIONS[i];
       html += tuile(p.id, '<img src="./assets/presets/' + p.icone + '.png" alt="" draggable="false">', p.nom, p.rythme, 'preselection');
     }
-    html += tuile('perso', ICONES.personnaliser, 'Personnaliser', 'Mes étapes', 'perso');
     return '<div class="tuiles">' + html + '</div>';
   }
 
-  // Sur téléphone, « Personnaliser » est un petit bouton à côté du titre (la tuile est masquée).
+  // « Personnaliser » : un petit bouton à côté du titre des préréglages.
   function pastillePerso(r, verrouille) {
     var actif = r.mode === 'perso';
     return '<button class="pilule pastille-perso' + (actif ? ' active' : '') + (verrouille ? ' verrouillee' : '') + '" data-action="' + (verrouille ? 'plus-requis' : 'perso') + '" aria-pressed="' + actif + '">' +
@@ -306,13 +305,11 @@
     var verrouille = !Plus.actif;
     var r = reglagesEnCours();
     return '<section class="ecran fond-arbre">' +
-      '<div class="coin">' +
-        '<div class="marque">Mon Oxygène</div>' +
-        '<nav class="relire">' +
-          '<button data-action="relire" data-index="0">' + ICONES.livre + 'Relire l’introduction</button>' +
-          '<button data-action="relire" data-index="' + DIAPO_RESPIRATION + '">' + ICONES.souffle + 'Comment respirer</button>' +
-        '</nav>' +
-      '</div>' +
+      '<div class="marque">Mon Oxygène</div>' +
+      '<nav class="relire">' +
+        '<button data-action="relire" data-index="0">' + ICONES.livre + 'Relire l’introduction</button>' +
+        '<button data-action="relire" data-index="' + DIAPO_RESPIRATION + '">' + ICONES.souffle + 'Comment respirer</button>' +
+      '</nav>' +
       '<div class="panneau panneau-reglages" data-ajuster>' +
         '<header class="reglages-tete"><h1 class="titre-reglages">Créer ma respiration</h1>' + pastillePlus() + '</header>' +
         '<p class="sous-titre">Prends le temps qui te semble juste.</p>' +
@@ -457,6 +454,18 @@
     if (etat.ecran === 'seance') animer(performance.now());
   }
 
+  // Largeur du cadre blanc, comme dans la v83 : de 49 % de la largeur sur un écran très allongé
+  // à 64 % sur un écran presque carré (tablette), sans jamais être plus étroit que la mise en page téléphone.
+  function ajusterLargeur() {
+    var l = window.innerWidth, h = window.innerHeight;
+    var long = Math.max(l, h), allonge = long / Math.max(1, Math.min(l, h));
+    var carre = R.bornes((1.82 - allonge) / 0.49, 0, 1);
+    var commeAvant = R.bornes(long * (0.49 + 0.15 * carre), 300, 820);
+    var telephone = Math.min(l * 0.8 - 28, R.bornes(l * 0.3 + 220, 380, 880));
+    var largeur = Math.min(Math.max(commeAvant, telephone), l * 0.82 - 28);
+    document.documentElement.style.setProperty('--largeur-cadre', Math.round(largeur) + 'px');
+  }
+
   // Chaque panneau garde la plus grande taille de texte qui tient entièrement à l'écran.
   function deborde(el) {
     if (el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) return true;
@@ -470,6 +479,7 @@
     return false;
   }
   function ajuster() {
+    ajusterLargeur();
     var panneaux = app.querySelectorAll('[data-ajuster]');
     for (var i = 0; i < panneaux.length; i++) {
       var el = panneaux[i];

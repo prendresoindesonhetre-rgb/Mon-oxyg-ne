@@ -40,12 +40,12 @@ button:disabled { cursor: default; opacity: .35; }
 .fond-arbre { background-image: url('./assets/settings_bg.webp'); background-color: #dce8f3; background-position: left center; }
 .fond-courbe { background-image: linear-gradient(rgba(20, 46, 65, .06), rgba(20, 46, 65, .06)), url('./assets/curve_bg.jpg'); }
 
-.coin {
-  position: absolute; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; gap: clamp(8px, 2vmin, 18px);
-  top: calc(var(--marge-h) + clamp(6px, 2.6vh, 26px)); left: calc(var(--marge-g) + clamp(10px, 2.2vw, 40px));
+/* Relire l'introduction : en bas à gauche, sur l'arbre. */
+.relire {
+  position: absolute; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; gap: .45em;
+  bottom: calc(var(--marge-b) + clamp(6px, 2.6vh, 26px)); left: calc(var(--marge-g) + clamp(10px, 2.2vw, 40px));
+  font-size: clamp(11px, 1.5vmin + 5px, 16px);
 }
-.coin .marque { position: static; }
-.relire { display: flex; flex-direction: column; align-items: flex-start; gap: .45em; font-size: clamp(11px, 1.5vmin + 5px, 16px); }
 .relire button {
   display: inline-flex; align-items: center; gap: .45em; height: 2.3em; padding: 0 .95em 0 .75em; border-radius: 99px;
   font-weight: 650; color: #2f5166; white-space: nowrap;
@@ -64,9 +64,9 @@ button:disabled { cursor: default; opacity: .35; }
 
 .panneau {
   position: absolute; top: var(--marge-h); bottom: var(--marge-b); right: var(--marge-d);
-  width: min(calc(100% - var(--marge-g) - var(--marge-d) - 20vw), clamp(380px, 30vw + 220px, 880px));
+  width: var(--largeur-cadre, min(calc(100% - var(--marge-g) - var(--marge-d) - 20vw), clamp(380px, 30vw + 220px, 880px)));
   display: flex; flex-direction: column; overflow: hidden;
-  font-size: clamp(12px, calc(.9vh + .75vw + 2px), 21px);
+  font-size: clamp(12px, calc(1.1vh + .85vw + 2px), 23px);
   padding: 1.35em 1.6em 1.4em;
   border-radius: 1.8em;
   background: var(--verre);
@@ -76,7 +76,7 @@ button:disabled { cursor: default; opacity: .35; }
 }
 
 .surtitre {
-  margin-bottom: .75em;
+  margin-bottom: 1em;
   font-size: .78em; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #5b9eae;
 }
 .grand-titre {
@@ -108,10 +108,16 @@ button:disabled { cursor: default; opacity: .35; }
 /* Le texte commence en haut du cadre (et non au milieu), avec de l'air entre les paragraphes. */
 .intro-texte { margin: .2em 0 auto; }
 .panneau-intro .fermer ~ .intro-texte { padding-right: 2.2em; }
-.panneau-intro .grand-titre { margin-bottom: .55em; }
-.intro-corps { line-height: 1.62; color: var(--encre-texte); }
-.intro-corps p { margin: 0 0 .7em; }
+.panneau-intro .grand-titre { margin-bottom: 1.05em; }
+.intro-corps { line-height: 1.72; color: var(--encre-texte); }
+.intro-corps p { margin: 0 0 .85em; }
 .intro-corps strong { color: #3c6174; }
+@media (max-height: 460px) {
+  .surtitre { margin-bottom: .75em; }
+  .panneau-intro .grand-titre { margin-bottom: .6em; }
+  .intro-corps { line-height: 1.6; }
+  .intro-corps p { margin-bottom: .65em; }
+}
 .citation {
   margin-top: .9em !important; padding-left: .9em; border-left: 3px solid rgba(83, 189, 205, .5);
   font-family: var(--serif); font-style: italic; font-size: 1.06em; color: #436779;
@@ -142,7 +148,7 @@ button:disabled { cursor: default; opacity: .35; }
 .panneau-reglages { container: reglages / size; padding: 1.15em 1.4em 1.25em; }
 .reglages-tete { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .4em .8em; }
 .titre-reglages { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 1.95em; line-height: 1.1; color: #2f5166; }
-.sous-titre { margin: .15em 0 .35em; font-size: .85em; color: #647d8b; }
+.sous-titre { margin: .35em 0 .9em; font-size: .88em; color: #647d8b; }
 
 .pastille-plus {
   display: inline-flex; align-items: center; gap: .4em; height: 2.3em; padding: 0 .95em; border-radius: 99px;
@@ -157,7 +163,7 @@ button:disabled { cursor: default; opacity: .35; }
    puis les préréglages sur toute la largeur. */
 .reglages-corps {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 1.4em;
-  grid-template-areas: "respiration" "debut" "choix" "baton";
+  grid-template-areas: "respiration" "debut" "baton" "choix";
 }
 .zone-respiration { grid-area: respiration; }
 .zone-debut { grid-area: debut; }
@@ -165,7 +171,7 @@ button:disabled { cursor: default; opacity: .35; }
 .zone-baton { grid-area: baton; }
 .bloc { min-width: 0; }
 .choix-tete { display: flex; align-items: flex-end; justify-content: space-between; gap: .6em; }
-.pilule.pastille-perso { display: none; height: 2em; padding: 0 .8em; font-size: .78em; }
+.pilule.pastille-perso { height: 2em; padding: 0 .8em; font-size: .78em; }
 .pastille-perso .icone-perso, .pastille-perso .cadenas { width: 1.3em; height: 1.3em; }
 .pastille-perso.active .icone-perso { stroke: #fff; }
 .pastille-perso.active .icone-perso path:first-child { fill: rgba(255, 255, 255, .25); }
@@ -177,7 +183,7 @@ button:disabled { cursor: default; opacity: .35; }
 
 .ligne {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .3em .6em;
-  min-height: 2.85em; padding: .3em 0; border-bottom: 1px solid rgba(85, 143, 166, .12);
+  min-height: 3.4em; padding: .45em 0; border-bottom: 1px solid rgba(85, 143, 166, .12);
 }
 /* L'intitulé passe sur deux lignes plutôt que de repousser le réglage en dessous. */
 .ligne-nom { flex: 1 1 6em; min-width: 0; font-weight: 700; line-height: 1.15; color: var(--encre-forte); }
@@ -210,19 +216,18 @@ button:disabled { cursor: default; opacity: .35; }
 .pilule.verrouillee { color: #8297a1; }
 .rythme-fixe { font-weight: 750; color: #3f6374; white-space: nowrap; }
 
-/* Préréglages : six tuiles, en liste compacte sur téléphone, en cartes quand il y a de la place. */
-.tuiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4em; margin: .35em 0 .15em; }
+/* Préréglages : les cinq côte à côte, « Personnaliser » en petit bouton à côté du titre. */
+.tuiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .5em; margin: .4em 0 .15em; }
 .tuile {
-  position: relative; display: flex; align-items: center; gap: .45em; min-height: 3.05em; padding: .4em .5em;
-  border-radius: .85em; text-align: left; color: #4f6f7e;
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .3em;
+  min-height: 5.6em; padding: .6em .3em; border-radius: .9em; text-align: center; color: #4f6f7e;
   background: #fff; border: 1px solid var(--bord); box-shadow: var(--ombre-douce);
 }
-.tuile-icone { flex: none; display: grid; place-items: center; width: 1.7em; height: 1.7em; }
-.tuile.verrouillee { padding-right: 1.1em; }
+.tuile-icone { flex: none; display: grid; place-items: center; width: 2.1em; height: 2.1em; }
 .tuile-icone img, .tuile-icone svg { width: 100%; height: 100%; object-fit: contain; }
-.tuile-texte { display: flex; flex-direction: column; min-width: 0; }
+.tuile-texte { display: flex; flex-direction: column; align-items: center; min-width: 0; }
 .tuile-texte strong { font-size: .84em; line-height: 1.15; color: #3f6174; }
-.tuile-texte span { margin-top: .15em; font-size: .76em; color: var(--encre-douce); white-space: nowrap; }
+.tuile-texte span { margin-top: .2em; font-size: .76em; color: var(--encre-douce); white-space: nowrap; }
 .tuile.choisie {
   border-color: rgba(83, 174, 193, .62);
   background: linear-gradient(180deg, rgba(226, 247, 249, .94), rgba(239, 236, 255, .9));
@@ -232,36 +237,25 @@ button:disabled { cursor: default; opacity: .35; }
 .icone-perso { fill: none; stroke: #55aeba; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .icone-perso path:first-child { fill: rgba(89, 190, 202, .18); }
 .icone-perso circle { fill: #8177d8; stroke: none; }
-@container choix (min-width: 25em) {
-  .tuiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5em; }
-  .tuile { flex-direction: column; justify-content: center; gap: .3em; min-height: 5.4em; padding: .55em .35em; text-align: center; }
-  .tuile-icone { width: 2.3em; height: 2.3em; }
-  .tuile-texte { align-items: center; }
-}
-@container choix (min-width: 42em) {
-  .tuiles { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-}
 
-/* Téléphone (cadre plus large que haut). */
+/* Téléphone (cadre plus large que haut) : plus serré, sur deux colonnes. */
 @container reglages (min-aspect-ratio: 1/1) {
   .reglages-corps {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-rows: auto 1fr auto;
     grid-template-areas: "respiration debut" "respiration baton" "choix choix";
   }
+  .sous-titre { margin-bottom: .35em; }
+  .ligne { min-height: 2.85em; padding: .3em 0; }
   .zone-debut { padding-top: 1.7em; }
   .mode-perso { grid-template-rows: auto auto auto; grid-template-areas: "respiration respiration" "debut baton" "choix choix"; }
   .mode-perso .zone-debut { padding-top: .5em; }
   .panneau-reglages:has(.mode-perso) .sous-titre { display: none; }
   .zone-baton .bloc-titre { margin-top: .5em; }
   .choix-debut .pilule { padding: 0 .75em; }
-  .pilule.pastille-perso { display: inline-flex; }
-  .tuile-perso { display: none; }
-  .tuiles { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .4em; }
-  .tuile { flex-direction: column; justify-content: center; gap: .25em; min-height: 4.6em; padding: .45em .25em; text-align: center; }
-  .tuile.verrouillee { padding-right: .25em; }
+  .tuiles { gap: .4em; }
+  .tuile { gap: .25em; min-height: 4.6em; padding: .45em .25em; }
   .tuile-icone { width: 1.75em; height: 1.75em; }
-  .tuile-texte { align-items: center; }
   .tuile-texte span { font-size: .74em; }
   .tuile .cadenas { top: .3em; right: .3em; width: .75em; height: .75em; }
 }
