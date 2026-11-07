@@ -3,6 +3,7 @@
   'use strict';
 
   var R = window.Respiration;
+  var LigneVague = window.LigneVague;
   var Baton = window.BatonDePluie;
   var Plus = window.MonOxygenePlus;
   var app = document.getElementById('app');
@@ -39,10 +40,10 @@
       titre: 'Inspire & Expire',
       corps:
         '<div class="deux-cartes">' +
-          '<div class="carte"><h3>À l’inspiration</h3>' +
+          '<div class="carte"><h3 class="avec-souffle"><img src="./assets/souffle-inspiration.png" alt="">À l’inspiration</h3>' +
             '<p>Inspire doucement par le nez. Laisse le ventre se gonfler naturellement.</p>' +
             '<p>Si cela t’aide, tu peux imaginer que tu inspires une <strong>lumière douce</strong>, qui vient apporter un peu d’espace, de chaleur ou de calme à l’intérieur de toi.</p></div>' +
-          '<div class="carte"><h3>À l’expiration</h3>' +
+          '<div class="carte"><h3 class="avec-souffle"><img src="./assets/souffle-expiration.png" alt="">À l’expiration</h3>' +
             '<p>Expire doucement par la bouche. Le ventre redescend sans effort.</p>' +
             '<p>Tu peux imaginer que ton expiration emporte <strong>ce dont tu ne souhaites plus t’encombrer</strong>, sans chercher à faire disparaître ce que tu ressens.</p></div>' +
         '</div>' +
@@ -53,9 +54,9 @@
       titre: 'Choisir son juste rythme',
       corps:
         '<div class="trois-cartes">' +
-          '<div class="carte"><h3>Retrouver l’équilibre</h3><b>5 s / 5 s</b><p>Un rythme simple et régulier pour revenir à soi.</p></div>' +
-          '<div class="carte"><h3>Ralentir</h3><b>4 s / 6 s ou 3 s / 5 s</b><p>Pour accompagner le calme et relâcher progressivement.</p></div>' +
-          '<div class="carte"><h3>Dynamiser</h3><b>6 s / 4 s ou 5 s / 3 s</b><p>Pour soutenir l’énergie et la mise en mouvement.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/equilibre.png" alt=""><h3>Retrouver l’équilibre</h3><b>5 s / 5 s</b><p>Un rythme simple et régulier pour revenir à soi.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/ralentir.png" alt=""><h3>Ralentir</h3><b>4 s / 6 s ou 3 s / 5 s</b><p>Pour accompagner le calme et relâcher progressivement.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/dynamiser.png" alt=""><h3>Dynamiser</h3><b>6 s / 4 s ou 5 s / 3 s</b><p>Pour soutenir l’énergie et la mise en mouvement.</p></div>' +
         '</div>' +
         '<p><strong>Il n’existe pas de bon rythme universel.</strong><br><strong>Il y a seulement celui dans lequel ta respiration reste fluide et confortable.</strong></p>'
     },
@@ -107,6 +108,16 @@
     pause: '<rect x="8" y="5" width="8" height="30" rx="3"></rect><rect x="24" y="5" width="8" height="30" rx="3"></rect>',
     lecture: '<path d="M11 6 L32 20 L11 34 Z"></path>'
   };
+
+  // La petite onde du temps (6 ondulations très douces, repère 1000 × 20).
+  var CHEMIN_ONDE = (function () {
+    var d = '';
+    for (var x = 0; x <= 1000; x += 10) d += (x ? ' L' : 'M') + x + ' ' + (10 + 3.2 * Math.sin(x / 1000 * Math.PI * 12)).toFixed(2);
+    return d;
+  })();
+
+  // « Mon Oxygène » : son écriture (image), en haut à gauche de chaque écran.
+  var LOGO = '<img class="marque" src="./assets/logo.png" alt="Mon Oxygène" draggable="false">';
 
   var dansAppli = !!(window.MonOxygeneEcran || window.MonOxygeneAchats) ||
     window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -260,7 +271,7 @@
     var conseil = 'Tu peux aussi ouvrir Mon Oxygène directement dans ton navigateur.';
     if (estIOS) conseil = 'Sur iPhone : ouvre ce lien dans Safari, touche le bouton Partager, puis « Ajouter à l’écran d’accueil ».';
     else if (!etat.installation) conseil = 'Sur Android : ouvre le menu du navigateur puis choisis « Installer l’application » ou « Ajouter à l’écran d’accueil ».';
-    return '<section class="ecran fond-arbre">' +
+    return '<section class="ecran fond-arbre">' + LOGO +
       '<div class="panneau panneau-accueil" data-ajuster>' +
         '<div class="surtitre">Prendre un temps pour soi</div>' +
         '<h1 class="grand-titre">Mon Oxygène</h1>' +
@@ -280,7 +291,7 @@
     for (var i = 0; i < DIAPOS.length; i++) {
       points += '<button class="point' + (i === etat.diapo ? ' actif' : '') + '" data-action="diapo" data-index="' + i + '" aria-label="Page ' + (i + 1) + '"></button>';
     }
-    return '<section class="ecran fond-arbre">' +
+    return '<section class="ecran fond-arbre">' + LOGO +
       '<div class="panneau panneau-intro" data-ajuster>' +
         (etat.relecture ? '<button class="fermer" data-action="fermer-intro" aria-label="Revenir à ma respiration">×</button>' : '') +
         '<div class="intro-texte">' +
@@ -299,14 +310,12 @@
   function ecranReglages() {
     var verrouille = !Plus.actif;
     var r = reglagesEnCours();
-    return '<section class="ecran fond-arbre">' +
-      '<div class="marque">Mon Oxygène</div>' +
+    return '<section class="ecran fond-arbre">' + LOGO +
       '<button class="relire" data-action="relire" data-index="0" aria-label="Comprendre le pouvoir de ma respiration" title="Comprendre le pouvoir de ma respiration">' +
         '<img src="./assets/lotus.png" alt="">' +
       '</button>' +
       '<div class="panneau panneau-reglages" data-ajuster>' +
         '<header class="reglages-tete"><h1 class="titre-reglages">Créer ma respiration</h1>' + pastillePlus() + '</header>' +
-        '<p class="sous-titre">Prends le temps qui te semble juste.</p>' +
         '<div class="reglages-corps' + (r.mode === 'perso' ? ' mode-perso' : '') + '">' +
           '<section class="bloc zone-respiration">' +
             '<h2 class="bloc-titre">Ma respiration</h2>' +
@@ -323,7 +332,6 @@
           '</section>' +
         '</div>' +
         '<div class="reglages-pied">' +
-          '<p class="securite"><strong>Écoute ton corps.</strong> La respiration doit toujours rester confortable. En cas de vertige, gêne, essoufflement ou malaise, arrête l’exercice et reprends simplement ta respiration naturelle.</p>' +
           '<button class="bouton-commencer" data-action="commencer">Commencer ma séance</button>' +
         '</div>' +
       '</div></section>';
@@ -332,8 +340,7 @@
   function ecranSeance() {
     var r = etat.seance.plan[0];
     var total = Math.ceil(R.dureePlan(etat.seance.plan));
-    return '<section class="ecran fond-courbe seance">' +
-      '<div class="marque marque-seance">Mon Oxygène</div>' +
+    return '<section class="ecran fond-lac seance">' + LOGO +
       '<div class="seance-boutons">' +
         '<button class="rond" data-action="pause" aria-label="Pause"><svg id="iconePause" viewBox="0 0 40 40">' + ICONES.pause + '</svg></button>' +
         '<button class="rond" data-action="arreter" aria-label="Arrêter"><svg viewBox="0 0 40 40"><rect x="8" y="8" width="24" height="24" rx="4"></rect></svg></button>' +
@@ -343,20 +350,21 @@
         '<div class="phase-consigne fondu" id="phaseConsigne"></div>' +
         '<div class="phase-compte" id="phaseCompte"></div>' +
       '</div>' +
+      // Sa ligne aquarelle, dessinée sur toute la largeur de l'écran, et le lotus qui la suit
       '<div class="scene-vague" id="sceneVague"' + (etat.seance.commencee ? '' : ' style="opacity:0"') + '>' +
-        '<svg viewBox="0 0 1000 500" preserveAspectRatio="none" aria-hidden="true">' +
-          '<defs><linearGradient id="degradeVague" x1="0" y1="0" x2="1" y2="0">' +
-            '<stop offset="0%" stop-color="#48d3dc"></stop><stop offset="52%" stop-color="#69beeb"></stop><stop offset="100%" stop-color="#9e80e2"></stop>' +
-          '</linearGradient></defs>' +
-          '<path class="vague-halo" id="vagueHalo"></path>' +
-          '<path class="vague-ligne" id="vagueLigne"></path>' +
-        '</svg>' +
+        '<canvas class="toile-vague" id="toileVague" aria-hidden="true"></canvas>' +
         '<img src="./assets/lotus.png" class="lotus" id="lotus" alt="">' +
       '</div>' +
+      // Le temps, posé sur l'eau comme un reflet : une petite onde qui se colore au fil de la séance
       '<div class="progression">' +
         '<div class="progression-gauche">' +
           '<div class="rythme" id="rythme">Inspire ' + R.formaterDuree(r.inhaleSec) + ' · Expire ' + R.formaterDuree(r.exhaleSec) + '</div>' +
-          '<div class="piste"><div class="piste-ombre" id="pisteOmbre"></div><div class="piste-remplie" id="pisteRemplie"></div><div class="piste-curseur" id="pisteCurseur"></div></div>' +
+          '<svg class="onde" viewBox="0 0 1000 20" preserveAspectRatio="none" aria-hidden="true">' +
+            '<defs><linearGradient id="ondeCouleur" x1="0" x2="1"><stop offset="0" stop-color="#7fd0dc"></stop><stop offset=".5" stop-color="#8fb1ec"></stop><stop offset="1" stop-color="#b39be6"></stop></linearGradient></defs>' +
+            '<path class="onde-reflet" pathLength="100" d="' + CHEMIN_ONDE + '"></path>' +
+            '<path class="onde-calme" pathLength="100" d="' + CHEMIN_ONDE + '"></path>' +
+            '<path class="onde-faite" id="ondeFaite" pathLength="100" stroke-dasharray="0.5 100" d="' + CHEMIN_ONDE + '"></path>' +
+          '</svg>' +
         '</div>' +
         '<div class="minuteur" id="minuteur">' + Math.floor(total / 60) + ':' + String(total % 60).padStart(2, '0') + '</div>' +
       '</div>' +
@@ -472,7 +480,41 @@
     }
     return false;
   }
+  // L'arbre est équilibré sur chaque écran : même écart entre le haut de l'écran et le sommet du feuillage
+  // qu'entre ses racines et le bas de l'écran (repères mesurés sur son image 1448 × 1086 : 255 px et 749 px).
+  // L'image prend toute la largeur ; un petit zoom seulement si l'écran est presque carré.
+  var SOMMET_ARBRE = 255 / 1086, RACINE_ARBRE = 749 / 1086, MILIEU_ARBRE = (SOMMET_ARBRE + RACINE_ARBRE) / 2;
+  function cadrerArbre() {
+    var fonds = app.querySelectorAll('.fond-arbre');
+    for (var i = 0; i < fonds.length; i++) {
+      var W = fonds[i].clientWidth, H = fonds[i].clientHeight;
+      if (!W || !H) continue;
+      var z = Math.max(1, (H / 2) / (MILIEU_ARBRE * 0.75 * W), (H / 2) / ((1 - MILIEU_ARBRE) * 0.75 * W));
+      var hauteurImage = 0.75 * W * z;
+      var y = hauteurImage > H + 0.5 ? (MILIEU_ARBRE * hauteurImage - H / 2) / (hauteurImage - H) : 0.5;
+      fonds[i].style.backgroundSize = (z * 100).toFixed(2) + '% auto';
+      fonds[i].style.backgroundPosition = '50% ' + (R.bornes(y, 0, 1) * 100).toFixed(2) + '%';
+    }
+  }
+
+  // Le lac : toute la largeur ; on le place pour que le temps (en bas, vers 92 % de la hauteur de l'écran)
+  // soit toujours posé sur l'eau (vers 78 % de la hauteur de son image), quelle que soit la forme de l'écran.
+  var EAU_IMAGE = 0.78, EAU_ECRAN = 0.92;
+  function cadrerLac() {
+    var fonds = app.querySelectorAll('.fond-lac');
+    for (var i = 0; i < fonds.length; i++) {
+      var W = fonds[i].clientWidth, H = fonds[i].clientHeight;
+      if (!W || !H) continue;
+      var hauteurImage = Math.max(H, 0.75 * W), largeurImage = hauteurImage / 0.75;
+      var y = hauteurImage > H + 0.5 ? (EAU_IMAGE * hauteurImage - EAU_ECRAN * H) / (hauteurImage - H) : 0.5;
+      fonds[i].style.backgroundSize = Math.round(largeurImage) + 'px ' + Math.round(hauteurImage) + 'px';
+      fonds[i].style.backgroundPosition = '50% ' + (R.bornes(y, 0, 1) * 100).toFixed(2) + '%';
+    }
+  }
+
   function ajuster() {
+    cadrerArbre();
+    cadrerLac();
     ajusterLargeur();
     var panneaux = app.querySelectorAll('[data-ajuster]');
     for (var i = 0; i < panneaux.length; i++) {
@@ -602,14 +644,11 @@
 
     var ecouleDepuisDebut = PREPARATION - avantDepart;
     document.getElementById('sceneVague').style.opacity = Math.min(1, Math.max(0, ecouleDepuisDebut / 1.6)).toFixed(3);
-    var chemin = R.cheminVague(s.plan, 0, s.debutInspire);
-    document.getElementById('vagueLigne').setAttribute('d', chemin);
-    document.getElementById('vagueHalo').setAttribute('d', chemin);
+    var hauteur = LigneVague.dessiner(document.getElementById('toileVague'), s.plan, 0, s.debutInspire);
 
     var lotus = document.getElementById('lotus');
-    var y = 250 - 190.5 * R.vague(s.plan, 0, s.debutInspire);
-    var echelle = 0.655 + 0.28 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
-    lotus.style.top = (y / 5) + '%';
+    var echelle = 0.82 + 0.18 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
+    lotus.style.top = (hauteur * 100).toFixed(3) + '%';
     lotus.style.transform = 'translate(-50%,-50%) scale(' + echelle.toFixed(4) + ')';
   }
 
@@ -646,20 +685,15 @@
     document.getElementById('phaseCompte').textContent = R.resteDePhase(s.plan, ecoule, s.debutInspire).toFixed(1) + ' s';
     document.getElementById('rythme').textContent = 'Inspire ' + R.formaterDuree(r.inhaleSec) + '   ·   Expire ' + R.formaterDuree(r.exhaleSec);
 
-    var chemin = R.cheminVague(s.plan, ecoule, s.debutInspire);
-    document.getElementById('vagueLigne').setAttribute('d', chemin);
-    document.getElementById('vagueHalo').setAttribute('d', chemin);
-
+    // Sa ligne aquarelle ; le lotus suit exactement le trait, au milieu de l'écran
+    var hauteur = LigneVague.dessiner(document.getElementById('toileVague'), s.plan, ecoule, s.debutInspire);
     var lotus = document.getElementById('lotus');
-    var y = 250 - 190.5 * R.vague(s.plan, ecoule, s.debutInspire);
-    var echelle = 0.655 + 0.28 * R.ampleur(s.plan, ecoule, s.debutInspire);
-    lotus.style.top = (y / 5) + '%';
+    var echelle = 0.82 + 0.18 * R.ampleur(s.plan, ecoule, s.debutInspire);
+    lotus.style.top = (hauteur * 100).toFixed(3) + '%';
     lotus.style.transform = 'translate(-50%,-50%) scale(' + echelle.toFixed(4) + ')';
 
-    var pourcent = (Math.max(0, Math.min(1, ecoule / total)) * 100).toFixed(3) + '%';
-    document.getElementById('pisteRemplie').style.width = pourcent;
-    document.getElementById('pisteOmbre').style.width = pourcent;
-    document.getElementById('pisteCurseur').style.left = pourcent;
+    // L'onde du temps se colore jusqu'au bout de la séance
+    document.getElementById('ondeFaite').setAttribute('stroke-dasharray', Math.max(0.5, Math.min(1, ecoule / total) * 100).toFixed(2) + ' 100');
 
     var secondes = Math.ceil(reste);
     document.getElementById('minuteur').textContent = Math.floor(secondes / 60) + ':' + String(secondes % 60).padStart(2, '0');

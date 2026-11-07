@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Le fond bleu-vert sert aussi d'écran de démarrage, sous le lotus de l'icône. -->
+    <!-- Le blanc lavande du papier sert d'écran de démarrage, avant que l'appli s'affiche. -->
     <style name="Theme.MonOxygene" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/fond</item>
     </style>

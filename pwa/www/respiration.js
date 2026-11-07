@@ -154,6 +154,19 @@
     return 0.5 - 0.5 * Math.cos(Math.PI * q);
   }
 
+  // Où en est le souffle : en montée (inspiration) ou en descente (expiration), à quelle fraction q (0 → 1),
+  // et la durée de cette phase. Sert à dessiner sa ligne aquarelle (vague.js).
+  function phaseA(plan, t, debutInspire) {
+    var r = rythmeA(plan, t);
+    var m = positionCycle(plan, t);
+    if (debutInspire) {
+      if (m < r.inhaleSec) return { montee: true, q: m / r.inhaleSec, duree: r.inhaleSec };
+      return { montee: false, q: (m - r.inhaleSec) / r.exhaleSec, duree: r.exhaleSec };
+    }
+    if (m < r.exhaleSec) return { montee: false, q: m / r.exhaleSec, duree: r.exhaleSec };
+    return { montee: true, q: (m - r.exhaleSec) / r.inhaleSec, duree: r.inhaleSec };
+  }
+
   // Consigne des quatre premiers cycles de chaque rythme, puis silence.
   function consigne(plan, t, inspiration) {
     var r = rythmeA(plan, t);
@@ -197,6 +210,7 @@
     resteDePhase: resteDePhase,
     vague: vague,
     ampleur: ampleur,
+    phaseA: phaseA,
     consigne: consigne,
     cheminVague: cheminVague
   };
