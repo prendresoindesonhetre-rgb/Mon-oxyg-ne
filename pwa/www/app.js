@@ -72,9 +72,6 @@
     }
   ];
 
-  // La page « Inspire & Expire » : l'explication de la respiration.
-  var DIAPO_RESPIRATION = 3;
-
   var PRESELECTIONS = [
     { id: 'ralentir', nom: 'Ralentir', rythme: '4 / 6', icone: 'ralentir', mode: 'simple', inspire: 4, expire: 6 },
     { id: 'calme', nom: 'Retrouver le calme', rythme: '4 / 6 → 5 / 5', icone: 'retrouver-calme', mode: 'calme' },
@@ -107,8 +104,6 @@
     etoile: '<svg class="etoile" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5Z"/><path d="M19 15.5c.25 1.9 1.1 2.75 3 3-1.9.25-2.75 1.1-3 3-.25-1.9-1.1-2.75-3-3 1.9-.25 2.75-1.1 3-3Z"/></svg>',
     coche: '<svg class="coche" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
     personnaliser: '<svg class="icone-perso" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 7c6 1 10 5 10 11-5 1-10-2-12-6-1-2-1-4-1-5h3Z"/><path d="M11 9c3 3 5 6 6 10"/><path d="M20 9h8M22 16h6M19 23h9"/><circle cx="23" cy="9" r="1.7"/><circle cx="25" cy="16" r="1.7"/><circle cx="22" cy="23" r="1.7"/></svg>',
-    livre: '<svg class="icone-relire" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6.5C10 5 7.2 4.6 4 5v13c3.2-.4 6 0 8 1.5 2-1.5 4.8-1.9 8-1.5V5c-3.2-.4-6 0-8 1.5Z"/><path d="M12 6.5v13"/></svg>',
-    souffle: '<svg class="icone-relire" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 17h6"/></svg>',
     pause: '<rect x="8" y="5" width="8" height="30" rx="3"></rect><rect x="24" y="5" width="8" height="30" rx="3"></rect>',
     lecture: '<path d="M11 6 L32 20 L11 34 Z"></path>'
   };
@@ -306,10 +301,9 @@
     var r = reglagesEnCours();
     return '<section class="ecran fond-arbre">' +
       '<div class="marque">Mon Oxygène</div>' +
-      '<nav class="relire">' +
-        '<button data-action="relire" data-index="0">' + ICONES.livre + 'Relire l’introduction</button>' +
-        '<button data-action="relire" data-index="' + DIAPO_RESPIRATION + '">' + ICONES.souffle + 'Comment respirer</button>' +
-      '</nav>' +
+      '<button class="relire" data-action="relire" data-index="0" aria-label="Comprendre le pouvoir de ma respiration" title="Comprendre le pouvoir de ma respiration">' +
+        '<img src="./assets/lotus.png" alt="">' +
+      '</button>' +
       '<div class="panneau panneau-reglages" data-ajuster>' +
         '<header class="reglages-tete"><h1 class="titre-reglages">Créer ma respiration</h1>' + pastillePlus() + '</header>' +
         '<p class="sous-titre">Prends le temps qui te semble juste.</p>' +

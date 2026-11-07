@@ -40,19 +40,16 @@ button:disabled { cursor: default; opacity: .35; }
 .fond-arbre { background-image: url('./assets/settings_bg.webp'); background-color: #dce8f3; background-position: left center; }
 .fond-courbe { background-image: linear-gradient(rgba(20, 46, 65, .06), rgba(20, 46, 65, .06)), url('./assets/curve_bg.jpg'); }
 
-/* Relire l'introduction : en bas à gauche, sur l'arbre. */
+/* Une seule bulle ronde avec le lotus, en bas à gauche sur l'arbre : elle rouvre l'introduction. */
 .relire {
-  position: absolute; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; gap: .45em;
+  position: absolute; z-index: 3;
   bottom: calc(var(--marge-b) + clamp(6px, 2.6vh, 26px)); left: calc(var(--marge-g) + clamp(10px, 2.2vw, 40px));
   font-size: clamp(11px, 1.5vmin + 5px, 16px);
-}
-.relire button {
-  display: inline-flex; align-items: center; gap: .45em; height: 2.3em; padding: 0 .95em 0 .75em; border-radius: 99px;
-  font-weight: 650; color: #2f5166; white-space: nowrap;
+  display: flex; align-items: center; justify-content: center; width: 3.4em; height: 3.4em; padding: 0; border-radius: 50%;
   background: rgba(255, 255, 255, .72); border: 1px solid rgba(255, 255, 255, .8);
   -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 4px 14px rgba(27, 66, 83, .14);
 }
-.icone-relire { width: 1.2em; height: 1.2em; fill: none; stroke: #4a9aab; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.relire img { width: 2.5em; height: 2.5em; object-fit: contain; pointer-events: none; }
 .marque {
   position: absolute; z-index: 3;
   top: calc(var(--marge-h) + clamp(6px, 2.6vh, 26px)); left: calc(var(--marge-g) + clamp(10px, 2.2vw, 40px));
