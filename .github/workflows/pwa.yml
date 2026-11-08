@@ -22,7 +22,7 @@ jobs:
         run: |
           set -e
           for f in index.html style.css respiration.js baton-de-pluie.js plus.js app.js sw.js manifest.webmanifest confidentialite.html \
-                   assets/settings_bg.webp assets/curve_bg.jpg assets/lotus.png assets/icon-192.png assets/icon-512.png assets/apple-touch-icon.png \
+                   assets/fond-arbre.png assets/fond-lac.png assets/logo.png assets/vague-fine.png assets/lotus.png assets/icon-192.png assets/icon-512.png assets/apple-touch-icon.png \
                    assets/presets/ralentir.png assets/presets/retrouver-calme.png assets/presets/equilibre.png \
                    assets/presets/retrouver-dynamisme.png assets/presets/dynamiser.png assets/rainstick/ambient-rainstick.mp3; do
             test -f "pwa/www/$f" || { echo "Fichier manquant : pwa/www/$f"; exit 1; }
