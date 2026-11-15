@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Mon Oxygène pour le Play Store : la version web v83 validée, embarquée dans l'appli.
-     Aucune autorisation demandée : l'appli fonctionne sans internet et n'envoie rien. -->
+<!-- Mon Oxygène pour le Play Store : la version web, embarquée dans l'appli.
+     Internet sert seulement aux codes cadeaux : les activer (une fois) et les revérifier de temps en temps.
+     Les séances marchent sans internet. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:theme="@style/Theme.MonOxygene"
         android:label="@string/nom"

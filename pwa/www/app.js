@@ -427,7 +427,8 @@
         '<label for="codeCadeau">J’ai un code cadeau</label>' +
         '<div class="code-ligne"><input id="codeCadeau" placeholder="OXY-…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" value="' + etat.codeSaisi.replace(/"/g, '&quot;') + '">' +
         '<button class="bouton-principal" data-action="activer-code">Activer</button></div>' +
-        (etat.messageCode ? '<p class="code-message' + (etat.messageCode.ok ? ' reussi' : '') + '">' + etat.messageCode.message + '</p>' : '') +
+        (etat.messageCode ? '<p class="code-message' + (etat.messageCode.ok ? ' reussi' : '') + '">' + etat.messageCode.message + '</p>'
+          : Plus.messageCadeau && !Plus.actif ? '<p class="code-message">' + Plus.messageCadeau + '</p>' : '') +
       '</div>';
     }
     return '<div class="voile" data-action="fermer-plus-fond">' +

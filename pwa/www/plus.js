@@ -1,6 +1,9 @@
 // Mon Oxygène Plus : qui y a droit (achat Google Play ou code cadeau), et les offres à afficher.
-// Les paiements passent par l'appli Android (pont MonOxygeneAchats) ; les codes cadeaux
-// sont vérifiés ici, sans connexion, grâce à leur signature.
+// Les paiements passent par l'appli Android (pont MonOxygeneAchats). Un code cadeau est vérifié ici
+// grâce à sa signature, puis activé une fois en ligne : il ne marche que sur le nombre d'appareils
+// prévu (15 nov. 2026). Ensuite tout marche sans internet ; l'appli revérifie toutes les 12 h si
+// elle le peut (code annulé, ou appareil retiré par Yoann). Rien d'autre n'est envoyé que le code
+// et un numéro tiré au hasard pour cet appareil.
 (function () {
   'use strict';
 
@@ -9,6 +12,12 @@
   var CLE_CODE = 'mon-oxygene-code-cadeau';
   // Dernier état connu des achats Google : évite d'afficher les cadenas le temps que Google Play réponde.
   var CLE_INDICE = 'mon-oxygene-plus-google';
+  var SERVEUR = 'https://issedanlnadbhidlymnc.supabase.co/rest/v1/rpc/oxygene_code';
+  // Clé PUBLIQUE (rôle anon) : elle ne permet que d'appeler oxygene_code, rien d'autre.
+  var CLE_SERVEUR = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlzc2VkYW5sbmFkYmhpZGx5bW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExOTAzNjUsImV4cCI6MjA5Njc2NjM2NX0.vTpXYfaMOt1BUAXKgQdq0rWP4AMLMPdnux41SLeSXF4';
+  var CLE_APPAREIL = 'mon-oxygene-appareil';
+  var CLE_VERIFIE = 'mon-oxygene-code-verifie';
+  var VERIFIER_TOUS_LES = 12 * 3600000;
   var JOUR_ZERO = Date.UTC(2026, 0, 1);
   var MS_JOUR = 86400000;
 
@@ -20,6 +29,7 @@
     actif: false,
     source: null,        // 'google' ou 'cadeau'
     finCadeau: null,     // date de fin d'un code cadeau ; null pour un code à vie
+    messageCadeau: null, // pourquoi un code cadeau s'est refermé sur cet appareil
     google: { pret: false, actif: false, aVie: false, enAttente: false, offres: [], erreur: null },
     cadeau: null         // { fin: Date | null }
   };
@@ -89,6 +99,59 @@
     });
   }
 
+  // Un numéro au hasard, propre à cet appareil (il change si l'on réinstalle l'appli).
+  function appareil() {
+    var a = lire(CLE_APPAREIL);
+    if (a && /^[A-Za-z0-9-]{8,64}$/.test(a)) return a;
+    var o = new Uint8Array(12);
+    if (window.crypto && crypto.getRandomValues) crypto.getRandomValues(o);
+    else for (var i = 0; i < o.length; i++) o[i] = Math.floor(Math.random() * 256);
+    a = 'oxy-' + Array.prototype.map.call(o, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+    ecrire(CLE_APPAREIL, a);
+    return a;
+  }
+  // Réponse du serveur : 'ok', 'complet', 'retire' ou 'inconnu'. Pas d'internet ou serveur muet : erreur.
+  function demanderServeur(code, activer) {
+    if (!window.fetch) return Promise.reject(new Error('reseau'));
+    var ctrl = window.AbortController ? new AbortController() : null;
+    var minuteur = setTimeout(function () { if (ctrl) ctrl.abort(); }, 15000);
+    return fetch(SERVEUR, {
+      method: 'POST',
+      headers: { apikey: CLE_SERVEUR, Authorization: 'Bearer ' + CLE_SERVEUR, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_code: code, p_appareil: appareil(), p_activer: !!activer }),
+      signal: ctrl ? ctrl.signal : undefined
+    }).then(function (r) {
+      clearTimeout(minuteur);
+      if (!r.ok) throw new Error('serveur ' + r.status);
+      return r.json();
+    }, function (e) { clearTimeout(minuteur); throw e; }).then(function (d) {
+      var e = d && d.etat;
+      if (e !== 'ok' && e !== 'complet' && e !== 'retire' && e !== 'inconnu') throw new Error('reponse');
+      return e;
+    });
+  }
+  function refermerCadeau(message) {
+    Plus.cadeau = null; Plus.messageCadeau = message;
+    ecrire(CLE_CODE, null); ecrire(CLE_VERIFIE, null);
+    recalculer();
+  }
+  // De temps en temps : le code vaut-il toujours sur cet appareil ?
+  function verifierEnLigne() {
+    var code = lire(CLE_CODE);
+    if (!code || !Plus.cadeau) return;
+    var vu = Number(lire(CLE_VERIFIE) || 0);
+    if (vu && Date.now() - vu < VERIFIER_TOUS_LES) return;
+    // Jamais vérifié (code entré avant cette version) : on l'active, s'il reste une place.
+    demanderServeur(code, !vu).then(function (e) {
+      if (e === 'ok') { ecrire(CLE_VERIFIE, String(Date.now())); return; }
+      refermerCadeau(e === 'complet'
+        ? 'Ton code cadeau est déjà utilisé sur tous les appareils prévus. Si tu as changé de téléphone, écris à Yoann : il libérera la place.'
+        : e === 'retire'
+          ? 'Ton code cadeau a été retiré de cet appareil. Si c’est une erreur, écris à Yoann.'
+          : 'Ton code cadeau n’est plus valable. Si c’est une erreur, écris à Yoann.');
+    }, function () { /* pas d'internet : on garde, on réessaiera */ });
+  }
+
   function prevenir() {
     for (var i = 0; i < ecouteurs.length; i++) {
       try { ecouteurs[i](Plus); } catch (_) {}
@@ -124,12 +187,19 @@
 
   Plus.activerCode = function (texte) {
     return examiner(texte).then(function (resultat) {
-      if (resultat.ok) {
-        Plus.cadeau = { fin: resultat.fin };
-        ecrire(CLE_CODE, resultat.code);
-        recalculer();
-      }
-      return resultat;
+      if (!resultat.ok) return resultat;
+      return demanderServeur(resultat.code, true).then(function (e) {
+        if (e === 'ok') {
+          Plus.cadeau = { fin: resultat.fin }; Plus.messageCadeau = null;
+          ecrire(CLE_CODE, resultat.code); ecrire(CLE_VERIFIE, String(Date.now()));
+          recalculer();
+          return resultat;
+        }
+        if (e === 'complet') return { ok: false, message: 'Ce code est déjà utilisé sur tous les appareils prévus. Si tu as changé de téléphone, écris à Yoann : il libérera la place.' };
+        return { ok: false, message: 'Ce code n’est plus valable. Si c’est une erreur, écris à Yoann.' };
+      }, function () {
+        return { ok: false, message: 'Pour activer ton code, connecte-toi à internet (une seule fois). Ensuite, Mon Oxygène marche aussi sans internet.' };
+      });
     });
   };
 
@@ -147,13 +217,15 @@
       Plus.cadeau = resultat.ok ? { fin: resultat.fin } : null;
       if (!resultat.ok) ecrire(CLE_CODE, null);
       recalculer();
+      verifierEnLigne();
     });
   }
+  window.addEventListener('online', verifierEnLigne);
   if (pont) {
     try { pont.demarrer(); } catch (_) {}
   }
   document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible') recalculer();
+    if (document.visibilityState === 'visible') { recalculer(); verifierEnLigne(); }
   });
 
   window.MonOxygenePlus = Plus;
