@@ -100,6 +100,22 @@ public class MainActivity extends Activity {
                 }
             });
         }
+
+        /** Installée depuis le Play Store (true), ou depuis un fichier APK d'essai (false). */
+        @JavascriptInterface
+        public boolean depuisPlayStore() {
+            String source = null;
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    source = getPackageManager().getInstallSourceInfo(getPackageName()).getInstallingPackageName();
+                } else {
+                    source = getPackageManager().getInstallerPackageName(getPackageName());
+                }
+            } catch (Exception e) {
+                // Inconnu : on la considère comme une version d'essai.
+            }
+            return "com.android.vending".equals(source);
+        }
     }
 
     private void enterImmersiveMode() {

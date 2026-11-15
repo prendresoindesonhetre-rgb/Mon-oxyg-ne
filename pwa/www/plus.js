@@ -18,6 +18,10 @@
   var CLE_APPAREIL = 'mon-oxygene-appareil';
   var CLE_VERIFIE = 'mon-oxygene-code-verifie';
   var VERIFIER_TOUS_LES = 12 * 3600000;
+  // Les versions d'essai (APK donnés à la main) peuvent être arrêtées depuis Les cadeaux de l'Être.
+  var SERVEUR_ESSAIS = 'https://issedanlnadbhidlymnc.supabase.co/rest/v1/rpc/oxygene_essais_arretes';
+  var CLE_ESSAI_FINI = 'mon-oxygene-essai-fini';
+  var LIEN_PLAY_STORE = 'https://play.google.com/store/apps/details?id=fr.prendresoindesonhetre.monoxygene';
   var JOUR_ZERO = Date.UTC(2026, 0, 1);
   var MS_JOUR = 86400000;
 
@@ -152,6 +156,43 @@
     }, function () { /* pas d'internet : on garde, on réessaiera */ });
   }
 
+  // Une version d'essai : l'appli Android installée depuis un fichier APK (pas le Play Store, pas le site).
+  function versionEssai() {
+    var e = window.MonOxygeneEcran;
+    if (!e || typeof e.depuisPlayStore !== 'function') return false;
+    try { return !e.depuisPlayStore(); } catch (_) { return false; }
+  }
+  function montrerFinEssai(oui) {
+    var el = document.getElementById('essai-fini');
+    if (!oui) { if (el) el.remove(); return; }
+    if (el || !document.body) return;
+    el = document.createElement('div');
+    el.id = 'essai-fini';
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:24px;' +
+      'background:linear-gradient(160deg,#f7f4fc,#e8f4f6);color:#4f4b90;text-align:center;font-family:inherit';
+    el.innerHTML = '<div style="max-width:520px;background:#fff;border:2px solid #c9c2ee;border-radius:22px;padding:28px 26px;box-shadow:0 10px 40px rgba(79,75,144,.15)">' +
+      '<h2 style="margin:0 0 12px;color:#4e3f93;font-size:22px">Merci d’avoir essayé Mon Oxygène</h2>' +
+      '<p style="margin:0 0 18px;line-height:1.5;font-size:16px">Cette version d’essai est terminée. Pour continuer à respirer avec Mon Oxygène, installe l’appli depuis le Play Store (pense à supprimer d’abord cette version d’essai).</p>' +
+      '<a href="' + LIEN_PLAY_STORE + '" style="display:inline-block;padding:12px 22px;border-radius:999px;background:linear-gradient(90deg,#4fb7c4,#8f86d8);color:#fff;font-weight:700;text-decoration:none">Ouvrir le Play Store</a></div>';
+    document.body.appendChild(el);
+  }
+  function appliquerEssai() {
+    Plus.essaiFini = versionEssai() && lire(CLE_ESSAI_FINI) === '1';
+    if (document.body) montrerFinEssai(Plus.essaiFini);
+    else document.addEventListener('DOMContentLoaded', function () { montrerFinEssai(Plus.essaiFini); });
+  }
+  function verifierEssai() {
+    if (!versionEssai() || !window.fetch) return;
+    fetch(SERVEUR_ESSAIS, { method: 'POST', headers: { apikey: CLE_SERVEUR, Authorization: 'Bearer ' + CLE_SERVEUR, 'Content-Type': 'application/json' }, body: '{}' })
+      .then(function (r) { if (!r.ok) throw new Error('serveur'); return r.json(); })
+      .then(function (arrete) {
+        if (arrete !== true && arrete !== false) return;
+        ecrire(CLE_ESSAI_FINI, arrete ? '1' : null);
+        appliquerEssai();
+      }).catch(function () { /* pas d'internet : on garde le dernier état connu */ });
+  }
+
   function prevenir() {
     for (var i = 0; i < ecouteurs.length; i++) {
       try { ecouteurs[i](Plus); } catch (_) {}
@@ -221,11 +262,14 @@
     });
   }
   window.addEventListener('online', verifierEnLigne);
+  window.addEventListener('online', verifierEssai);
+  appliquerEssai();
+  verifierEssai();
   if (pont) {
     try { pont.demarrer(); } catch (_) {}
   }
   document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible') { recalculer(); verifierEnLigne(); }
+    if (document.visibilityState === 'visible') { recalculer(); verifierEnLigne(); verifierEssai(); }
   });
 
   window.MonOxygenePlus = Plus;
