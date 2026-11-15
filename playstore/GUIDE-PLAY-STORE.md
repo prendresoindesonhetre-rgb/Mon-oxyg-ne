@@ -51,10 +51,25 @@ coordonnées de l'entreprise, compte bancaire, informations fiscales. Google pr�
 | Annonces | Non, l'appli ne contient pas d'annonces |
 | Classification du contenu | Questionnaire IARC : catégorie « Toutes les autres types d'applications ». Répondre **Oui** à « achats numériques » (achats intégrés) et **Non** à tout le reste → tout public (PEGI 3) |
 | Public cible | **18 ans et plus** (ou cocher aussi 13–15 et 16–17 ans). Ne pas cocher les moins de 13 ans, sinon les règles du programme « Familles » s'appliquent. |
-| Sécurité des données | « Votre appli collecte-t-elle ou partage-t-elle des types de données utilisateur obligatoires ? » → **Non** : l'appli n'envoie rien, les paiements sont traités par Google Play. |
+| Sécurité des données | Voir le tableau juste en dessous (depuis le 15 nov. 2026, les codes cadeaux sont vérifiés en ligne). |
 | Identifiant publicitaire | **Non**, l'appli ne l'utilise pas |
 | Applis de santé | Choisir la case qui correspond à la **relaxation / gestion du stress / bien-être mental**. L'appli ne collecte aucune donnée de santé. |
 | Applis gouvernementales, fonctionnalités financières, actualités | Non / aucune |
+
+### « Sécurité des données » : les réponses (codes cadeaux vérifiés en ligne)
+
+| Question | Réponse |
+|---|---|
+| Votre appli collecte-t-elle ou partage-t-elle des données utilisateur ? | **Oui** |
+| Toutes les données sont-elles chiffrées en transit ? | **Oui** |
+| Comment les utilisateurs peuvent-ils demander la suppression ? | « Les utilisateurs peuvent demander la suppression de leurs données » → par e-mail à prendresoindesonhetre@gmail.com |
+| Types de données | Cocher seulement **Identifiants de l'appareil ou autres** (le numéro tiré au hasard) |
+| → Collectées ou partagées ? | **Collectées** seulement (pas partagées) |
+| → Traitées de façon éphémère ? | **Non** |
+| → Obligatoire ou facultative ? | **Facultative** : seulement si la personne utilise un code cadeau |
+| → Pourquoi ? | **Fonctionnalités de l'application** et **Prévention des fraudes, sécurité et conformité** |
+
+Les paiements Google Play ne comptent pas : c'est Google qui les traite.
 
 ## Étape 7 — Fiche du Play Store
 
