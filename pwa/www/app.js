@@ -653,9 +653,9 @@
 
     var lotus = document.getElementById('lotus');
     var echelle = 0.82 + 0.18 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
-    // Pendant « Installe-toi », le lotus est posé un peu au-dessus de la ligne ;
-    // pendant le 3·2·1, il descend tout doucement jusqu'à sa place de séance, juste au-dessus du trait.
-    var reste = installation ? 1 : Math.max(0, Math.min(1, avantDepart / DECOMPTE));
+    // Pendant « Installe-toi », le lotus part posé dans le creux et descend tout doucement jusqu'à sa place
+    // de séance, juste au-dessus du trait ; une fois bien placé, le 3·2·1 se fait sans qu'il bouge.
+    var reste = installation ? Math.max(0, Math.min(1, (avantDepart - DECOMPTE) / INSTALLATION)) : 0;
     var leve = LOTUS_REPOS + (LOTUS_POSE - LOTUS_REPOS) * reste * reste * (3 - 2 * reste);
     lotus.style.top = (hauteur * 100).toFixed(3) + '%';
     lotus.style.transform = 'translate(-50%,' + (-50 - leve).toFixed(2) + '%) scale(' + echelle.toFixed(4) + ')';
