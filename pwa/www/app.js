@@ -95,8 +95,10 @@
   // Avant la séance : 3 s pour s'installer, puis un décompte doux 3, 2, 1.
   var INSTALLATION = 3;
   var DECOMPTE = 3;
-  // De combien le lotus est posé au-dessus de la ligne avant la séance (en % de sa hauteur).
+  // De combien le lotus est posé au-dessus de la ligne (en % de sa hauteur) : au départ, puis pendant la séance
+  // (sa place préférée, choisie par Yoann le 18 nov. 2026).
   var LOTUS_POSE = 18;
+  var LOTUS_REPOS = 6;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
   // Séance offerte : la cohérence cardiaque de base.
@@ -652,9 +654,9 @@
     var lotus = document.getElementById('lotus');
     var echelle = 0.82 + 0.18 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
     // Pendant « Installe-toi », le lotus est posé un peu au-dessus de la ligne ;
-    // pendant le 3·2·1, il descend tout doucement jusqu'à se centrer sur le trait quand le souffle commence.
+    // pendant le 3·2·1, il descend tout doucement jusqu'à sa place de séance, juste au-dessus du trait.
     var reste = installation ? 1 : Math.max(0, Math.min(1, avantDepart / DECOMPTE));
-    var leve = LOTUS_POSE * reste * reste * (3 - 2 * reste);
+    var leve = LOTUS_REPOS + (LOTUS_POSE - LOTUS_REPOS) * reste * reste * (3 - 2 * reste);
     lotus.style.top = (hauteur * 100).toFixed(3) + '%';
     lotus.style.transform = 'translate(-50%,' + (-50 - leve).toFixed(2) + '%) scale(' + echelle.toFixed(4) + ')';
   }
@@ -692,12 +694,12 @@
     document.getElementById('phaseCompte').textContent = R.resteDePhase(s.plan, ecoule, s.debutInspire).toFixed(1) + ' s';
     document.getElementById('rythme').textContent = 'Inspire ' + R.formaterDuree(r.inhaleSec) + '   ·   Expire ' + R.formaterDuree(r.exhaleSec);
 
-    // Sa ligne aquarelle ; le lotus suit exactement le trait, au milieu de l'écran
+    // Sa ligne aquarelle ; le lotus suit le trait, au milieu de l'écran, posé juste un peu au-dessus
     var hauteur = LigneVague.dessiner(document.getElementById('toileVague'), s.plan, ecoule, s.debutInspire);
     var lotus = document.getElementById('lotus');
     var echelle = 0.82 + 0.18 * R.ampleur(s.plan, ecoule, s.debutInspire);
     lotus.style.top = (hauteur * 100).toFixed(3) + '%';
-    lotus.style.transform = 'translate(-50%,-50%) scale(' + echelle.toFixed(4) + ')';
+    lotus.style.transform = 'translate(-50%,' + (-50 - LOTUS_REPOS) + '%) scale(' + echelle.toFixed(4) + ')';
 
     // L'onde du temps se colore jusqu'au bout de la séance
     document.getElementById('ondeFaite').setAttribute('stroke-dasharray', Math.max(0.5, Math.min(1, ecoule / total) * 100).toFixed(2) + ' 100');
