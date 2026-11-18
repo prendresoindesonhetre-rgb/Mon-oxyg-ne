@@ -101,6 +101,8 @@
   var LOTUS_ATTENTE = 0.6;
   var LOTUS_DESCENTE = 3;
   var LOTUS_AVANCE = 0;
+  // De combien « Installe-toi confortablement » descend avec le lotus (en hauteur de lettre).
+  var TITRE_DESCENTE = 0.45;
   // Avant la séance : le temps de s'installer (celui de la descente du lotus), puis un décompte doux 3, 2, 1.
   var INSTALLATION = LOTUS_ATTENTE + LOTUS_DESCENTE;
   var DECOMPTE = 3;
@@ -663,7 +665,10 @@
     // Pendant « Installe-toi », le lotus apparaît posé dans le creux, puis descend tout doucement jusqu'à sa place
     // de séance, juste au-dessus du trait ; une fois bien placé, le 3·2·1 se fait sans qu'il bouge.
     var reste = installation ? Math.max(0, Math.min(1, (avantDepart - DECOMPTE - LOTUS_AVANCE) / LOTUS_DESCENTE)) : 0;
-    var leve = LOTUS_REPOS + (LOTUS_POSE - LOTUS_REPOS) * reste * reste * (3 - 2 * reste);
+    var doux = reste * reste * (3 - 2 * reste);
+    var leve = LOTUS_REPOS + (LOTUS_POSE - LOTUS_REPOS) * doux;
+    // « Installe-toi confortablement » descend en même temps que le lotus, de sa place haute à un peu plus bas.
+    titre.style.translate = installation ? '0 ' + (TITRE_DESCENTE * (1 - doux)).toFixed(3) + 'em' : '';
     lotus.style.top = (hauteur * 100).toFixed(3) + '%';
     lotus.style.transform = 'translate(-50%,' + (-50 - leve).toFixed(2) + '%) scale(' + echelle.toFixed(4) + ')';
   }
