@@ -95,9 +95,9 @@
   // Avant la séance : 3 s pour s'installer, puis un décompte doux 3, 2, 1.
   var INSTALLATION = 3;
   var DECOMPTE = 3;
-  // De combien le lotus est posé au-dessus de la ligne (en % de sa hauteur) : au départ, puis pendant la séance
-  // (sa place préférée, choisie par Yoann le 18 nov. 2026).
-  var LOTUS_POSE = 18;
+  // De combien le lotus est posé au-dessus de la ligne (en % de sa hauteur) : au départ (posé dans le creux),
+  // puis pendant la séance (sa place la plus basse) — choix de Yoann le 18 nov. 2026.
+  var LOTUS_POSE = 30;
   var LOTUS_REPOS = 6;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
