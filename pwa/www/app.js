@@ -92,17 +92,18 @@
   ];
 
   var CONFIDENTIALITE = 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/confidentialite.html';
-  // Avant la séance : 5 s pour s'installer, puis un décompte doux 3, 2, 1.
-  var INSTALLATION = 5;
-  var DECOMPTE = 3;
   // De combien le lotus est posé au-dessus de la ligne (en % de sa hauteur) : au départ (posé dans le creux),
   // puis pendant la séance (sa place la plus basse) — choix de Yoann le 18 nov. 2026.
-  // Pendant « Installe-toi », on le voit d'abord posé, puis il descend en LOTUS_DESCENTE secondes ;
-  // il arrive en place LOTUS_AVANCE secondes avant le 3·2·1.
+  // Pendant « Installe-toi », on le voit posé LOTUS_ATTENTE secondes, puis il descend en LOTUS_DESCENTE secondes ;
+  // le 3·2·1 démarre dès qu'il est arrivé, sans temps d'arrêt.
   var LOTUS_POSE = 30;
   var LOTUS_REPOS = 9;
+  var LOTUS_ATTENTE = 0.6;
   var LOTUS_DESCENTE = 3;
-  var LOTUS_AVANCE = 0.9;
+  var LOTUS_AVANCE = 0;
+  // Avant la séance : le temps de s'installer (celui de la descente du lotus), puis un décompte doux 3, 2, 1.
+  var INSTALLATION = LOTUS_ATTENTE + LOTUS_DESCENTE;
+  var DECOMPTE = 3;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
   // Séance offerte : la cohérence cardiaque de base.
