@@ -97,10 +97,12 @@
   var DECOMPTE = 3;
   // De combien le lotus est posé au-dessus de la ligne (en % de sa hauteur) : au départ (posé dans le creux),
   // puis pendant la séance (sa place la plus basse) — choix de Yoann le 18 nov. 2026.
-  // Pendant « Installe-toi », on le voit d'abord posé, puis il descend en LOTUS_DESCENTE secondes.
+  // Pendant « Installe-toi », on le voit d'abord posé, puis il descend en LOTUS_DESCENTE secondes ;
+  // il arrive en place LOTUS_AVANCE secondes avant le 3·2·1.
   var LOTUS_POSE = 30;
   var LOTUS_REPOS = 9;
-  var LOTUS_DESCENTE = 3.9;
+  var LOTUS_DESCENTE = 3;
+  var LOTUS_AVANCE = 0.9;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
   // Séance offerte : la cohérence cardiaque de base.
@@ -659,7 +661,7 @@
     var echelle = 0.82 + 0.18 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
     // Pendant « Installe-toi », le lotus apparaît posé dans le creux, puis descend tout doucement jusqu'à sa place
     // de séance, juste au-dessus du trait ; une fois bien placé, le 3·2·1 se fait sans qu'il bouge.
-    var reste = installation ? Math.max(0, Math.min(1, (avantDepart - DECOMPTE) / LOTUS_DESCENTE)) : 0;
+    var reste = installation ? Math.max(0, Math.min(1, (avantDepart - DECOMPTE - LOTUS_AVANCE) / LOTUS_DESCENTE)) : 0;
     var leve = LOTUS_REPOS + (LOTUS_POSE - LOTUS_REPOS) * reste * reste * (3 - 2 * reste);
     lotus.style.top = (hauteur * 100).toFixed(3) + '%';
     lotus.style.transform = 'translate(-50%,' + (-50 - leve).toFixed(2) + '%) scale(' + echelle.toFixed(4) + ')';
