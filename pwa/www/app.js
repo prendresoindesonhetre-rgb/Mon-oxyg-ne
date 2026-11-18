@@ -100,7 +100,7 @@
   // Pendant « Installe-toi », on le voit d'abord posé, puis il descend en LOTUS_DESCENTE secondes.
   var LOTUS_POSE = 30;
   var LOTUS_REPOS = 9;
-  var LOTUS_DESCENTE = 3;
+  var LOTUS_DESCENTE = 3.9;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
   // Séance offerte : la cohérence cardiaque de base.
