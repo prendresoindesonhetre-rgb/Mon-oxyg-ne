@@ -99,7 +99,7 @@
   // puis pendant la séance (sa place la plus basse) — choix de Yoann le 18 nov. 2026.
   // Pendant « Installe-toi », on le voit d'abord posé, puis il descend en LOTUS_DESCENTE secondes.
   var LOTUS_POSE = 30;
-  var LOTUS_REPOS = 7.5;
+  var LOTUS_REPOS = 9;
   var LOTUS_DESCENTE = 3;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
