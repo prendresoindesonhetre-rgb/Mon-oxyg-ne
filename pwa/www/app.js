@@ -95,6 +95,8 @@
   // Avant la séance : 3 s pour s'installer, puis un décompte doux 3, 2, 1.
   var INSTALLATION = 3;
   var DECOMPTE = 3;
+  // De combien le lotus est posé au-dessus de la ligne avant la séance (en % de sa hauteur).
+  var LOTUS_POSE = 18;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
   // Séance offerte : la cohérence cardiaque de base.
@@ -649,8 +651,12 @@
 
     var lotus = document.getElementById('lotus');
     var echelle = 0.82 + 0.18 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
+    // Pendant « Installe-toi », le lotus est posé un peu au-dessus de la ligne ;
+    // pendant le 3·2·1, il descend tout doucement jusqu'à se centrer sur le trait quand le souffle commence.
+    var reste = installation ? 1 : Math.max(0, Math.min(1, avantDepart / DECOMPTE));
+    var leve = LOTUS_POSE * reste * reste * (3 - 2 * reste);
     lotus.style.top = (hauteur * 100).toFixed(3) + '%';
-    lotus.style.transform = 'translate(-50%,-50%) scale(' + echelle.toFixed(4) + ')';
+    lotus.style.transform = 'translate(-50%,' + (-50 - leve).toFixed(2) + '%) scale(' + echelle.toFixed(4) + ')';
   }
 
   function animer(maintenant) {
