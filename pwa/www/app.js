@@ -92,13 +92,15 @@
   ];
 
   var CONFIDENTIALITE = 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/confidentialite.html';
-  // Avant la séance : 3 s pour s'installer, puis un décompte doux 3, 2, 1.
-  var INSTALLATION = 3;
+  // Avant la séance : 5 s pour s'installer, puis un décompte doux 3, 2, 1.
+  var INSTALLATION = 5;
   var DECOMPTE = 3;
   // De combien le lotus est posé au-dessus de la ligne (en % de sa hauteur) : au départ (posé dans le creux),
   // puis pendant la séance (sa place la plus basse) — choix de Yoann le 18 nov. 2026.
+  // Pendant « Installe-toi », on le voit d'abord posé, puis il descend en LOTUS_DESCENTE secondes.
   var LOTUS_POSE = 30;
-  var LOTUS_REPOS = 6;
+  var LOTUS_REPOS = 7.5;
+  var LOTUS_DESCENTE = 3;
   var PREPARATION = INSTALLATION + DECOMPTE;
 
   // Séance offerte : la cohérence cardiaque de base.
@@ -653,9 +655,9 @@
 
     var lotus = document.getElementById('lotus');
     var echelle = 0.82 + 0.18 * R.ampleur(s.plan, 0, s.debutInspire) + 0.035 * (1 - Math.cos(ecouleDepuisDebut * Math.PI * 2 / 3)) / 2;
-    // Pendant « Installe-toi », le lotus part posé dans le creux et descend tout doucement jusqu'à sa place
+    // Pendant « Installe-toi », le lotus apparaît posé dans le creux, puis descend tout doucement jusqu'à sa place
     // de séance, juste au-dessus du trait ; une fois bien placé, le 3·2·1 se fait sans qu'il bouge.
-    var reste = installation ? Math.max(0, Math.min(1, (avantDepart - DECOMPTE) / INSTALLATION)) : 0;
+    var reste = installation ? Math.max(0, Math.min(1, (avantDepart - DECOMPTE) / LOTUS_DESCENTE)) : 0;
     var leve = LOTUS_REPOS + (LOTUS_POSE - LOTUS_REPOS) * reste * reste * (3 - 2 * reste);
     lotus.style.top = (hauteur * 100).toFixed(3) + '%';
     lotus.style.transform = 'translate(-50%,' + (-50 - leve).toFixed(2) + '%) scale(' + echelle.toFixed(4) + ')';
