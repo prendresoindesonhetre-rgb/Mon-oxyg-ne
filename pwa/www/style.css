@@ -156,7 +156,8 @@ button:disabled { cursor: default; opacity: .35; }
 
 /* ---------- Réglages ---------- */
 
-.panneau-reglages { container: reglages / size; padding: 1.15em 1.4em 1.25em; }
+/* « Commencer ma séance » descend un peu plus près du bas du cadre, pour donner de la place aux réglages */
+.panneau-reglages { container: reglages / size; padding: .6em 1.4em .6em; }
 .reglages-tete { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .4em .8em; }
 .titre-reglages { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 1.95em; line-height: 1.1; color: #2f5166; }
 .sous-titre { margin: .35em 0 .9em; font-size: .88em; color: #647d8b; }
@@ -174,7 +175,8 @@ button:disabled { cursor: default; opacity: .35; }
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 1.4em;
   grid-template-areas: "respiration" "debut" "baton" "choix";
 }
-.zone-respiration { grid-area: respiration; }
+/* Plus de sous-titre « Ma respiration » (choix de Yoann) : le même écart sous le grand titre qu'au-dessus des autres blocs */
+.zone-respiration { grid-area: respiration; margin-top: .7em; }
 .zone-debut { grid-area: debut; }
 .zone-choix { grid-area: choix; container: choix / inline-size; }
 .zone-baton { grid-area: baton; }
@@ -197,6 +199,19 @@ button:disabled { cursor: default; opacity: .35; }
 /* L'intitulé passe sur deux lignes plutôt que de repousser le réglage en dessous. */
 .ligne-nom { flex: 1 1 6em; min-width: 0; font-weight: 700; line-height: 1.15; color: var(--encre-forte); }
 .ligne > :last-child { margin-left: auto; }
+/* La petite icône devant chaque ligne */
+.ligne-nom { display: flex; align-items: center; gap: .55em; }
+/* Les cinq icônes : même taille, même couleur, même écart avec le texte */
+.ligne-icone { flex: none; display: grid; place-items: center; width: 1.35em; height: 1.35em; }
+.ligne-icone svg { width: 100%; height: 100%; fill: none; stroke: #8c86d6; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+/* les souffles dessinés de l'introduction, repeints dans le même lavande que les autres icônes */
+.ligne-icone .souffle {
+  width: 100%; height: 100%; background: #8c86d6;
+  /* le dessin est en trait léger : on le superpose quatre fois pour que le trait soit aussi soutenu que les autres */
+  -webkit-mask: var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat;
+  mask: var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat;
+  -webkit-mask-composite: source-over; mask-composite: add;
+}
 
 .compteur {
   flex: none; display: flex; align-items: center; gap: .25em; padding: .2em;
@@ -236,6 +251,9 @@ button:disabled { cursor: default; opacity: .35; }
 .tuile-icone img, .tuile-icone svg { width: 100%; height: 100%; object-fit: contain; }
 .tuile-texte { display: flex; flex-direction: column; align-items: center; min-width: 0; }
 .tuile-texte strong { font-size: .84em; line-height: 1.15; color: #3f6174; }
+/* Chaque nom a la place de deux lignes (centré dedans) : les dessins sont tous à la même hauteur
+   et les écarts en haut et en bas sont les mêmes dans toutes les cases (choix de Yoann, 26 nov. 2026). */
+.tuile-texte strong { display: flex; align-items: center; justify-content: center; min-height: 2.3em; }
 .tuile-texte span { margin-top: .2em; font-size: .76em; color: var(--encre-douce); white-space: nowrap; }
 .tuile.choisie {
   border-color: rgba(83, 174, 193, .62);
@@ -254,7 +272,9 @@ button:disabled { cursor: default; opacity: .35; }
   .sous-titre { margin: .15em 0 0; }
   .panneau-reglages:has(.mode-perso) .sous-titre { display: none; }
   .bloc-titre { margin: .6em 0 0; }
-  .ligne { min-height: 2.2em; padding: .1em 0; }
+  .zone-respiration { margin-top: .6em; }
+  /* un peu d'air entre les lignes : les réglages (5 min, 5 s…) ne se touchent plus */
+  .ligne { min-height: 2.2em; padding: var(--pad-ligne, .6em) 0; }
   .compteur { padding: .1em; }
   .compteur button { width: 1.45em; height: 1.45em; }
   .compteur.verrouille { height: 1.95em; }
@@ -547,6 +567,11 @@ img.marque {
   .tuile-icone { width: 2.7em; height: 1.55em; }
 }
 .enchainement, .mini, .ajouter-etape { border-color: var(--filet); }
+/* « Mon enchaînement » sur un petit fond de couleur, le même dégradé doux que la case choisie (choix de Yoann) */
+.enchainement { background: linear-gradient(180deg, rgba(226, 247, 249, .4), rgba(239, 236, 255, .45)); border-color: rgba(130, 126, 217, .2); }
+.enchainement .mini, .enchainement .ajouter-etape { background: #fff; }
+/* « + Ajouter une étape » dans le lavande de l'appli (il était bleu-vert) */
+.ajouter-etape { color: #6a63c7; }
 .mini button { color: #7b66cf; background: #f1ecfb; }
 .bouton-commencer { background: var(--degrade-commencer); text-shadow: 0 1px 3px rgba(60, 70, 150, .35); box-shadow: 0 .5em 1.4em rgba(110, 130, 220, .3); }
 

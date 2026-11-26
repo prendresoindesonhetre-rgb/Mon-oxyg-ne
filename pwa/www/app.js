@@ -167,8 +167,19 @@
     '</div>';
   }
 
+  // Une petite icône devant chaque ligne de réglage (choix de Yoann, 26 nov. 2026) :
+  // les souffles dessinés de l'introduction pour l'inspiration et l'expiration, des traits fins pour le reste.
+  var ICONES_LIGNES = {
+    'Durée de la séance': '<svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4.2l2.8 1.8M9.5 3.5h5"/></svg>',
+    'Inspiration': '<span class="souffle" style="--masque:url(./assets/souffle-inspiration.png)"></span>',
+    'Expiration': '<span class="souffle" style="--masque:url(./assets/souffle-expiration.png)"></span>',
+    'Rythme': '<svg viewBox="0 0 24 24"><path d="M2.5 12c2.2-4.5 4.3-4.5 6.4 0s4.3 4.5 6.4 0 4.3-4.5 6.2 0"/></svg>',
+    'Commencer par': '<svg viewBox="0 0 24 24"><path d="M6.5 21V4M6.5 5h10.5l-2.4 3.7L17 12.4H6.5"/></svg>',
+    'Bâton de pluie': '<svg viewBox="0 0 24 24"><path d="M8.5 4.5C6.3 7.7 5.2 9.6 5.2 11.1a3.3 3.3 0 0 0 6.6 0c0-1.5-1.1-3.4-3.3-6.6Z"/><path d="M16.5 10.5c-1.6 2.3-2.4 3.7-2.4 4.8a2.4 2.4 0 0 0 4.8 0c0-1.1-.8-2.5-2.4-4.8Z"/></svg>'
+  };
   function ligne(nom, contenu, classe) {
-    return '<div class="ligne' + (classe ? ' ' + classe : '') + '"><span class="ligne-nom">' + nom + '</span>' + contenu + '</div>';
+    var icone = ICONES_LIGNES[nom] ? '<span class="ligne-icone" aria-hidden="true">' + ICONES_LIGNES[nom] + '</span>' : '';
+    return '<div class="ligne' + (classe ? ' ' + classe : '') + '"><span class="ligne-nom">' + icone + '<span>' + nom + '&nbsp;:</span></span>' + contenu + '</div>';
   }
 
   function minicompteur(index, cle, valeur, texte, min, max) {
@@ -327,17 +338,15 @@
       '<div class="panneau panneau-reglages" data-ajuster>' +
         '<header class="reglages-tete"><h1 class="titre-reglages">Créer ma respiration</h1>' + pastillePlus() + '</header>' +
         '<div class="reglages-corps' + (r.mode === 'perso' ? ' mode-perso' : '') + '">' +
-          '<section class="bloc zone-respiration">' +
-            '<h2 class="bloc-titre">Ma respiration</h2>' +
+          '<section class="bloc zone-respiration" aria-label="Ma respiration">' +
             lignesRespiration(r, verrouille) +
           '</section>' +
           '<div class="bloc zone-debut">' + ligneDebut(r, verrouille) + '</div>' +
           '<section class="bloc zone-choix">' +
-            '<div class="choix-tete"><h2 class="bloc-titre">Préréglages de respiration</h2>' + pastillePerso(r, verrouille) + '</div>' +
+            '<div class="choix-tete"><h2 class="bloc-titre">Préréglages de respiration&nbsp;:</h2>' + pastillePerso(r, verrouille) + '</div>' +
             tuiles(r, verrouille) +
           '</section>' +
-          '<section class="bloc zone-baton">' +
-            '<h2 class="bloc-titre">Ambiance</h2>' +
+          '<section class="bloc zone-baton" aria-label="Bâton de pluie">' +
             ligneBaton(verrouille) +
           '</section>' +
         '</div>' +
@@ -640,6 +649,66 @@
       // Introduction : s'il reste de la place, les lignes s'écartent doucement jusqu'à remplir la page
       // (le texte occupe toute la hauteur entre le titre et les boutons, sans grand vide en bas).
       if (plafond) remplirPage(el);
+      if (el.classList.contains('panneau-reglages')) equilibrerReglages(el);
+    }
+    placerMarque();
+  }
+
+  // Introduction et réglages : « Mon Oxygène » a la même taille que pendant la séance (7,4 % de la hauteur de l'écran).
+  // Sur les réglages, il est centré sur la ligne de « Créer ma respiration », et le bouton lotus a la hauteur de
+  // « Commencer ma séance », centré sur sa ligne (choix de Yoann, 26 nov. 2026).
+  function placerMarque() {
+    var ecran = app.querySelector('.ecran');
+    if (!ecran || ecran.classList.contains('seance') || !ecran.clientHeight) return;
+    var logo = ecran.querySelector('img.marque');
+    if (!logo) return;
+    var origine = ecran.getBoundingClientRect().top, taille = ecran.clientHeight * HAUTEUR_MARQUE;
+    logo.style.width = 'auto'; logo.style.height = taille + 'px';
+    var titre = ecran.querySelector('.titre-reglages');
+    if (titre) {
+      var t = titre.getBoundingClientRect();
+      logo.style.top = (t.top - origine + t.height / 2 - taille / 2) + 'px';
+    }
+    var lotus = ecran.querySelector('.relire'), go = ecran.querySelector('.bouton-commencer');
+    if (lotus && go) {
+      var g = go.getBoundingClientRect();
+      lotus.style.width = g.height + 'px'; lotus.style.height = g.height + 'px';
+      lotus.style.top = (g.top - origine) + 'px'; lotus.style.bottom = 'auto';
+    }
+  }
+
+  // Réglages : l'écart entre « Préréglages de respiration : » et les cases est le même qu'entre les cases
+  // et « Commencer ma séance » (choix de Yoann, 26 nov. 2026). La place en trop aère les lignes de réglages.
+  function equilibrerReglages(el) {
+    var tete = el.querySelector('.choix-tete'), tuiles = el.querySelector('.tuiles'), bouton = el.querySelector('.bouton-commencer');
+    if (!tete || !tuiles || !bouton) return;
+    el.style.removeProperty('--pad-ligne');
+    tuiles.style.marginTop = '';
+    var haut = function () { return tuiles.getBoundingClientRect().top - tete.getBoundingClientRect().bottom; };
+    var bas = function () { return bouton.getBoundingClientRect().top - tuiles.getBoundingClientRect().bottom; };
+    var pad = 0.6, essais = 0;
+    // la place en trop au-dessus du bouton va d'abord aux lignes de réglages
+    while (bas() - haut() > 1 && essais < 80) {
+      pad += 0.02;
+      el.style.setProperty('--pad-ligne', pad.toFixed(2) + 'em');
+      if (deborde(el)) { pad -= 0.02; el.style.setProperty('--pad-ligne', pad.toFixed(2) + 'em'); break; }
+      essais++;
+    }
+    // puis on égalise exactement les deux écarts autour des cases
+    var ecart = bas() - haut();
+    if (Math.abs(ecart) > 0.5) {
+      var marge = parseFloat(getComputedStyle(tuiles).marginTop) + ecart / 2;
+      tuiles.style.marginTop = Math.max(0, marge) + 'px';
+    }
+    // jamais rien qui dépasse du cadre : on resserre les lignes si besoin, et on rééquilibre
+    essais = 0;
+    while (deborde(el) && pad > 0.2 && essais < 40) {
+      pad -= 0.02;
+      el.style.setProperty('--pad-ligne', pad.toFixed(2) + 'em');
+      tuiles.style.marginTop = '';
+      var e2 = bas() - haut();
+      tuiles.style.marginTop = Math.max(0, parseFloat(getComputedStyle(tuiles).marginTop) + e2 / 2) + 'px';
+      essais++;
     }
   }
 
