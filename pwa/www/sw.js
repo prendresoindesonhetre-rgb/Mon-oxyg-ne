@@ -1,13 +1,13 @@
 // Service worker de Mon Oxygène : l'appli web reste utilisable sans connexion.
 // Il ne s'occupe que des fichiers de l'appli ; les autres pages du site (confidentialité, Régie) passent sans être touchées.
-const CACHE = 'mon-oxygene-v111';
-const VERSION = '?v=111';
+const CACHE = 'mon-oxygene-v112';
+const VERSION = '?v=112';
 const CODE = ['style.css', 'respiration.js', 'vague.js', 'baton-de-pluie.js', 'plus.js', 'app.js'];
 const FICHIERS = [
   './', './index.html', './manifest.webmanifest',
   ...CODE.map(f => './' + f + VERSION),
   './assets/fond-arbre.png', './assets/fond-lac.png', './assets/lotus.png', './assets/logo.png', './assets/vague-fine.png',
-  './assets/ecriture.woff2', './assets/souffle-inspiration.png', './assets/souffle-expiration.png', './assets/souffle-inspiration-lavande.png', './assets/souffle-expiration-lavande.png',
+  './assets/ecriture.woff2', './assets/souffle-inspiration.png', './assets/souffle-expiration.png', './assets/souffle-inspiration-lavande.png', './assets/souffle-expiration-lavande.png', './assets/fond-arbre-debout.jpg',
   './assets/icon-192.png', './assets/icon-512.png', './assets/apple-touch-icon.png',
   './assets/presets/ralentir.png', './assets/presets/retrouver-calme.png', './assets/presets/equilibre.png',
   './assets/presets/retrouver-dynamisme.png', './assets/presets/dynamiser.png',

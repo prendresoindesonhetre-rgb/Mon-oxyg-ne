@@ -56,6 +56,8 @@
   }
 
   function placer(haut) { HAUT = haut; BAS = haut + AMPLEUR; }
+  // Tablette debout : la vague garde la forme qu’elle a couchée (hauteur et nombre de vagues adaptés à la largeur).
+  function regler(ampleur, nombre) { AMPLEUR = ampleur; NB_VAGUES = nombre; BAS = HAUT + AMPLEUR; api.ampleur = ampleur; }
 
-  window.LigneVague = { dessiner: dessiner, placer: placer, ampleur: AMPLEUR };
+  var api = window.LigneVague = { dessiner: dessiner, placer: placer, regler: regler, ampleur: AMPLEUR };
 })();

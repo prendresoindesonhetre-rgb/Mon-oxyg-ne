@@ -17,6 +17,10 @@
             android:screenOrientation="landscape"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboardHidden|uiMode"
             android:exported="true">
+            <!-- Mon Oxygène se tient couché, tablettes comprises (choix de Yoann, 26 nov. 2026) : Android 16 ignore
+                 d'office screenOrientation sur les grands écrans ; cette option lui demande de le respecter.
+                 Là où le sens ne peut pas être imposé (écran partagé, Android 17+), la page a une version debout. -->
+            <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

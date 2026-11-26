@@ -506,11 +506,26 @@
   // qu'entre ses racines et le bas de l'écran (repères mesurés sur son image 1448 × 1086 : 255 px et 749 px).
   // L'image prend toute la largeur ; un petit zoom seulement si l'écran est presque carré.
   var SOMMET_ARBRE = 255 / 1086, RACINE_ARBRE = 749 / 1086, MILIEU_ARBRE = (SOMMET_ARBRE + RACINE_ARBRE) / 2;
+  // Debout (tablette) : une version de son aquarelle préparée pour l’écran debout (assets/fond-arbre-debout.jpg,
+  // 1968 × 2230) : l’arbre au centre, le côté gauche = reflet du côté droit de sa peinture (axe = le tronc),
+  // la prairie prolongée vers le bas. L’arbre garde sa taille, ses racines juste au-dessus du cadre (38 % de la hauteur).
+  var ARBRE_DEBOUT = 0.38, DEBOUT = { largeur: 1968, hauteur: 2230, troncX: 520 + 297, racineY: 749 };
+  function estDebout() { return window.innerHeight > window.innerWidth && window.innerWidth >= 600; }
   function cadrerArbre() {
     var fonds = app.querySelectorAll('.fond-arbre');
     for (var i = 0; i < fonds.length; i++) {
       var W = fonds[i].clientWidth, H = fonds[i].clientHeight;
       if (!W || !H) continue;
+      if (estDebout()) {
+        var racine = ARBRE_DEBOUT * H * 0.97;
+        var s = Math.max(racine / DEBOUT.racineY, (W / 2) / DEBOUT.troncX, (W / 2) / (DEBOUT.largeur - DEBOUT.troncX));
+        fonds[i].style.backgroundImage = 'url(./assets/fond-arbre-debout.jpg)';
+        fonds[i].style.backgroundSize = Math.round(DEBOUT.largeur * s) + 'px ' + Math.round(DEBOUT.hauteur * s) + 'px';
+        fonds[i].style.backgroundPosition = Math.round(W / 2 - DEBOUT.troncX * s) + 'px ' + Math.round(racine - DEBOUT.racineY * s) + 'px';
+        fonds[i].style.backgroundColor = '#ecf4fc';
+        continue;
+      }
+      fonds[i].style.backgroundImage = ''; fonds[i].style.backgroundColor = '';
       var z = Math.max(1, (H / 2) / (MILIEU_ARBRE * 0.75 * W), (H / 2) / ((1 - MILIEU_ARBRE) * 0.75 * W));
       var hauteurImage = 0.75 * W * z;
       var y = hauteurImage > H + 0.5 ? (MILIEU_ARBRE * hauteurImage - H / 2) / (hauteurImage - H) : 0.5;
@@ -568,7 +583,12 @@
   function placerSeance() {
     var ecran = app.querySelector('.seance');
     if (!ecran || !ecran.clientHeight) return;
-    var H = ecran.clientHeight;
+    var H = ecran.clientHeight, W = ecran.clientWidth;
+    // Debout (tablette), tout est dimensionné comme sur l’écran couché de même largeur ;
+    // le logo et Pause/Stop restent seuls sur la ligne du haut, les consignes passent en dessous.
+    var debout = estDebout(), Href = debout ? Math.min(H, 0.75 * W) : H;
+    LigneVague.regler(0.37 * Href / H, debout ? 3 : 4);
+    var taille = Href * HAUTEUR_MARQUE, zone = debout ? Math.round(0.035 * W + taille) : 0;
     var phase = ecran.querySelector('.phase'), prog = ecran.querySelector('.progression');
     // Hauteur du bloc des consignes quand il est complet (titre, consigne, secondes), mesurée sur une copie invisible :
     // le bloc garde ainsi la même place pendant toute la séance, même quand la consigne ou les secondes disparaissent.
@@ -592,19 +612,19 @@
     var hautTemps = rythme ? Math.min(rp.top, rythme.getBoundingClientRect().top) : rp.top;
     var ht = rp.bottom - hautTemps;
     var hv = LigneVague.ampleur * H;
-    var ecart = Math.max(0, (H - hc - hv - ht) / (2 + 2 * BORD_SUR_ECART)), bord = BORD_SUR_ECART * ecart;
-    phase.style.top = (bord - (haut - debut)) + 'px';
+    var ecart = Math.max(0, (H - zone - hc - hv - ht) / (2 + 2 * BORD_SUR_ECART)), bord = BORD_SUR_ECART * ecart;
+    phase.style.top = (zone + bord - (haut - debut)) + 'px';
     prog.style.bottom = bord + 'px';
-    LigneVague.placer((bord + hc + ecart) / H);
+    LigneVague.placer((zone + bord + hc + ecart) / H);
     // « Mon Oxygène » et les boutons (halo compris) ont la même hauteur, proportionnelle à celle de l'écran
     // (7,4 % : 30 px sur un téléphone couché, 59 px sur une tablette), centrés sur la ligne du titre.
-    var ligneTitre = bord + (titre.top - haut) + titre.height / 2;
-    var taille = H * HAUTEUR_MARQUE;
+    var ligneTitre = debout ? 0.0175 * W + taille / 2 : bord + (titre.top - haut) + titre.height / 2;
     var logo = ecran.querySelector('img.marque'), boutons = ecran.querySelector('.seance-boutons');
     if (logo) {
       logo.style.width = 'auto';
       logo.style.height = taille + 'px';
       logo.style.top = (ligneTitre - taille / 2) + 'px';
+      centrerLogo(logo, ecran);
     }
     if (boutons) {
       var ronds = boutons.querySelectorAll('.rond');
@@ -689,6 +709,11 @@
     }
   }
 
+  // Debout (tablette), « Mon Oxygène » est centré en haut, au-dessus de l’arbre (choix de Yoann, 26 nov. 2026).
+  function centrerLogo(logo, ecran) {
+    logo.style.left = estDebout() ? Math.round((ecran.clientWidth - logo.getBoundingClientRect().width) / 2) + 'px' : '';
+  }
+
   // Introduction et réglages : « Mon Oxygène » a la même taille que pendant la séance (7,4 % de la hauteur de l'écran).
   // Sur les réglages, il est centré sur la ligne de « Créer ma respiration », et le bouton lotus a la hauteur de
   // « Commencer ma séance », centré sur sa ligne (choix de Yoann, 26 nov. 2026).
@@ -700,7 +725,9 @@
     var origine = ecran.getBoundingClientRect().top, taille = ecran.clientHeight * HAUTEUR_MARQUE;
     logo.style.width = 'auto'; logo.style.height = taille + 'px';
     var titre = ecran.querySelector('.titre-reglages');
-    if (titre) {
+    logo.style.top = '';
+    centrerLogo(logo, ecran);
+    if (titre && !estDebout()) {
       var t = titre.getBoundingClientRect();
       logo.style.top = (t.top - origine + t.height / 2 - taille / 2) + 'px';
     }
@@ -712,6 +739,13 @@
       lotus.style.width = g.height + 'px'; lotus.style.height = g.height + 'px';
       lotus.style.top = 'auto'; lotus.style.bottom = (l.top - cadre.top) + 'px';
       lotus.style.left = (l.left - cadre.left) + 'px';
+      var panneau = ecran.querySelector('.panneau-reglages');
+      if (panneau && estDebout()) {
+        // debout, le cadre occupe le bas : le lotus reste à gauche (aligné sur le logo), posé juste au-dessus du cadre
+        var p = panneau.getBoundingClientRect();
+        lotus.style.bottom = (cadre.bottom - p.top + (l.top - cadre.top)) + 'px';
+        lotus.style.left = (p.left - cadre.left) + 'px';
+      }
     }
   }
 

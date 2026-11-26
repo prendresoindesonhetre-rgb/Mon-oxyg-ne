@@ -634,3 +634,16 @@ img.marque {
 .toast { background: rgba(79, 75, 144, .92); }
 .tourner { color: var(--encre-titre); background: linear-gradient(160deg, #f7f4fc, #e4dbf7); }
 .tourner strong { font-family: var(--sans); font-style: normal; font-weight: 600; }
+/* =====================================================================================
+   Tablette tenue debout (ou fenêtre haute et étroite, ex. écran partagé) — 26 nov. 2026.
+   Roue de secours : Mon Oxygène se tient couché, mais là où le sens ne peut pas être imposé (iPad sur le site,
+   écran partagé, pliants), l'appli reste utilisable : titre et arbre au centre, cadre blanc en dessous.
+   Les téléphones restent couchés (« Tourne ton téléphone » sous 600 px de large).
+   ===================================================================================== */
+@media (orientation: portrait) and (min-width: 600px) {
+  .tourner { display: none; }
+  .panneau:not(.fenetre-plus) {
+    left: max(var(--marge-g), 4vw); right: max(var(--marge-d), 4vw); width: auto;
+    top: var(--haut-cadre, 38%); bottom: max(var(--marge-b), 4vw);
+  }
+}
