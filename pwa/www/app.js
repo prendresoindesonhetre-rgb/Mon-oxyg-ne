@@ -14,7 +14,7 @@
       surtitre: 'Respirer en conscience',
       titre: 'Mon Oxygène',
       corps:
-        '<p><strong>Respirer est un besoin vital.<br>Mais lorsqu’on y met de la conscience et du sens, chaque souffle devient un retour à soi.</strong></p>' +
+        '<p><strong>Respirer est la seule fonction du corps à la fois automatique et que l’on peut contrôler.<br>Lorsqu’on y met de la conscience et du sens, chaque souffle devient un retour à soi.</strong></p>' +
         '<p>Mon Oxygène est une application de respiration guidée pensée comme un espace intérieur.</p>' +
         '<p>Un moment pour accueillir ce qui est là, et laisser un peu plus de place à ce que l’on ressent.</p>'
     },
@@ -171,8 +171,8 @@
   // les souffles dessinés de l'introduction pour l'inspiration et l'expiration, des traits fins pour le reste.
   var ICONES_LIGNES = {
     'Durée de la séance': '<svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4.2l2.8 1.8M9.5 3.5h5"/></svg>',
-    'Inspiration': '<span class="souffle" style="--masque:url(./assets/souffle-inspiration.png)"></span>',
-    'Expiration': '<span class="souffle" style="--masque:url(./assets/souffle-expiration.png)"></span>',
+    'Inspiration': '<img class="souffle" src="./assets/souffle-inspiration-lavande.png" alt="">',
+    'Expiration': '<img class="souffle" src="./assets/souffle-expiration-lavande.png" alt="">',
     'Rythme': '<svg viewBox="0 0 24 24"><path d="M2.5 12c2.2-4.5 4.3-4.5 6.4 0s4.3 4.5 6.4 0 4.3-4.5 6.2 0"/></svg>',
     'Commencer par': '<svg viewBox="0 0 24 24"><path d="M6.5 21V4M6.5 5h10.5l-2.4 3.7L17 12.4H6.5"/></svg>',
     'Bâton de pluie': '<svg viewBox="0 0 24 24"><path d="M8.5 4.5C6.3 7.7 5.2 9.6 5.2 11.1a3.3 3.3 0 0 0 6.6 0c0-1.5-1.1-3.4-3.3-6.6Z"/><path d="M16.5 10.5c-1.6 2.3-2.4 3.7-2.4 4.8a2.4 2.4 0 0 0 4.8 0c0-1.1-.8-2.5-2.4-4.8Z"/></svg>'

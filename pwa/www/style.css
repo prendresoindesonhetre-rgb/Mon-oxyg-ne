@@ -204,14 +204,9 @@ button:disabled { cursor: default; opacity: .35; }
 /* Les cinq icônes : même taille, même couleur, même écart avec le texte */
 .ligne-icone { flex: none; display: grid; place-items: center; width: 1.35em; height: 1.35em; }
 .ligne-icone svg { width: 100%; height: 100%; fill: none; stroke: #8c86d6; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-/* les souffles dessinés de l'introduction, repeints dans le même lavande que les autres icônes */
-.ligne-icone .souffle {
-  width: 100%; height: 100%; background: #8c86d6;
-  /* le dessin est en trait léger : on le superpose quatre fois pour que le trait soit aussi soutenu que les autres */
-  -webkit-mask: var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat;
-  mask: var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat, var(--masque) center / contain no-repeat;
-  -webkit-mask-composite: source-over; mask-composite: add;
-}
+/* les souffles dessinés de l’introduction, en lavande comme les autres icônes : de simples images déjà colorées
+   (le masque CSS ne s’affichait pas dans l’appli Android : grand blanc à la place, 26 nov. 2026) */
+.ligne-icone .souffle { width: 100%; height: 100%; object-fit: contain; }
 
 .compteur {
   flex: none; display: flex; align-items: center; gap: .25em; padding: .2em;
