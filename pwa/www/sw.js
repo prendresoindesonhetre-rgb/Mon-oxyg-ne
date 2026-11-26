@@ -1,7 +1,7 @@
 // Service worker de Mon Oxygène : l'appli web reste utilisable sans connexion.
 // Il ne s'occupe que des fichiers de l'appli ; les autres pages du site (confidentialité, Régie) passent sans être touchées.
-const CACHE = 'mon-oxygene-v107';
-const VERSION = '?v=107';
+const CACHE = 'mon-oxygene-v108';
+const VERSION = '?v=108';
 const CODE = ['style.css', 'respiration.js', 'vague.js', 'baton-de-pluie.js', 'plus.js', 'app.js'];
 const FICHIERS = [
   './', './index.html', './manifest.webmanifest',

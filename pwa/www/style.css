@@ -383,8 +383,9 @@ button:disabled { cursor: default; opacity: .35; }
   font-size: .9em; background: #fff; border: 1px solid rgba(73, 124, 145, .28); color: #34566a;
 }
 .code-ligne .bouton-principal { height: 2.35em; padding: 0 1.1em; }
-.code-message { margin: .45em 0 0; font-size: .82em; line-height: 1.4; color: #b45a4a; }
-.code-message.reussi { color: #3c8a6a; }
+/* Message du code cadeau : violet soutenu si le code ne va pas, turquoise s'il est accepté (jamais de rouge ni de vert) */
+.code-message { margin: .45em 0 0; font-size: .82em; font-weight: 600; line-height: 1.4; color: #6a4fb8; }
+.code-message.reussi { color: #2f8fa3; }
 
 /* ---------- Séance ---------- */
 

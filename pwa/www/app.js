@@ -433,7 +433,6 @@
     if (!html) html = '<p class="plus-info">Les offres arrivent très bientôt.</p>';
     if (g.enAttente) html += '<p class="plus-info">Ton paiement est en attente de validation par Google Play.</p>';
     if (abonnement) html += '<p class="mentions">Renouvellement automatique, sans engagement : tu peux annuler à tout moment dans Google Play, rubrique Abonnements. L’essai gratuit est réservé à une première souscription.</p>';
-    html += '<p class="mentions"><a href="' + CONDITIONS + '" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="' + CONFIDENTIALITE + '" target="_blank" rel="noopener">Politique de confidentialité</a></p>';
     return '<div class="offres">' + html + '</div><button class="lien" data-action="restaurer">Restaurer mes achats</button>';
   }
 
@@ -456,7 +455,10 @@
         '<header class="plus-tete">' + ICONES.etoile + '<div><h2>Mon Oxygène Plus</h2><p>Ta respiration, entièrement à ta mesure.</p></div></header>' +
         '<div class="plus-corps">' +
           '<ul class="avantages">' + avantages + '</ul>' +
-          '<div class="plus-actions">' + zoneOffres() + code + '</div>' +
+          '<div class="plus-actions">' + zoneOffres() + code +
+            // les deux politiques, toujours visibles en bas de la fenêtre (avec ou sans offres, avec ou sans code)
+            '<p class="mentions mentions-liens"><a href="' + CONDITIONS + '" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="' + CONFIDENTIALITE + '" target="_blank" rel="noopener">Politique de confidentialité</a></p>' +
+          '</div>' +
         '</div>' +
       '</div></div>';
   }
