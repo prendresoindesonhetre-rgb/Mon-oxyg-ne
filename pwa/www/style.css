@@ -102,21 +102,35 @@ button:disabled { cursor: default; opacity: .35; }
 
 /* ---------- Introduction ---------- */
 
-/* Le texte commence en haut du cadre (et non au milieu), avec de l'air entre les paragraphes. */
-.intro-texte { margin: .2em 0 auto; }
+/* Comme une page de livre : le titre en haut, le texte juste en dessous, l'espace libre à la fin.
+   Choix de Yoann, 26 nov. 2026. */
+.intro-texte { flex: 1 0 auto; display: flex; flex-direction: column; margin: .2em 0 0; }
+/* le petit espace qui reste se partage à parts égales au-dessus et en dessous du texte */
+.intro-texte .intro-corps { margin: auto 0; }
+/* Pas de mot tout seul en fin de paragraphe */
+.intro-corps p, .carte p, .carte h3 { text-wrap: pretty; }
 .panneau-intro .fermer ~ .intro-texte { padding-right: 2.2em; }
 .panneau-intro .grand-titre { margin-bottom: 1.05em; }
 .intro-corps { line-height: 1.72; color: var(--encre-texte); }
-.intro-corps p { margin: 0 0 .85em; }
+.intro-corps p { margin: 0 0 var(--ecart-p, .85em); }
 .intro-corps strong { color: #3c6174; }
 @media (max-height: 460px) {
-  .surtitre { margin-bottom: .75em; }
-  .panneau-intro .grand-titre { margin-bottom: .6em; }
-  .intro-corps { line-height: 1.6; }
-  .intro-corps p { margin-bottom: .65em; }
+  .surtitre { margin-bottom: .55em; }
+  .panneau-intro .grand-titre { margin-bottom: .9em; }
+  .intro-corps { line-height: 1.45; }
+  .intro-corps p { margin-bottom: var(--ecart-p, .5em); }
 }
+/* Le texte des cartes a la même taille que celui des paragraphes (même taille sur toutes les pages) */
+.panneau-intro .carte p { font-size: .94em; line-height: 1.38; }
+.panneau-intro .trois-cartes p { font-size: .92em; }
+/* Le texte s'arrête avant les boutons avec le même écart que sous le titre (titre 1,75 em ; écart 1,05 ou 0,9 fois le titre) */
+.panneau-intro .intro-nav { padding-top: 1.84em; }
+@media (max-height: 460px) { .panneau-intro .intro-nav { padding-top: 1.575em; } }
+/* Un rythme (« 4 s / 6 s ») ne se coupe jamais au milieu ; s'il manque de place, la coupure se fait sur « ou » */
+.trois-cartes b span { white-space: nowrap; }
+.trois-cartes b, .trois-cartes h3 { text-wrap: balance; }
 .citation {
-  margin-top: .9em !important; padding-left: .9em; border-left: 3px solid rgba(83, 189, 205, .5);
+  margin-top: var(--ecart-p, .9em) !important; padding-left: .9em; border-left: 3px solid rgba(83, 189, 205, .5);
   font-family: var(--serif); font-style: italic; font-size: 1.06em; color: #436779;
 }
 .deux-cartes, .trois-cartes { display: grid; gap: .65em; margin: .55em 0 .5em; }

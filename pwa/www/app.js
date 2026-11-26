@@ -30,10 +30,10 @@
       surtitre: 'Créer un espace intérieur',
       titre: 'La respiration crée un espace de retour à soi',
       corps:
-        '<p>Respirer ne cherche pas à effacer ce que l’on ressent.</p>' +
+        '<p>Respirer, ce n’est pas chercher à effacer ce que l’on ressent.</p>' +
         '<p>C’est une façon de revenir doucement à soi, de prendre un peu de recul, et de laisser les choses se poser.</p>' +
-        '<p>Cela permet d’accueillir ce qui est là, sans se juger, et de lui redonner sa juste place.</p>' +
-        '<p><strong>Dans les moments d’inconfort, la respiration devient un chemin simple pour revenir à soi et retrouver un peu de sécurité intérieure.</strong></p>'
+        '<p>Cela permet de reconnaître ce que l’on vit, sans se juger, et de lui redonner sa juste place.</p>' +
+        '<p><strong>Dans les moments d’inconfort, la respiration devient un chemin simple pour se recentrer et retrouver un peu de sécurité intérieure.</strong></p>'
     },
     {
       surtitre: 'Laisser le souffle circuler',
@@ -45,18 +45,18 @@
             '<p>Si cela t’aide, tu peux imaginer que tu inspires une <strong>lumière douce</strong>, qui vient apporter un peu d’espace, de chaleur ou de calme à l’intérieur de toi.</p></div>' +
           '<div class="carte"><h3 class="avec-souffle"><img src="./assets/souffle-expiration.png" alt="">À l’expiration</h3>' +
             '<p>Expire doucement par la bouche. Le ventre redescend sans effort.</p>' +
-            '<p>Si cela t’aide, tu peux imaginer que tu expires un <strong>petit nuage sombre</strong>, qui emporte avec lui ce qui n’est plus juste pour toi, sans chercher à faire disparaître ce que tu ressens.</p></div>' +
+            '<p>Si cela t’aide, tu peux imaginer que tu expires un <strong>petit nuage sombre</strong>, qui emporte avec lui ce qui te pèse, sans chercher à faire disparaître ce que tu ressens.</p></div>' +
         '</div>' +
-        '<p class="citation"><strong>Inspire ce qui te fait du bien.</strong><br><strong>Expire ce qui ne te convient plus.</strong><br>Le plus important n’est pas l’amplitude, mais le confort. Reste à l’écoute de ce qui te semble juste.</p>'
+        '<p class="citation"><strong>Inspire ce qui te fait du bien.</strong><br><strong>Expire ce qui n’est plus juste pour toi.</strong><br>Le plus important n’est pas l’amplitude, mais le confort. Reste à l’écoute de ce qui te semble juste.</p>'
     },
     {
       surtitre: 'Écouter son besoin du moment',
       titre: 'Choisir son juste rythme',
       corps:
         '<div class="trois-cartes">' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/equilibre.png" alt=""><h3>Retrouver l’équilibre</h3><b>5 s / 5 s</b><p>Un rythme simple et régulier pour revenir à soi.</p></div>' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/ralentir.png" alt=""><h3>Ralentir</h3><b>4 s / 6 s ou 3 s / 5 s</b><p>Pour accompagner le calme et relâcher progressivement.</p></div>' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/dynamiser.png" alt=""><h3>Dynamiser</h3><b>6 s / 4 s ou 5 s / 3 s</b><p>Pour soutenir l’énergie et la mise en mouvement.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/ralentir.png" alt=""><h3>Ralentir</h3><b><span>4 s / 6 s</span> ou <span>3 s / 5 s</span></b><p>Pour accompagner le calme et relâcher progressivement.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/equilibre.png" alt=""><h3>Retrouver l’équilibre</h3><b><span>5 s / 5 s</span></b><p>Un rythme simple et régulier pour trouver ton équilibre.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/dynamiser.png" alt=""><h3>Dynamiser</h3><b><span>6 s / 4 s</span> ou <span>5 s / 3 s</span></b><p>Pour soutenir l’énergie et la mise en mouvement.</p></div>' +
         '</div>' +
         '<p><strong>Il n’existe pas de bon rythme universel.</strong><br><strong>Il y a seulement celui dans lequel ta respiration reste fluide et confortable.</strong></p>'
     },
@@ -64,12 +64,12 @@
       surtitre: 'D’un outil vers une ressource',
       titre: 'Avec le temps',
       corps:
-        '<p>Pratiquer régulièrement ne sert pas seulement à se détendre sur le moment.</p>' +
-        '<p>Avec le temps, on apprend à mieux se connaître. À reconnaître plus tôt ce qui se passe en soi. Et à créer plus facilement un espace avant d’agir ou de réagir.</p>' +
-        '<p>Petit à petit, la respiration devient un repère naturel. Un espace intérieur que tu sauras retrouver facilement.</p>' +
-        '<p>Une manière de <strong>prendre soin de son Être</strong> : revenir à soi avec douceur, s’écouter, et accueillir ce qui est là.</p>' +
-        '<p><strong>La respiration ne change pas forcément ce qui se passe autour de nous. Mais elle peut changer la manière dont nous le traversons et le percevons.</strong></p>' +
-        '<p class="citation">Pour cela, tu n’as rien à réussir, rien à forcer. Laisse simplement faire, de la manière la plus juste et la plus confortable pour toi, en faisant confiance à tes ressentis.</p>'
+        '<p>Au fil des séances, ta respiration t’apporte bien plus qu’une détente du moment.</p>' +
+        '<p>Peu à peu, tu apprends à mieux te connaître, à sentir plus tôt ce qui se passe en toi, et à t’offrir un espace avant d’agir ou de réagir.</p>' +
+        '<p>Ton souffle devient alors un repère naturel : un refuge intérieur que tu sauras retrouver sans effort.</p>' +
+        '<p>Une manière de <strong>prendre soin de ton Être</strong> : revenir à toi avec douceur, t’écouter, et accueillir ce qui est là.</p>' +
+        '<p><strong>La respiration ne change pas forcément ce qui se passe autour de toi. Mais elle peut changer la manière dont tu le traverses et le perçois.</strong></p>' +
+        '<p class="citation">Ici, tu n’as rien à réussir, rien à forcer. Laisse simplement faire, de la manière la plus juste et la plus confortable pour toi, en faisant confiance à tes ressentis.</p>'
     }
   ];
 
@@ -523,6 +523,32 @@
     }
   }
 
+  // Introduction : la même taille de titre et de texte sur toutes les pages (choix de Yoann, 26 nov. 2026).
+  // On cherche la plus grande taille qui tient sur CHAQUE page, en essayant les pages une à une dans le cadre ;
+  // le résultat est gardé pour cette taille d'écran.
+  var memoireIntro = { cle: '', taille: 0 };
+  function tailleCommuneIntro(el) {
+    var cle = window.innerWidth + 'x' + window.innerHeight + (etat.relecture ? 'r' : '');
+    if (memoireIntro.cle === cle) return memoireIntro.taille;
+    var sur = el.querySelector('.surtitre'), titre = el.querySelector('.grand-titre'), corps = el.querySelector('.intro-corps');
+    var avant = [sur.innerHTML, titre.innerHTML, corps.innerHTML];
+    // on repart des réglages d'origine (une mesure précédente a pu fixer des tailles et des écarts)
+    var nav0 = el.querySelector('.intro-nav');
+    sur.style.fontSize = ''; titre.style.fontSize = ''; corps.style.lineHeight = ''; corps.style.removeProperty('--ecart-p');
+    if (nav0) { nav0.style.fontSize = ''; nav0.style.paddingTop = ''; }
+    el.style.fontSize = '';
+    var depart = parseFloat(getComputedStyle(el).fontSize), taille = depart;
+    for (var d = 0; d < DIAPOS.length; d++) {
+      sur.innerHTML = DIAPOS[d].surtitre; titre.innerHTML = DIAPOS[d].titre; corps.innerHTML = DIAPOS[d].corps;
+      el.style.fontSize = taille + 'px';
+      var essais = 0;
+      while (deborde(el) && taille > 9 && essais < 80) { taille -= 0.25; el.style.fontSize = taille + 'px'; essais++; }
+    }
+    sur.innerHTML = avant[0]; titre.innerHTML = avant[1]; corps.innerHTML = avant[2];
+    memoireIntro = { cle: cle, taille: taille };
+    return taille;
+  }
+
   // Séance : quatre écarts, de haut en bas. Le bord du haut (écran → consignes) égale le bord du bas (temps → écran) ;
   // l'écart consignes → vague égale l'écart vague → temps ; les bords valent le tiers des écarts du milieu.
   // « Mon Oxygène » et les boutons Pause / Stop sont centrés sur la ligne du titre. Choix de Yoann, 26 nov. 2026.
@@ -584,14 +610,62 @@
     var panneaux = app.querySelectorAll('[data-ajuster]');
     for (var i = 0; i < panneaux.length; i++) {
       var el = panneaux[i];
+      // Introduction : le surtitre et le titre gardent la même taille sur toutes les pages ;
+      // le texte grandit pour bien remplir la page (jusqu'à 80 % du titre), ou rapetisse si la page est chargée.
+      var plafond = 0;
+      if (el.classList.contains('panneau-intro')) {
+        var commune = tailleCommuneIntro(el);
+        var sur = el.querySelector('.surtitre'), grand = el.querySelector('.grand-titre');
+        sur.style.fontSize = ''; grand.style.fontSize = '';
+        el.style.fontSize = commune + 'px';
+        var tailleSur = parseFloat(getComputedStyle(sur).fontSize), tailleTitre = parseFloat(getComputedStyle(grand).fontSize);
+        sur.style.fontSize = tailleSur + 'px'; grand.style.fontSize = tailleTitre + 'px';
+        // les boutons du bas (Précédent, points, Suivant) gardent aussi la même taille sur toutes les pages
+        var nav = el.querySelector('.intro-nav'), fermer = el.querySelector('.fermer');
+        if (nav) {
+          nav.style.fontSize = commune + 'px';
+        }
+        if (fermer) fermer.style.fontSize = commune + 'px';
+        plafond = tailleTitre * 0.8;
+      }
       el.style.fontSize = '';
-      var taille = parseFloat(getComputedStyle(el).fontSize);
+      var taille = plafond || parseFloat(getComputedStyle(el).fontSize);
+      if (plafond) el.style.fontSize = taille + 'px';
       var essais = 0;
-      while (deborde(el) && taille > 9 && essais < 60) {
+      while (deborde(el) && taille > 9 && essais < 120) {
         taille -= 0.25;
         el.style.fontSize = taille + 'px';
         essais++;
       }
+      // Introduction : s'il reste de la place, les lignes s'écartent doucement jusqu'à remplir la page
+      // (le texte occupe toute la hauteur entre le titre et les boutons, sans grand vide en bas).
+      if (plafond) remplirPage(el);
+    }
+  }
+
+  // S'il reste de la place, les lignes puis les paragraphes s'écartent doucement pour occuper la page ;
+  // le petit reste se partage à parts égales au-dessus et en dessous du texte (style.css, .intro-texte).
+  function remplirPage(el) {
+    var corps = el.querySelector('.intro-corps'), nav = el.querySelector('.intro-nav');
+    if (!corps || !nav) return;
+    corps.style.lineHeight = '';
+    corps.style.removeProperty('--ecart-p');
+    var taille = parseFloat(getComputedStyle(corps).fontSize);
+    var interligne = parseFloat(getComputedStyle(corps).lineHeight) / taille;
+    var libre = function () { return nav.getBoundingClientRect().top - corps.getBoundingClientRect().bottom; };
+    var essais = 0;
+    while (libre() > taille * 0.9 && interligne < 1.7 && essais < 80) {
+      interligne += 0.02;
+      corps.style.lineHeight = interligne.toFixed(2);
+      if (deborde(el)) { interligne -= 0.02; corps.style.lineHeight = interligne.toFixed(2); break; }
+      essais++;
+    }
+    var ecart = 0.5;
+    while (libre() > taille * 0.9 && ecart < 1.4 && essais < 160) {
+      ecart += 0.03;
+      corps.style.setProperty('--ecart-p', ecart.toFixed(2) + 'em');
+      if (deborde(el)) { ecart -= 0.03; corps.style.setProperty('--ecart-p', ecart.toFixed(2) + 'em'); break; }
+      essais++;
     }
   }
 
@@ -602,7 +676,7 @@
   }
   window.addEventListener('resize', ajusterPlusTard);
   window.addEventListener('orientationchange', function () { setTimeout(ajuster, 250); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajuster);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { memoireIntro.cle = ''; ajuster(); });
 
   function montrerToast(message) {
     toast.textContent = message;
