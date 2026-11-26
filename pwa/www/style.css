@@ -112,6 +112,9 @@ button:disabled { cursor: default; opacity: .35; }
 /* Pas de mot tout seul en fin de paragraphe */
 .intro-corps p, .carte p, .carte h3 { text-wrap: pretty; }
 .panneau-intro .fermer ~ .intro-texte { padding-right: 2.2em; }
+/* très petit écran : le texte de la page défile, les boutons du bas restent visibles */
+.panneau-intro.defile .intro-texte { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-bottom: 1.2em;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 2.2em), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 2.2em), transparent); }
 .panneau-intro .grand-titre { margin-bottom: 1.05em; }
 .intro-corps { line-height: 1.72; color: var(--encre-texte); }
 .intro-corps p { margin: 0 0 var(--ecart-p, .85em); }
@@ -636,9 +639,9 @@ img.marque {
 .tourner strong { font-family: var(--sans); font-style: normal; font-weight: 600; }
 /* =====================================================================================
    Tablette tenue debout (ou fenêtre haute et étroite, ex. écran partagé) — 26 nov. 2026.
-   Roue de secours : Mon Oxygène se tient couché, mais là où le sens ne peut pas être imposé (iPad sur le site,
-   écran partagé, pliants), l'appli reste utilisable : titre et arbre au centre, cadre blanc en dessous.
-   Les téléphones restent couchés (« Tourne ton téléphone » sous 600 px de large).
+   Les téléphones restent couchés ; une tablette se tient dans les deux sens (iPad sur le site, tablettes Android,
+   écran partagé, pliants) ; debout : titre et arbre au centre, cadre blanc en dessous.
+   Sous 600 px de large (téléphone debout) : « Tourne ton téléphone ».
    ===================================================================================== */
 @media (orientation: portrait) and (min-width: 600px) {
   .tourner { display: none; }
@@ -646,4 +649,6 @@ img.marque {
     left: max(var(--marge-g), 4vw); right: max(var(--marge-d), 4vw); width: auto;
     top: var(--haut-cadre, 38%); bottom: max(var(--marge-b), 4vw);
   }
+  /* l’accueil du site (Installer / Ouvrir) s’arrête sous son contenu, sans grand vide */
+  .panneau-accueil { bottom: auto; max-height: calc(62% - max(var(--marge-b), 4vw)); }
 }

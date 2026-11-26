@@ -491,6 +491,7 @@
   }
 
   // Chaque panneau garde la plus grande taille de texte qui tient entièrement à l'écran.
+  var TAILLE_MINI_INTRO = 11;
   function deborde(el) {
     if (el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1) return true;
     // Un bouton qui dépasse dans la marge intérieure du cadre compte aussi.
@@ -568,7 +569,7 @@
       sur.innerHTML = DIAPOS[d].surtitre; titre.innerHTML = DIAPOS[d].titre; corps.innerHTML = DIAPOS[d].corps;
       el.style.fontSize = taille + 'px';
       var essais = 0;
-      while (deborde(el) && taille > 9 && essais < 80) { taille -= 0.25; el.style.fontSize = taille + 'px'; essais++; }
+      while (deborde(el) && taille > TAILLE_MINI_INTRO && essais < 80) { taille -= 0.25; el.style.fontSize = taille + 'px'; essais++; }
     }
     sur.innerHTML = avant[0]; titre.innerHTML = avant[1]; corps.innerHTML = avant[2];
     memoireIntro = { cle: cle, taille: taille };
@@ -663,15 +664,19 @@
       el.style.fontSize = '';
       var taille = plafond || parseFloat(getComputedStyle(el).fontSize);
       if (plafond) el.style.fontSize = taille + 'px';
-      var essais = 0;
-      while (deborde(el) && taille > 9 && essais < 120) {
+      var essais = 0, intro = el.classList.contains('panneau-intro'), mini = intro ? TAILLE_MINI_INTRO : 9;
+      el.classList.remove('defile');
+      while (deborde(el) && taille > mini && essais < 120) {
         taille -= 0.25;
         el.style.fontSize = taille + 'px';
         essais++;
       }
+      // Très petit écran (téléphone de 4 pouces) : le texte ne descend pas sous 11 px pour rester lisible ;
+      // s'il ne tient toujours pas, il défile dans le cadre, les boutons restent en bas (26 nov. 2026).
+      if (intro && deborde(el)) el.classList.add('defile');
       // Introduction : s'il reste de la place, les lignes s'écartent doucement jusqu'à remplir la page
       // (le texte occupe toute la hauteur entre le titre et les boutons, sans grand vide en bas).
-      if (plafond) remplirPage(el);
+      else if (plafond) remplirPage(el);
       if (el.classList.contains('panneau-reglages')) equilibrerReglages(el);
     }
     placerMarque();
