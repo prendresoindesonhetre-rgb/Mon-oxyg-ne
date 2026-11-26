@@ -42,7 +42,7 @@ button:disabled { cursor: default; opacity: .35; }
 
 /* Une seule bulle ronde avec le lotus, en bas à gauche sur l'arbre : elle rouvre l'introduction. */
 /* « Mon Oxygène » et le lotus restent près du bord gauche même si le téléphone réserve une bande pour sa caméra :
-   la caméra est au milieu du bord, eux sont dans les coins (capture de Yoann, 26 nov. 2026) */
+   ils ne s’en écartent que si la caméra les touche vraiment (eviterCamera dans app.js, 26 nov. 2026) */
 .relire {
   position: absolute; z-index: 3;
   bottom: calc(var(--marge-b) + clamp(6px, 2.6vh, 26px)); left: calc(14px + clamp(10px, 2.2vw, 40px));
@@ -394,7 +394,7 @@ button:disabled { cursor: default; opacity: .35; }
 }
 .seance-boutons {
   position: absolute; z-index: 5; display: flex; gap: clamp(8px, 1.8vmin, 14px);
-  top: calc(var(--marge-h) + clamp(8px, 1.7vmin, 18px)); right: calc(var(--marge-d) + clamp(12px, 2.8vmax, 46px));
+  top: calc(var(--marge-h) + clamp(8px, 1.7vmin, 18px)); right: calc(14px + clamp(12px, 2.8vmax, 46px)); /* comme le logo : collés au coin, la caméra est évitée par eviterCamera() */
 }
 .rond {
   display: grid; place-items: center; width: clamp(48px, 10.2vmin, 82px); height: clamp(48px, 10.2vmin, 82px); border-radius: 50%;

@@ -3,9 +3,11 @@ package fr.prendresoindesonhetre.monoxygene;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.DisplayCutout;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -14,6 +16,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import java.util.Locale;
 
 /**
  * Mon Oxygène pour le Play Store : affiche en plein écran la version web v83 validée,
@@ -27,6 +31,8 @@ public class MainActivity extends Activity {
     private WebView webView;
     private Achats achats;
     private boolean dejaAffichee;
+    /** Place exacte de la caméra dans l'écran (trou ou encoche), en pixels de la page : [{g,h,d,b}, …]. */
+    private volatile String decoupes = "[]";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +89,16 @@ public class MainActivity extends Activity {
         settings.setSupportZoom(false);
         settings.setTextZoom(100);
 
+        // La page demande où est la caméra pour que « Mon Oxygène », le lotus et Pause/Stop ne passent jamais dessous,
+        // quel que soit le téléphone et le sens dans lequel on le tient.
+        webView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                majDecoupes(insets);
+                return v.onApplyWindowInsets(insets);
+            }
+        });
+
         setContentView(webView);
         enterImmersiveMode();
         webView.loadUrl(DOSSIER_WEB + "index.html");
@@ -101,6 +117,12 @@ public class MainActivity extends Activity {
             });
         }
 
+        /** Place de la caméra dans l'écran (voir majDecoupes), lue par la page à chaque mise en place. */
+        @JavascriptInterface
+        public String decoupes() {
+            return decoupes;
+        }
+
         /** Installée depuis le Play Store (true), ou depuis un fichier APK d'essai (false). */
         @JavascriptInterface
         public boolean depuisPlayStore() {
@@ -115,6 +137,35 @@ public class MainActivity extends Activity {
                 // Inconnu : on la considère comme une version d'essai.
             }
             return "com.android.vending".equals(source);
+        }
+    }
+
+    private void majDecoupes(WindowInsets insets) {
+        String json = "[]";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            DisplayCutout camera = insets.getDisplayCutout();
+            if (camera != null) {
+                float d = getResources().getDisplayMetrics().density;
+                int[] pos = new int[2];
+                webView.getLocationInWindow(pos);
+                StringBuilder sb = new StringBuilder("[");
+                for (Rect r : camera.getBoundingRects()) {
+                    if (r.isEmpty()) continue;
+                    if (sb.length() > 1) sb.append(',');
+                    sb.append(String.format(Locale.ROOT, "{\"g\":%.1f,\"h\":%.1f,\"d\":%.1f,\"b\":%.1f}",
+                            (r.left - pos[0]) / d, (r.top - pos[1]) / d, (r.right - pos[0]) / d, (r.bottom - pos[1]) / d));
+                }
+                json = sb.append(']').toString();
+            }
+        }
+        if (!json.equals(decoupes)) {
+            decoupes = json;
+            if (webView != null) webView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (webView != null) webView.evaluateJavascript("window.dispatchEvent(new Event('monoxygene-decoupes'))", null);
+                }
+            });
         }
     }
 

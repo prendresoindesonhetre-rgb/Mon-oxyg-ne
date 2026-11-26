@@ -614,6 +614,7 @@
   }
 
   function ajuster() {
+    remettreCamera();
     cadrerArbre();
     cadrerLac();
     placerSeance();
@@ -654,6 +655,38 @@
       if (el.classList.contains('panneau-reglages')) equilibrerReglages(el);
     }
     placerMarque();
+    eviterCamera();
+  }
+
+  // Caméra dans l’écran (trou ou encoche) : l’appli Android donne sa place exacte (MonOxygeneEcran.decoupes, en px CSS).
+  // « Mon Oxygène », le lotus et Pause/Stop restent collés aux coins et ne s’écartent que si la caméra les touche
+  // (choix de Yoann, 26 nov. 2026 : Mon Oxygène doit s’adapter à chaque téléphone).
+  var ELEMENTS_COINS = 'img.marque, .relire, .seance-boutons';
+  function decoupesCamera() {
+    try {
+      var texte = window.MonOxygeneEcran && MonOxygeneEcran.decoupes ? MonOxygeneEcran.decoupes() : '';
+      return texte ? JSON.parse(texte) : [];
+    } catch (e) { return []; }
+  }
+  function remettreCamera() {
+    var els = app.querySelectorAll(ELEMENTS_COINS);
+    for (var i = 0; i < els.length; i++) els[i].style.transform = '';
+  }
+  function eviterCamera() {
+    var trous = decoupesCamera();
+    if (!trous.length) return;
+    var MARGE = 8, els = app.querySelectorAll(ELEMENTS_COINS);
+    for (var i = 0; i < els.length; i++) {
+      var e = els[i].getBoundingClientRect(), dx = 0, aGauche = (e.left + e.right) / 2 < window.innerWidth / 2;
+      if (!e.width) continue;
+      for (var k = 0; k < trous.length; k++) {
+        var t = trous[k];
+        if (e.right < t.g - MARGE || e.left > t.d + MARGE || e.bottom < t.h - MARGE || e.top > t.b + MARGE) continue;
+        // on pousse vers l’intérieur de l’écran, juste assez pour passer la caméra
+        dx = aGauche ? Math.max(dx, t.d + MARGE - e.left) : Math.min(dx, t.g - MARGE - e.right);
+      }
+      if (dx) els[i].style.transform = 'translateX(' + dx + 'px)';
+    }
   }
 
   // Introduction et réglages : « Mon Oxygène » a la même taille que pendant la séance (7,4 % de la hauteur de l'écran).
@@ -749,6 +782,7 @@
     minuterieAjustement = setTimeout(ajuster, 80);
   }
   window.addEventListener('resize', ajusterPlusTard);
+  window.addEventListener('monoxygene-decoupes', ajusterPlusTard); // la caméra a changé de place (téléphone retourné)
   window.addEventListener('orientationchange', function () { setTimeout(ajuster, 250); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { memoireIntro.cle = ''; ajuster(); });
 
