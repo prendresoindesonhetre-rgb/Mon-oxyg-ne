@@ -671,11 +671,14 @@
       var t = titre.getBoundingClientRect();
       logo.style.top = (t.top - origine + t.height / 2 - taille / 2) + 'px';
     }
+    // Le bouton lotus (retour à l’introduction) va dans le coin en bas à gauche, en miroir de « Mon Oxygène » :
+    // même écart avec le bord gauche, et le même écart avec le bas que le logo avec le haut (choix de Yoann, 26 nov. 2026).
     var lotus = ecran.querySelector('.relire'), go = ecran.querySelector('.bouton-commencer');
     if (lotus && go) {
-      var g = go.getBoundingClientRect();
+      var g = go.getBoundingClientRect(), l = logo.getBoundingClientRect(), cadre = ecran.getBoundingClientRect();
       lotus.style.width = g.height + 'px'; lotus.style.height = g.height + 'px';
-      lotus.style.top = (g.top - origine) + 'px'; lotus.style.bottom = 'auto';
+      lotus.style.top = 'auto'; lotus.style.bottom = (l.top - cadre.top) + 'px';
+      lotus.style.left = (l.left - cadre.left) + 'px';
     }
   }
 

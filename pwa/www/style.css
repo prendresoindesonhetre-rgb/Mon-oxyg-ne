@@ -41,9 +41,11 @@ button:disabled { cursor: default; opacity: .35; }
 .fond-courbe { background-image: linear-gradient(rgba(20, 46, 65, .06), rgba(20, 46, 65, .06)), url('./assets/curve_bg.jpg'); }
 
 /* Une seule bulle ronde avec le lotus, en bas à gauche sur l'arbre : elle rouvre l'introduction. */
+/* « Mon Oxygène » et le lotus restent près du bord gauche même si le téléphone réserve une bande pour sa caméra :
+   la caméra est au milieu du bord, eux sont dans les coins (capture de Yoann, 26 nov. 2026) */
 .relire {
   position: absolute; z-index: 3;
-  bottom: calc(var(--marge-b) + clamp(6px, 2.6vh, 26px)); left: calc(var(--marge-g) + clamp(10px, 2.2vw, 40px));
+  bottom: calc(var(--marge-b) + clamp(6px, 2.6vh, 26px)); left: calc(14px + clamp(10px, 2.2vw, 40px));
   font-size: clamp(11px, 1.5vmin + 5px, 16px);
   display: flex; align-items: center; justify-content: center; width: 3.4em; height: 3.4em; padding: 0; border-radius: 50%;
   background: rgba(255, 255, 255, .72); border: 1px solid rgba(255, 255, 255, .8);
@@ -52,7 +54,7 @@ button:disabled { cursor: default; opacity: .35; }
 .relire img { width: 2.5em; height: 2.5em; object-fit: contain; pointer-events: none; }
 .marque {
   position: absolute; z-index: 3;
-  top: calc(var(--marge-h) + clamp(6px, 2.6vh, 26px)); left: calc(var(--marge-g) + clamp(10px, 2.2vw, 40px));
+  top: calc(var(--marge-h) + clamp(6px, 2.6vh, 26px)); left: calc(14px + clamp(10px, 2.2vw, 40px));
   font-family: var(--serif); font-style: italic; letter-spacing: .01em;
   font-size: clamp(20px, 4.4vmin, 40px); color: #fff; text-shadow: 0 2px 16px rgba(15, 45, 61, .35);
 }
@@ -492,7 +494,7 @@ html, body { background: #f7f4fc; font-synthesis: none; }
 img.marque {
   position: absolute; z-index: 3; height: auto;
   width: clamp(110px, 14vw, 260px);
-  top: calc(var(--marge-h) + clamp(4px, 1.3vw, 22px)); left: calc(var(--marge-g) + clamp(8px, 1.9vw, 34px));
+  top: calc(var(--marge-h) + clamp(4px, 1.3vw, 22px)); left: calc(14px + clamp(8px, 1.9vw, 34px));
   font-size: inherit; text-shadow: none; pointer-events: none;
   filter: saturate(1.35) drop-shadow(0 0 2px #fff) drop-shadow(0 0 8px rgba(255, 255, 255, .95)) drop-shadow(0 1px 5px rgba(70, 90, 160, .28));
 }
