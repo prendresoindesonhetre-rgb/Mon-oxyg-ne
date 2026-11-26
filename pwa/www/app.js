@@ -45,7 +45,7 @@
             '<p>Si cela t’aide, tu peux imaginer que tu inspires une <strong>lumière douce</strong>, qui vient apporter un peu d’espace, de chaleur ou de calme à l’intérieur de toi.</p></div>' +
           '<div class="carte"><h3 class="avec-souffle"><img src="./assets/souffle-expiration.png" alt="">À l’expiration</h3>' +
             '<p>Expire doucement par la bouche. Le ventre redescend sans effort.</p>' +
-            '<p>Tu peux imaginer que ton expiration emporte <strong>ce dont tu ne souhaites plus t’encombrer</strong>, sans chercher à faire disparaître ce que tu ressens.</p></div>' +
+            '<p>Si cela t’aide, tu peux imaginer que tu expires un <strong>petit nuage sombre</strong>, qui emporte avec lui ce qui n’est plus juste pour toi, sans chercher à faire disparaître ce que tu ressens.</p></div>' +
         '</div>' +
         '<p class="citation"><strong>Inspire ce qui te fait du bien.</strong><br><strong>Expire ce qui ne te convient plus.</strong><br>Le plus important n’est pas l’amplitude, mais le confort. Reste à l’écoute de ce qui te semble juste.</p>'
     },
@@ -67,7 +67,7 @@
         '<p>Pratiquer régulièrement ne sert pas seulement à se détendre sur le moment.</p>' +
         '<p>Avec le temps, on apprend à mieux se connaître. À reconnaître plus tôt ce qui se passe en soi. Et à créer plus facilement un espace avant d’agir ou de réagir.</p>' +
         '<p>Petit à petit, la respiration devient un repère naturel. Un espace intérieur que tu sauras retrouver facilement.</p>' +
-        '<p>Une manière de <strong>prendre soin de son Hêtre</strong> : revenir à soi avec douceur, s’écouter, et accueillir ce qui est là.</p>' +
+        '<p>Une manière de <strong>prendre soin de son Être</strong> : revenir à soi avec douceur, s’écouter, et accueillir ce qui est là.</p>' +
         '<p><strong>La respiration ne change pas forcément ce qui se passe autour de nous. Mais elle peut changer la manière dont nous le traversons et le percevons.</strong></p>' +
         '<p class="citation">Pour cela, tu n’as rien à réussir, rien à forcer. Laisse simplement faire, de la manière la plus juste et la plus confortable pour toi, en faisant confiance à tes ressentis.</p>'
     }
@@ -92,6 +92,7 @@
   ];
 
   var CONFIDENTIALITE = 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/confidentialite.html';
+  var CONDITIONS = 'https://prendresoindesonhetre-rgb.github.io/Mon-oxyg-ne/conditions.html';
   // De combien le lotus est posé au-dessus de la ligne (en % de sa hauteur) : au départ (posé dans le creux),
   // puis pendant la séance (sa place la plus basse) — choix de Yoann le 18 nov. 2026.
   // Pendant « Installe-toi », on le voit posé LOTUS_ATTENTE secondes, puis il descend en LOTUS_DESCENTE secondes ;
@@ -423,7 +424,7 @@
     if (!html) html = '<p class="plus-info">Les offres arrivent très bientôt.</p>';
     if (g.enAttente) html += '<p class="plus-info">Ton paiement est en attente de validation par Google Play.</p>';
     if (abonnement) html += '<p class="mentions">Renouvellement automatique, sans engagement : tu peux annuler à tout moment dans Google Play, rubrique Abonnements. L’essai gratuit est réservé à une première souscription.</p>';
-    html += '<p class="mentions"><a href="' + CONFIDENTIALITE + '" target="_blank" rel="noopener">Politique de confidentialité</a></p>';
+    html += '<p class="mentions"><a href="' + CONDITIONS + '" target="_blank" rel="noopener">Conditions d’utilisation</a> · <a href="' + CONFIDENTIALITE + '" target="_blank" rel="noopener">Politique de confidentialité</a></p>';
     return '<div class="offres">' + html + '</div><button class="lien" data-action="restaurer">Restaurer mes achats</button>';
   }
 
@@ -522,9 +523,63 @@
     }
   }
 
+  // Séance : quatre écarts, de haut en bas. Le bord du haut (écran → consignes) égale le bord du bas (temps → écran) ;
+  // l'écart consignes → vague égale l'écart vague → temps ; les bords valent le tiers des écarts du milieu.
+  // « Mon Oxygène » et les boutons Pause / Stop sont centrés sur la ligne du titre. Choix de Yoann, 26 nov. 2026.
+  var BORD_SUR_ECART = 1 / 3;
+  var HAUTEUR_MARQUE = 30.4 / 412;
+  function placerSeance() {
+    var ecran = app.querySelector('.seance');
+    if (!ecran || !ecran.clientHeight) return;
+    var H = ecran.clientHeight;
+    var phase = ecran.querySelector('.phase'), prog = ecran.querySelector('.progression');
+    // Hauteur du bloc des consignes quand il est complet (titre, consigne, secondes), mesurée sur une copie invisible :
+    // le bloc garde ainsi la même place pendant toute la séance, même quand la consigne ou les secondes disparaissent.
+    var essai = document.createElement('div');
+    essai.className = 'phase';
+    essai.setAttribute('aria-hidden', 'true');
+    essai.style.visibility = 'hidden';
+    essai.style.top = '0px';
+    essai.innerHTML = '<div class="phase-titre">Inspire</div><div class="phase-consigne">Par le nez</div><div class="phase-compte">2.5 s</div>';
+    ecran.appendChild(essai);
+    var debut = essai.getBoundingClientRect().top, haut = Infinity, bas = -Infinity;
+    for (var i = 0; i < essai.children.length; i++) {
+      var r = essai.children[i].getBoundingClientRect();
+      haut = Math.min(haut, r.top); bas = Math.max(bas, r.bottom);
+    }
+    var titre = essai.children[0].getBoundingClientRect();
+    ecran.removeChild(essai);
+    var hc = bas - haut;
+    // Bloc du temps : de « Inspire 5 s · Expire 5 s » jusqu'au bas de la barre et du minuteur.
+    var rp = prog.getBoundingClientRect(), rythme = prog.querySelector('.rythme');
+    var hautTemps = rythme ? Math.min(rp.top, rythme.getBoundingClientRect().top) : rp.top;
+    var ht = rp.bottom - hautTemps;
+    var hv = LigneVague.ampleur * H;
+    var ecart = Math.max(0, (H - hc - hv - ht) / (2 + 2 * BORD_SUR_ECART)), bord = BORD_SUR_ECART * ecart;
+    phase.style.top = (bord - (haut - debut)) + 'px';
+    prog.style.bottom = bord + 'px';
+    LigneVague.placer((bord + hc + ecart) / H);
+    // « Mon Oxygène » et les boutons (halo compris) ont la même hauteur, proportionnelle à celle de l'écran
+    // (7,4 % : 30 px sur un téléphone couché, 59 px sur une tablette), centrés sur la ligne du titre.
+    var ligneTitre = bord + (titre.top - haut) + titre.height / 2;
+    var taille = H * HAUTEUR_MARQUE;
+    var logo = ecran.querySelector('img.marque'), boutons = ecran.querySelector('.seance-boutons');
+    if (logo) {
+      logo.style.width = 'auto';
+      logo.style.height = taille + 'px';
+      logo.style.top = (ligneTitre - taille / 2) + 'px';
+    }
+    if (boutons) {
+      var ronds = boutons.querySelectorAll('.rond');
+      for (var j = 0; j < ronds.length; j++) { ronds[j].style.width = taille + 'px'; ronds[j].style.height = taille + 'px'; }
+      boutons.style.top = (ligneTitre - boutons.offsetHeight / 2) + 'px';
+    }
+  }
+
   function ajuster() {
     cadrerArbre();
     cadrerLac();
+    placerSeance();
     ajusterLargeur();
     var panneaux = app.querySelectorAll('[data-ajuster]');
     for (var i = 0; i < panneaux.length; i++) {

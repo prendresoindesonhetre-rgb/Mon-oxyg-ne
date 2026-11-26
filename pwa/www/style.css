@@ -556,6 +556,9 @@ img.marque {
   border: 0; box-shadow: none;
   background: radial-gradient(circle, rgba(255, 255, 255, .92) 0, rgba(255, 255, 255, .7) 42%, rgba(232, 226, 250, .35) 60%, rgba(255, 255, 255, 0) 74%);
 }
+/* Les boutons de la séance sont petits (hauteur de « Mon Oxygène ») : une zone de toucher invisible d'au moins 46 px les garde faciles à toucher */
+.seance-boutons .rond { position: relative; }
+.seance-boutons .rond::before { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 46px); height: max(100%, 46px); transform: translate(-50%, -50%); border-radius: 50%; }
 .rond svg { width: 40%; height: 40%; fill: #6a6fc4; filter: drop-shadow(0 0 2px #fff) drop-shadow(0 1px 4px rgba(90, 100, 190, .45)); }
 .phase { top: calc(var(--marge-h) + clamp(4px, 1.4vw, 24px)); width: 42%; }
 /* Tous les titres de la séance (Installe-toi, 3·2·1, Inspire, Expire) ont la même taille (choix de Yoann, 18 nov. 2026) */
