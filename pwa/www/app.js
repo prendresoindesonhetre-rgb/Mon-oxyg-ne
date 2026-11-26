@@ -626,7 +626,7 @@
           nav.style.fontSize = commune + 'px';
         }
         if (fermer) fermer.style.fontSize = commune + 'px';
-        plafond = tailleTitre * 0.8;
+        plafond = commune; // même taille de texte sur toutes les pages (choix de Yoann, 26 nov. 2026)
       }
       el.style.fontSize = '';
       var taille = plafond || parseFloat(getComputedStyle(el).fontSize);
