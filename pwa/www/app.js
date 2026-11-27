@@ -576,6 +576,27 @@
     return taille;
   }
 
+  // Taille de texte que prend la page la plus chargée de l'introduction (mesurée une fois par taille d'écran).
+  var ECART_TEXTE_INTRO = 1.12, memoireTexte = { cle: '', taille: 0 };
+  function texteMiniIntro(el, plafond) {
+    var cle = window.innerWidth + 'x' + window.innerHeight + (etat.relecture ? 'r' : '') + '|' + plafond.toFixed(2);
+    if (memoireTexte.cle === cle) return memoireTexte.taille;
+    var sur = el.querySelector('.surtitre'), titre = el.querySelector('.grand-titre'), corps = el.querySelector('.intro-corps');
+    var avant = [sur.innerHTML, titre.innerHTML, corps.innerHTML, el.style.fontSize, corps.style.lineHeight, corps.style.getPropertyValue('--ecart-p')];
+    corps.style.lineHeight = ''; corps.style.removeProperty('--ecart-p');
+    var mini = plafond;
+    for (var d = 0; d < DIAPOS.length; d++) {
+      sur.innerHTML = DIAPOS[d].surtitre; titre.innerHTML = DIAPOS[d].titre; corps.innerHTML = DIAPOS[d].corps;
+      var taille = plafond, essais = 0; el.style.fontSize = taille + 'px';
+      while (deborde(el) && taille > TAILLE_MINI_INTRO && essais < 120) { taille -= 0.25; el.style.fontSize = taille + 'px'; essais++; }
+      mini = Math.min(mini, taille);
+    }
+    sur.innerHTML = avant[0]; titre.innerHTML = avant[1]; corps.innerHTML = avant[2]; el.style.fontSize = avant[3];
+    corps.style.lineHeight = avant[4]; if (avant[5]) corps.style.setProperty('--ecart-p', avant[5]);
+    memoireTexte = { cle: cle, taille: mini };
+    return mini;
+  }
+
   // Séance : quatre écarts, de haut en bas. Le bord du haut (écran → consignes) égale le bord du bas (temps → écran) ;
   // l'écart consignes → vague égale l'écart vague → temps ; les bords valent le tiers des écarts du milieu.
   // « Mon Oxygène » et les boutons Pause / Stop sont centrés sur la ligne du titre. Choix de Yoann, 26 nov. 2026.
@@ -660,6 +681,9 @@
         }
         if (fermer) fermer.style.fontSize = commune + 'px';
         plafond = tailleTitre * 0.8; // le texte grandit pour remplir chaque page (choix de Yoann : la taille unique faisait trop vide)
+        // … mais sans trop d'écart d'une page à l'autre (27 nov. 2026 : « on voit trop la différence ») : au plus 12 %
+        // au-dessus de la page la plus chargée ; le reste de la place est rempli en aérant les lignes (remplirPage).
+        plafond = Math.min(plafond, texteMiniIntro(el, plafond) * ECART_TEXTE_INTRO);
       }
       el.style.fontSize = '';
       var taille = plafond || parseFloat(getComputedStyle(el).fontSize);
@@ -823,7 +847,7 @@
   window.addEventListener('resize', ajusterPlusTard);
   window.addEventListener('monoxygene-decoupes', ajusterPlusTard); // la caméra a changé de place (téléphone retourné)
   window.addEventListener('orientationchange', function () { setTimeout(ajuster, 250); });
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { memoireIntro.cle = ''; ajuster(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { memoireIntro.cle = ''; memoireTexte.cle = ''; ajuster(); });
 
   function montrerToast(message) {
     toast.textContent = message;
