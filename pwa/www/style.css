@@ -672,21 +672,21 @@ img.marque {
 .etapes-entete span { color: var(--encre-douce); }
 .etape-retirer { color: var(--encre-douce); }
 .tuile .cadenas { color: #ada3e3; }
-/* Zones de toucher plus grandes, invisibles (l'apparence ne change pas, sans transform pour ne pas changer le rendu du texte).
+/* (rien sur l’écran des explications : Précédent, Suivant, points et croix restent exactement comme validés)
+   Zones de toucher plus grandes, invisibles (l'apparence ne change pas, sans transform pour ne pas changer le rendu du texte).
    --zh / --zw : hauteur / largeur minimales de la zone ; --zx : marge ajoutée à gauche et à droite. */
 .compteur button, .mini button, .pilule, .pastille-plus, .etape-retirer, .ajouter-etape, .lien,
-.compteur.verrouille, .bouton-nav, .bouton-principal, .bouton-secondaire, .point { position: relative; }
+.compteur.verrouille, .bouton-principal, .bouton-secondaire { position: relative; }
 .compteur button::after, .mini button::after, .pilule::after, .pastille-plus::after, .etape-retirer::after,
-.ajouter-etape::after, .lien::after, .fermer::after, .compteur.verrouille::after, .bouton-nav::after,
-.bouton-principal::after, .bouton-secondaire::after, .point::after {
+.ajouter-etape::after, .lien::after, .compteur.verrouille::after,
+.bouton-principal::after, .bouton-secondaire::after {
   content: ""; position: absolute; border-radius: 99px;
   top: min(0px, calc(50% - var(--zh, 40px) / 2)); bottom: min(0px, calc(50% - var(--zh, 40px) / 2));
   left: min(calc(-1 * var(--zx, 4px)), calc(50% - var(--zw, 40px) / 2)); right: min(calc(-1 * var(--zx, 4px)), calc(50% - var(--zw, 40px) / 2));
 }
 .mini button { --zh: 30px; --zw: 32px; --zx: 3px; }
 .pilule { --zw: 0px; --zx: 3px; }
-.pastille-plus, .ajouter-etape, .lien, .compteur.verrouille, .bouton-nav, .bouton-principal, .bouton-secondaire { --zw: 0px; --zx: 4px; }
-.point { --zw: 0px; --zx: 2px; }
+.pastille-plus, .ajouter-etape, .lien, .compteur.verrouille, .bouton-principal, .bouton-secondaire { --zw: 0px; --zx: 4px; }
 /* dans « Mon enchaînement » les lignes sont serrées : zones plus petites pour ne jamais empiéter sur le bouton voisin */
 .etape-retirer { --zh: 28px; --zw: 24px; --zx: 1px; }
 .ajouter-etape { --zh: 26px; }
