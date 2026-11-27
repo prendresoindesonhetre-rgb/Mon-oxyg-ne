@@ -652,3 +652,41 @@ img.marque {
   /* l’accueil du site (Installer / Ouvrir) s’arrête sous son contenu, sans grand vide */
   .panneau-accueil { bottom: auto; max-height: calc(62% - max(var(--marge-b), 4vw)); }
 }
+
+/* ---------- Finitions avant le Play Store (27 nov. 2026) ---------- */
+/* Curseur du bâton de pluie à nos couleurs : le navigateur dessinait la partie vide en gris foncé. */
+.baton-volume {
+  -webkit-appearance: none; appearance: none; height: 1.6em; background: transparent; cursor: pointer; accent-color: auto;
+  --rail: linear-gradient(90deg, #8fd3df, #a99be6) 0 0 / var(--rempli, 55%) 100% no-repeat, #ebe6f8;
+}
+.baton-volume::-webkit-slider-runnable-track { height: .42em; border-radius: 1em; background: var(--rail); }
+.baton-volume::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 1.15em; height: 1.15em; margin-top: -.365em; border-radius: 50%;
+  background: #fff; border: .16em solid #9c8be0; box-shadow: 0 .1em .35em rgba(123, 102, 207, .35);
+}
+.baton-volume::-moz-range-track { height: .42em; border-radius: 1em; background: #ebe6f8; }
+.baton-volume::-moz-range-progress { height: .42em; border-radius: 1em; background: linear-gradient(90deg, #8fd3df, #a99be6); }
+.baton-volume::-moz-range-thumb { width: .9em; height: .9em; border-radius: 50%; background: #fff; border: .16em solid #9c8be0; box-shadow: 0 .1em .35em rgba(123, 102, 207, .35); }
+.baton-volume:focus-visible { outline: 2px solid #b8acec; outline-offset: 2px; border-radius: 1em; }
+/* Plus de gris : tout dans les lavandes de l'appli */
+.etapes-entete span { color: var(--encre-douce); }
+.etape-retirer { color: var(--encre-douce); }
+.tuile .cadenas { color: #ada3e3; }
+/* Zones de toucher plus grandes, invisibles (l'apparence ne change pas, sans transform pour ne pas changer le rendu du texte).
+   --zh / --zw : hauteur / largeur minimales de la zone ; --zx : marge ajoutée à gauche et à droite. */
+.compteur button, .mini button, .pilule, .pastille-plus, .etape-retirer, .ajouter-etape, .lien,
+.compteur.verrouille, .bouton-nav, .bouton-principal, .bouton-secondaire, .point { position: relative; }
+.compteur button::after, .mini button::after, .pilule::after, .pastille-plus::after, .etape-retirer::after,
+.ajouter-etape::after, .lien::after, .fermer::after, .compteur.verrouille::after, .bouton-nav::after,
+.bouton-principal::after, .bouton-secondaire::after, .point::after {
+  content: ""; position: absolute; border-radius: 99px;
+  top: min(0px, calc(50% - var(--zh, 40px) / 2)); bottom: min(0px, calc(50% - var(--zh, 40px) / 2));
+  left: min(calc(-1 * var(--zx, 4px)), calc(50% - var(--zw, 40px) / 2)); right: min(calc(-1 * var(--zx, 4px)), calc(50% - var(--zw, 40px) / 2));
+}
+.mini button { --zh: 30px; --zw: 32px; --zx: 3px; }
+.pilule { --zw: 0px; --zx: 3px; }
+.pastille-plus, .ajouter-etape, .lien, .compteur.verrouille, .bouton-nav, .bouton-principal, .bouton-secondaire { --zw: 0px; --zx: 4px; }
+.point { --zw: 0px; --zx: 2px; }
+/* dans « Mon enchaînement » les lignes sont serrées : zones plus petites pour ne jamais empiéter sur le bouton voisin */
+.etape-retirer { --zh: 28px; --zw: 24px; --zx: 1px; }
+.ajouter-etape { --zh: 26px; }

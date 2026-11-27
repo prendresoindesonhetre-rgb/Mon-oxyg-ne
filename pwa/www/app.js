@@ -171,8 +171,8 @@
   // les souffles dessinés de l'introduction pour l'inspiration et l'expiration, des traits fins pour le reste.
   var ICONES_LIGNES = {
     'Durée de la séance': '<svg viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4.2l2.8 1.8M9.5 3.5h5"/></svg>',
-    'Inspiration': '<img class="souffle" src="./assets/souffle-inspiration-lavande.png" alt="">',
-    'Expiration': '<img class="souffle" src="./assets/souffle-expiration-lavande.png" alt="">',
+    'Inspiration': '<img class="souffle" src="./assets/souffle-inspiration-fleche.png" alt="">',
+    'Expiration': '<img class="souffle" src="./assets/souffle-expiration-fleche.png" alt="">',
     'Rythme': '<svg viewBox="0 0 24 24"><path d="M2.5 12c2.2-4.5 4.3-4.5 6.4 0s4.3 4.5 6.4 0 4.3-4.5 6.2 0"/></svg>',
     'Commencer par': '<svg viewBox="0 0 24 24"><path d="M6.5 21V4M6.5 5h10.5l-2.4 3.7L17 12.4H6.5"/></svg>',
     'Bâton de pluie': '<svg viewBox="0 0 24 24"><path d="M8.5 4.5C6.3 7.7 5.2 9.6 5.2 11.1a3.3 3.3 0 0 0 6.6 0c0-1.5-1.1-3.4-3.3-6.6Z"/><path d="M16.5 10.5c-1.6 2.3-2.4 3.7-2.4 4.8a2.4 2.4 0 0 0 4.8 0c0-1.1-.8-2.5-2.4-4.8Z"/></svg>'
@@ -276,7 +276,7 @@
     return ligne('Bâton de pluie',
       '<div class="baton' + (Baton.actif ? '' : ' eteint') + '">' +
         '<button class="pilule' + (Baton.actif ? ' active' : '') + '" data-action="baton-basculer" aria-pressed="' + Baton.actif + '">' + (Baton.actif ? 'Activé' : 'Sans son') + '</button>' +
-        '<input class="baton-volume" type="range" min="0" max="100" step="1" value="' + pourcent + '" aria-label="Volume du bâton de pluie">' +
+        '<input class="baton-volume" type="range" min="0" max="100" step="1" style="--rempli:' + pourcent + '%" value="' + pourcent + '" aria-label="Volume du bâton de pluie">' +
         '<span class="baton-pourcent">' + pourcent + '&nbsp;%</span>' +
       '</div>', 'ligne-baton');
   }
@@ -1120,6 +1120,7 @@
     var cible = evenement.target;
     if (cible.classList.contains('baton-volume')) {
       Baton.changerVolume(Number(cible.value) / 100);
+      cible.style.setProperty('--rempli', cible.value + '%');
       var etiquette = app.querySelector('.baton-pourcent');
       if (etiquette) etiquette.innerHTML = Math.round(Baton.volume * 100) + '&nbsp;%';
     } else if (cible.id === 'codeCadeau') {
