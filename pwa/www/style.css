@@ -690,3 +690,45 @@ img.marque {
 /* dans « Mon enchaînement » les lignes sont serrées : zones plus petites pour ne jamais empiéter sur le bouton voisin */
 .etape-retirer { --zh: 28px; --zw: 24px; --zx: 1px; }
 .ajouter-etape { --zh: 26px; }
+
+
+/* ---------- Fenêtre Plus : abonnements en pastel doux + « Qui suis-je ? » (27 nov. 2026, choix de Yoann) ---------- */
+/* contour dessiné à l intérieur (box-shadow inset) : il ne prend aucune place, la fenêtre garde sa taille validée */
+.offre { background: linear-gradient(90deg, #f1f9fc, #f5f1fd); color: #5a4fa8; border: 0; box-shadow: inset 0 0 0 1px #ece6fa, 0 .2em .7em rgba(150, 135, 220, .08); }
+.offre strong { color: #5a4fa8; font-weight: 600; }
+.offre span { color: #8287bd; opacity: 1; }
+.offre:nth-child(2) { background: linear-gradient(90deg, #e9f6fa, #efeafd); box-shadow: inset 0 0 0 1px #dcd3f7, 0 .25em .9em rgba(150, 135, 220, .13); }
+/* la carte « Qui suis-je ? » descend en bas de la colonne des avantages */
+.fenetre-plus .avantages { align-self: stretch; display: flex; flex-direction: column; }
+.fenetre-plus .avantages li.carte-qui {
+  margin-top: auto; align-items: center; gap: .6em; width: max-content; max-width: 100%; padding: .25em 1.1em .25em .5em; line-height: 1.2; cursor: pointer;
+  border-radius: 1em; background: linear-gradient(160deg, #f1f9fc, #f5f1fd); border: 1px solid #ece6fa;
+}
+/* toujours un peu d air entre le dernier avantage et la carte, même quand la colonne est pleine */
+.fenetre-plus .avantages li:nth-last-child(2) { margin-bottom: .8em; }
+.carte-qui img { width: 2.1em; height: 2.5em; object-fit: contain; flex: none; }
+.carte-qui strong { display: block; font-size: 1em; font-weight: 600; color: #5a4fa8; }
+.carte-qui span { font-size: .88em; color: #8287bd; }
+/* la page « Qui suis-je ? » */
+.voile-qui { z-index: 30; display: flex; align-items: center; justify-content: center; }
+.qui-page {
+  position: relative; width: min(92%, 62em); max-height: 92%; overflow: hidden; box-sizing: border-box;
+  padding: 1em 1.7em; font-size: clamp(11px, 1.15vw + 4px, 17px); color: var(--encre-texte);
+  background: linear-gradient(180deg, #fff 0%, #fcfbff 100%); border: 1px solid #e6e0f6; border-radius: 1.4em; box-shadow: 0 1em 3em rgba(79, 75, 144, .2);
+}
+.qui-fermer { position: absolute; top: .6em; right: .7em; width: 1.6em; height: 1.6em; padding: 0; border: 0; border-radius: 50%; color: #7f8bd0; background: rgba(228, 219, 247, .6); font-size: 1.4em; line-height: 1; }
+.qui-tete { display: grid; grid-template-columns: auto 1fr; gap: 1.4em; align-items: center; }
+.qui-logo img { display: block; width: 6.6em; height: auto; }
+.qui-titre { margin: 0 0 .15em; padding-right: 2.2em; font-family: var(--sans); font-weight: 600; font-size: 1.55em; line-height: 1.2; color: var(--encre-titre); }
+.qui-page p { margin: 0; line-height: 1.55; text-align: justify; text-wrap: pretty; }
+.qui-page strong { color: var(--encre); }
+.qui-filet { height: 1px; background: linear-gradient(90deg, rgba(143, 211, 223, 0), #c9e8f0 20%, #ddd3f7 80%, rgba(221, 211, 247, 0)); }
+.qui-colonnes { display: grid; grid-template-columns: 1fr 1fr; column-gap: 2.2em; }
+.qui-colonnes h3 { margin: 0 0 .25em; font-size: 1.02em; font-weight: 600; color: #5a4fa8; }
+.qui-pied { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1.5em; }
+.qui-pied::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg, rgba(143, 211, 223, 0), #c9e8f0 20%, #ddd3f7 80%, rgba(221, 211, 247, 0)); }
+.qui-page .qui-mention { font-size: .78em; text-align: left; color: var(--encre-douce); }
+.qui-bouton {
+  flex: none; display: inline-flex; align-items: center; height: 2.15em; padding: 0 1.15em; border-radius: 99px; font-size: .9em; font-weight: 600; text-decoration: none;
+  color: #5a4fa8; background: linear-gradient(90deg, #e9f6fa, #efeafd); border: 1px solid #dcd3f7; box-shadow: 0 .25em .9em rgba(150, 135, 220, .13);
+}

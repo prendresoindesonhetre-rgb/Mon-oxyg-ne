@@ -145,6 +145,7 @@
     seance: null,
     relecture: false,
     plusOuvert: false,
+    quiOuvert: false,
     codeSaisi: '',
     messageCode: null,
     installation: null,
@@ -439,6 +440,8 @@
   function fenetrePlus() {
     var avantages = '';
     for (var i = 0; i < AVANTAGES.length; i++) avantages += '<li>' + ICONES.coche + '<span>' + AVANTAGES[i] + '</span></li>';
+    // « Qui suis-je ? » : sa carte, calée en bas à gauche de la fenêtre (27 nov. 2026)
+    avantages += '<li class="carte-qui" data-action="ouvrir-qui" role="button" tabindex="0"><img src="./assets/logo-hetre-enfant.png" alt=""><div><strong>Qui suis-je ?</strong><span>Yoann · Prendre soin de son Hêtre</span></div></li>';
     var code = '';
     if (!Plus.actif || Plus.source === 'cadeau') {
       code = '<div class="code">' +
@@ -463,6 +466,85 @@
       '</div></div>';
   }
 
+  // « Qui suis-je ? » : la page de Yoann (ses mots), ouverte depuis la fenêtre Plus
+  var SITE_HETRE = 'https://prendresoindesonhetre.fr';
+  function fenetreQui() {
+    var nbsp = '&nbsp;';
+    return '<div class="voile voile-qui" data-action="fermer-qui-fond">' +
+      '<div class="qui-page" role="dialog" aria-modal="true" aria-label="Qui suis-je ?">' +
+        '<button class="qui-fermer" data-action="fermer-qui" aria-label="Fermer">×</button>' +
+        '<div class="qui-tete"><div class="qui-logo"><img src="./assets/logo-hetre-enfant.png" alt=""></div><div>' +
+          '<h2 class="qui-titre">Qui suis-je ?</h2>' +
+          '<p class="qui-pres">Je m’appelle <strong>Yoann</strong>. Je suis le fondateur de Prendre soin de son' + nbsp + 'Hêtre. Initialement <strong>moniteur éducateur diplômé d’État</strong>, je suis également <strong>hypnocoach</strong>. J’accompagne depuis 8' + nbsp + 'ans petits et grands qui vivent des inconforts au' + nbsp + 'quotidien. Je suis convaincu que nos émotions ne sont pas des ennemies à faire taire, mais des messages à écouter : ce sont notre boussole' + nbsp + 'intérieure.</p>' +
+        '</div></div>' +
+        '<div class="qui-filet"></div>' +
+        '<div class="qui-colonnes">' +
+          '<div><h3>Pourquoi j’ai créé Mon Oxygène</h3><p>Lors de mes accompagnements individuels ou en groupe, j’ai pu voir combien la respiration, en y remettant du sens, peut changer les inconforts du quotidien. J’ai donc voulu que chaque personne puisse réapprendre ce pouvoir afin de rendre plus confortables et gérables les moments d’inconfort, peu importe où l’on se' + nbsp + 'trouve.</p></div>' +
+          '<div><h3>Mes accompagnements</h3><p>Au quotidien, j’accompagne enfants et adultes en individuel ou en groupe, grâce à des <strong>séances d’accompagnement émotionnel</strong> individuelles, des <strong>ateliers de relaxation et/ou de méditation</strong>, où je guide la respiration grâce au bâton de pluie que tu retrouveras dans l’application.</p></div>' +
+        '</div>' +
+        '<div class="qui-pied"><p class="qui-mention">Ces accompagnements relèvent du bien-être et ne remplacent pas un suivi médical ou psychologique.</p>' +
+          '<a class="qui-bouton" href="' + SITE_HETRE + '" target="_blank" rel="noopener">Pour en découvrir plus</a></div>' +
+      '</div></div>';
+  }
+
+  // Mise en page de « Qui suis-je ? » (validée par Yoann le 27 nov. 2026) : le texte prend la plus grande taille qui tient ;
+  // les deux colonnes finissent sur la même ligne ; UN SEUL écart vertical partout (haut de page, autour des deux traits,
+  // bas de page), mesuré sur le texte réel ; logo centré sur le titre + la présentation ; croix dans la ligne du titre.
+  function ajusterQui() {
+    var pg = app.querySelector('.qui-page');
+    if (!pg) return;
+    var tete = pg.querySelector('.qui-tete'), f1 = pg.querySelector('.qui-filet'), cols = pg.querySelector('.qui-colonnes'),
+        pied = pg.querySelector('.qui-pied'), bt = pied.querySelector('a'), x = pg.querySelector('.qui-fermer'), img = tete.querySelector('img');
+    var encre = function (e) {
+      var rg = document.createRange(); rg.selectNodeContents(e);
+      var rc = [].filter.call(rg.getClientRects(), function (q) { return q.width > 1; });
+      return { top: Math.min.apply(null, rc.map(function (q) { return q.top; })), bottom: Math.max.apply(null, rc.map(function (q) { return q.bottom; })) };
+    };
+    function equilibrer() {
+      var ps = cols.querySelectorAll('p'), meilleur = null;
+      for (var k = 38; k <= 62; k++) {
+        cols.style.gridTemplateColumns = k + 'fr ' + (100 - k) + 'fr';
+        var a = ps[0].getBoundingClientRect().bottom, b = ps[1].getBoundingClientRect().bottom, d = Math.abs(a - b), m = Math.max(a, b);
+        if (!meilleur || d < meilleur.d - .5 || (Math.abs(d - meilleur.d) <= .5 && m < meilleur.m)) meilleur = { k: k, d: d, m: m };
+      }
+      cols.style.gridTemplateColumns = meilleur.k + 'fr ' + (100 - meilleur.k) + 'fr';
+      return meilleur.d;
+    }
+    function espacer() {
+      var E = Math.round(.95 * parseFloat(getComputedStyle(pg).fontSize));
+      pg.style.paddingTop = pg.style.paddingBottom = E + 'px'; f1.style.margin = E + 'px 0'; pied.style.marginTop = pied.style.paddingTop = E + 'px';
+      img.style.transform = '';
+      for (var passe = 0; passe < 4; passe++) {
+        var h2a = encre(tete.querySelector('.qui-titre')), pra = encre(tete.querySelector('.qui-pres')), L1 = img.getBoundingClientRect();
+        img.style.transform = 'translateY(' + ((parseFloat((img.style.transform.match(/-?[0-9.]+/) || [0])[0]) || 0) + ((h2a.top + pra.bottom) / 2 - (L1.top + L1.bottom) / 2)) + 'px)';
+        var P = pg.getBoundingClientRect(), L = img.getBoundingClientRect(), h2 = encre(tete.querySelector('.qui-titre')), pr = encre(tete.querySelector('.qui-pres'));
+        var hautTete = Math.min(L.top, h2.top), basTete = Math.max(L.bottom, pr.bottom);
+        var h3 = [].map.call(cols.querySelectorAll('h3'), encre), ps = [].map.call(cols.querySelectorAll('p'), encre);
+        var hautCols = Math.min(h3[0].top, h3[1].top), basCols = Math.max(ps[0].bottom, ps[1].bottom), F1 = f1.getBoundingClientRect(), PI = pied.getBoundingClientRect(), B = bt.getBoundingClientRect();
+        var ajuste = function (el, prop, ecart) { el.style[prop] = Math.max(0, (parseFloat(el.style[prop]) || 0) + (E - ecart)) + 'px'; };
+        ajuste(pg, 'paddingTop', hautTete - P.top);
+        ajuste(f1, 'marginTop', F1.top - basTete);
+        ajuste(f1, 'marginBottom', hautCols - F1.bottom);
+        ajuste(pied, 'marginTop', PI.top - basCols);
+        ajuste(pied, 'paddingTop', B.top - PI.top);
+        ajuste(pg, 'paddingBottom', P.bottom - B.bottom);
+        // croix : dans la ligne du titre, centrée sur lui, bord droit aligné sur le bord droit du texte
+        var T = tete.querySelector('.qui-titre').getBoundingClientRect(), cote = Math.round(T.height * .82), droite = P.right - cols.getBoundingClientRect().right;
+        x.style.width = x.style.height = x.style.lineHeight = cote + 'px'; x.style.fontSize = Math.round(cote * .62) + 'px';
+        x.style.right = droite + 'px'; x.style.top = (T.top + T.height / 2 - cote / 2 - P.top) + 'px';
+        var XB = x.getBoundingClientRect();
+        x.style.right = (droite + (XB.right - (P.right - droite))) + 'px';
+        x.style.top = (parseFloat(x.style.top) - ((XB.top + XB.bottom) / 2 - (T.top + T.bottom) / 2)) + 'px';
+      }
+    }
+    pg.style.fontSize = '';
+    var taille = parseFloat(getComputedStyle(pg).fontSize), essais = 0;
+    var depart = taille, reste = equilibrer(); espacer();
+    while (((pg.scrollHeight > pg.clientHeight + 1) || (reste > 1 && taille > depart * .88)) && taille > TAILLE_MINI_INTRO && essais < 80) {
+      taille -= 0.25; pg.style.fontSize = taille + 'px'; reste = equilibrer(); espacer(); essais++;
+    }
+  }
+
   // ---------- Affichage et ajustement à l'écran ----------
 
   function afficher() {
@@ -473,6 +555,7 @@
     else if (etat.ecran === 'reglages') html = ecranReglages();
     else if (etat.ecran === 'seance') html = ecranSeance();
     if (etat.plusOuvert && etat.ecran !== 'seance') html += fenetrePlus();
+    if (etat.quiOuvert && etat.plusOuvert && etat.ecran !== 'seance') html += fenetreQui();
     app.innerHTML = html;
     ajuster();
     if (etat.ecran === 'seance') animer(performance.now());
@@ -705,6 +788,7 @@
     }
     placerMarque();
     eviterCamera();
+    ajusterQui();
   }
 
   // Caméra dans l’écran (trou ou encoche) : l’appli Android donne sa place exacte (MonOxygeneEcran.decoupes, en px CSS).
@@ -1100,7 +1184,9 @@
       case 'arreter': arreterSeance(); return;
       case 'plus-requis':
       case 'ouvrir-plus': return ouvrirPlus();
-      case 'fermer-plus': etat.plusOuvert = false; etat.messageCode = null; break;
+      case 'fermer-plus': etat.plusOuvert = false; etat.quiOuvert = false; etat.messageCode = null; break;
+      case 'ouvrir-qui': etat.quiOuvert = true; break;
+      case 'fermer-qui': etat.quiOuvert = false; break;
       case 'acheter': Plus.acheter(Plus.google.offres[Number(d.index)]); return;
       case 'restaurer': Plus.restaurer(); return;
       case 'gerer': Plus.gerer(); return;
@@ -1130,9 +1216,16 @@
     var cible = evenement.target.closest('[data-action]');
     if (!cible || cible.disabled) return;
     // Un clic sur le voile ferme la fenêtre Plus, pas un clic à l'intérieur.
+    if (cible.getAttribute('data-action') === 'fermer-qui-fond') {
+      if (evenement.target !== cible) return;
+      etat.quiOuvert = false;
+      afficher();
+      return;
+    }
     if (cible.getAttribute('data-action') === 'fermer-plus-fond') {
       if (evenement.target !== cible) return;
       etat.plusOuvert = false;
+      etat.quiOuvert = false;
       etat.messageCode = null;
       afficher();
       return;
@@ -1156,7 +1249,9 @@
     if (evenement.target.id === 'codeCadeau' && evenement.key === 'Enter') activerCode();
   });
   document.addEventListener('keydown', function (evenement) {
+    if (evenement.key === 'Escape' && etat.quiOuvert) { etat.quiOuvert = false; afficher(); return; }
     if (evenement.key === 'Escape' && etat.plusOuvert) { etat.plusOuvert = false; afficher(); }
+    if ((evenement.key === 'Enter' || evenement.key === ' ') && evenement.target.classList && evenement.target.classList.contains('carte-qui')) { evenement.preventDefault(); action(evenement.target); }
   });
 
   // Achats ou code cadeau : les réglages et la fenêtre Plus se mettent à jour (pas pendant une séance).
