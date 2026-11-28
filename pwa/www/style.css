@@ -732,3 +732,30 @@ img.marque {
   flex: none; display: inline-flex; align-items: center; height: 2.15em; padding: 0 1.15em; border-radius: 99px; font-size: .9em; font-weight: 600; text-decoration: none;
   color: #5a4fa8; background: linear-gradient(90deg, #e9f6fa, #efeafd); border: 1px solid #dcd3f7; box-shadow: 0 .25em .9em rgba(150, 135, 220, .13);
 }
+
+/* la croix de la fenêtre Plus a la taille de celle des explications : sa police est réglée par l'appli, la boîte suit (1,6 × la police) */
+.fenetre-plus .fermer { width: 1.6em; height: 1.6em; line-height: 1; }
+
+/* pages « À l’inspiration » / « À l’expiration » : le dessin du souffle à gauche, le texte à droite */
+.carte-souffle { display: grid; grid-template-columns: auto 1fr; gap: 1em; align-items: center; }
+.carte-souffle .souffle-grand { width: 4.2em; max-width: none; height: auto; margin: 0; }
+.carte-souffle p + p { margin-top: .5em; }
+
+.intro-corps u { text-decoration: underline; text-decoration-color: #8fc7d4; text-decoration-thickness: .09em; text-underline-offset: .2em; }
+/* Pages « À l'inspiration », « À l'expiration », « Choisir son juste rythme » : les blocs empilés ; l'appli (egaliserBlocs) met le MÊME écart sous le titre, entre les blocs et au-dessus des boutons */
+.intro-texte .intro-corps:has(.carte-souffle), .intro-texte .intro-corps:has(.trois-cartes), .intro-texte .intro-corps:has(.citation-fin) { margin: -.5em 0 0; flex: 1 0 auto; display: flex; flex-direction: column; justify-content: flex-start; gap: .35em; } /* margin-top -.5em : une partie de l'espace sous le titre peut servir au texte (l'appli remet ensuite le même écart partout) ; .35em = écart minimum : le texte rapetisse plutôt que de serrer les blocs */
+.intro-corps:has(.carte-souffle) > *, .intro-corps:has(.trois-cartes) > *, .intro-corps:has(.citation-fin) > * { margin: 0 !important; }
+
+/* carte du souffle : la phrase à la même taille que le reste du texte, dessin + phrase centrés dans la carte (pas de vide d'un seul côté) */
+.panneau-intro .carte-souffle { grid-template-columns: auto auto; justify-content: center; }
+.panneau-intro .carte-souffle p { font-size: 1em; }
+
+
+/* « Choisir son juste rythme » : « Inspire 4 s · Expire 6 s → 4/6 », un rythme par ligne, « ou » à gauche sans décaler l'alignement */
+.mots { display: block; margin: .1em 0 .35em; font-size: .8em; color: inherit; font-weight: 400; } /* même couleur que le texte du cadre */
+.mots .ligne-r { display: block; position: relative; white-space: nowrap; }
+.mots em { font-style: normal; font-weight: 600; color: #5aa9b8; }
+.mots .ou { position: absolute; right: 100%; margin-right: .3em; opacity: .75; }
+.mots .court { margin-left: .45em; font-weight: 600; color: #8a7fc8; }
+/* le « ou » compte dans le centrage : le bloc des deux rythmes reste au milieu du cadre */
+.mots:has(.ou) { padding-left: 1.28em; }

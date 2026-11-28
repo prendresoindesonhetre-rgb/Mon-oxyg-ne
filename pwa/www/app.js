@@ -33,32 +33,38 @@
         '<p>Respirer, ce n’est pas chercher à effacer ce que l’on ressent.</p>' +
         '<p>C’est une façon de revenir doucement à soi, de prendre un peu de recul, et de laisser les choses se poser.</p>' +
         '<p>Cela permet de reconnaître ce que l’on vit, sans se juger, et de lui redonner sa juste place.</p>' +
-        '<p><strong>Dans les moments d’inconfort, la respiration devient un chemin simple pour se recentrer et retrouver un peu de sécurité intérieure.</strong></p>'
+        '<p><strong>Dans les moments d’inconfort, la respiration devient un chemin simple pour se recentrer et retrouver un peu de sécurité intérieure.</strong></p>' +
+        '<p>Pour cela, le ventre a un rôle essentiel : il est le cerveau émotionnel, l’endroit où se logent tous les inconforts. Respirer par le ventre permet de les nettoyer.</p>' +
+        '<p class="citation-fin"><em>Le temps d’inspiration ou d’expiration joue également un rôle important.</em></p>'
     },
     {
       surtitre: 'Laisser le souffle circuler',
-      titre: 'Inspire & Expire',
+      titre: 'À l’inspiration',
       corps:
-        '<div class="deux-cartes">' +
-          '<div class="carte"><h3 class="avec-souffle"><img src="./assets/souffle-inspiration.png" alt="">À l’inspiration</h3>' +
-            '<p>Inspire doucement par le nez. Laisse le ventre se gonfler naturellement.</p>' +
-            '<p>Si cela t’aide, tu peux imaginer que tu inspires une <strong>lumière douce</strong>, qui vient apporter un peu d’espace, de chaleur ou de calme à l’intérieur de toi.</p></div>' +
-          '<div class="carte"><h3 class="avec-souffle"><img src="./assets/souffle-expiration.png" alt="">À l’expiration</h3>' +
-            '<p>Expire doucement par la bouche. Le ventre redescend sans effort.</p>' +
-            '<p>Si cela t’aide, tu peux imaginer que tu expires un <strong>petit nuage sombre</strong>, qui emporte avec lui ce qui te pèse, sans chercher à faire disparaître ce que tu ressens.</p></div>' +
-        '</div>' +
-        '<p class="citation"><strong>Inspire ce qui te fait du bien.</strong><br><strong>Expire ce qui n’est plus juste pour toi.</strong><br>Le plus important n’est pas l’amplitude, mais le confort. Reste à l’écoute de ce qui te semble juste.</p>'
+        '<div class="carte carte-souffle"><img class="souffle-grand" src="./assets/souffle-inspiration.png" alt=""><div><p>Inspire doucement par le nez. Laisse le ventre se gonfler naturellement.</p></div></div>' +
+        '<p class="citation"><strong>L’inspiration active le corps : <u>elle apporte de l’énergie</u>.</strong><br>Une inspiration plus longue permet de retrouver du dynamisme.</p>' +
+        '<p>Si cela t’aide, tu peux imaginer que tu inspires une <strong>lumière douce</strong>, qui vient apporter un peu d’espace, de chaleur ou de calme à l’intérieur de toi.</p>'
+    },
+    {
+      surtitre: 'Laisser le souffle circuler',
+      titre: 'À l’expiration',
+      corps:
+        '<div class="carte carte-souffle"><img class="souffle-grand" src="./assets/souffle-expiration.png" alt=""><div><p>Expire doucement par la bouche. Le ventre redescend sans effort.</p></div></div>' +
+        '<p class="citation"><strong>L’expiration apaise le corps : <u>elle ramène le calme</u>.</strong><br>Une expiration plus longue permet de retrouver de l’apaisement.</p>' +
+        '<p>Si cela t’aide, tu peux imaginer que tu expires un <strong>petit nuage sombre</strong>, qui emporte avec lui ce qui te pèse, sans chercher à faire disparaître ce que tu ressens.</p>'
     },
     {
       surtitre: 'Écouter son besoin du moment',
       titre: 'Choisir son juste rythme',
       corps:
         '<div class="trois-cartes">' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/ralentir.png" alt=""><h3>Ralentir</h3><b><span>4 s / 6 s</span> ou <span>3 s / 5 s</span></b><p>Pour accompagner le calme et relâcher progressivement.</p></div>' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/equilibre.png" alt=""><h3>Retrouver l’équilibre</h3><b><span>5 s / 5 s</span></b><p>Un rythme simple et régulier pour trouver ton équilibre.</p></div>' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/dynamiser.png" alt=""><h3>Dynamiser</h3><b><span>6 s / 4 s</span> ou <span>5 s / 3 s</span></b><p>Pour soutenir l’énergie et la mise en mouvement.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/ralentir.png" alt=""><h3>Ralentir</h3><span class="mots"><span class="ligne-r">Inspire <em>4 s</em> · Expire <em>6 s</em><span class="court">(4 / 6)</span></span><span class="ligne-r"><span class="ou">ou</span>Inspire <em>3 s</em> · Expire <em>5 s</em><span class="court">(3 / 5)</span></span></span><p>Pour retrouver le calme et relâcher progressivement.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/equilibre.png" alt=""><h3>Équilibre</h3><span class="mots"><span class="ligne-r">Inspire <em>5 s</em> · Expire <em>5 s</em><span class="court">(5 / 5)</span></span></span><p>Pour retrouver un équilibre intérieur afin de mieux gérer tes émotions.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/dynamiser.png" alt=""><h3>Dynamiser</h3><span class="mots"><span class="ligne-r">Inspire <em>6 s</em> · Expire <em>4 s</em><span class="court">(6 / 4)</span></span><span class="ligne-r"><span class="ou">ou</span>Inspire <em>5 s</em> · Expire <em>3 s</em><span class="court">(5 / 3)</span></span></span><p>Pour retrouver de l’énergie et te remettre en mouvement.</p></div>' +
         '</div>' +
-        '<p><strong>Il n’existe pas de bon rythme universel.</strong><br><strong>Il y a seulement celui dans lequel ta respiration reste fluide et confortable.</strong></p>'
+        '<p>Commence par écouter ton besoin du moment : t’apaiser, retrouver ton équilibre ou te dynamiser. Puis adapte la durée de ton inspiration et de ton expiration en fonction de cela, en respectant tes capacités.</p>' +
+        '<p><strong>Il n’existe pas de bon rythme universel.</strong><br><strong>Il y a seulement celui dans lequel ta respiration reste fluide et confortable.</strong></p>' +
+        '<p>Prends le temps d’expérimenter pour trouver le tien.</p>'
     },
     {
       surtitre: 'D’un outil vers une ressource',
@@ -69,7 +75,7 @@
         '<p>Ton souffle devient alors un repère naturel : un refuge intérieur que tu sauras retrouver sans effort.</p>' +
         '<p>Une manière de <strong>prendre soin de ton Être</strong> : revenir à toi avec douceur, t’écouter, et accueillir ce qui est là.</p>' +
         '<p><strong>La respiration ne change pas forcément ce qui se passe autour de toi. Mais elle peut changer la manière dont tu le traverses et le perçois.</strong></p>' +
-        '<p class="citation">Ici, tu n’as rien à réussir, rien à forcer. Laisse simplement faire, de la manière la plus juste et la plus confortable pour toi, en faisant confiance à tes ressentis.</p>'
+        '<p class="citation citation-fin">Ici, tu n’as rien à réussir, rien à forcer. Laisse simplement faire, de la manière la plus juste et la plus confortable pour toi, en faisant confiance à tes ressentis.</p>'
     }
   ];
 
@@ -490,6 +496,9 @@
   // Mise en page de « Qui suis-je ? » (validée par Yoann le 27 nov. 2026) : le texte prend la plus grande taille qui tient ;
   // les deux colonnes finissent sur la même ligne ; UN SEUL écart vertical partout (haut de page, autour des deux traits,
   // bas de page), mesuré sur le texte réel ; logo centré sur le titre + la présentation ; croix dans la ligne du titre.
+  // Toutes les croix ont la taille de celle des explications (validée) : environ 4,4 % de la hauteur, sans dépasser 2,4 % de la largeur.
+  function tailleCroix() { return Math.floor(Math.min(window.innerHeight * .044, window.innerWidth * .024)); }
+
   function ajusterQui() {
     var pg = app.querySelector('.qui-page');
     if (!pg) return;
@@ -529,8 +538,8 @@
         ajuste(pied, 'paddingTop', B.top - PI.top);
         ajuste(pg, 'paddingBottom', P.bottom - B.bottom);
         // croix : dans la ligne du titre, centrée sur lui, bord droit aligné sur le bord droit du texte
-        var T = tete.querySelector('.qui-titre').getBoundingClientRect(), cote = Math.round(T.height * .82), droite = P.right - cols.getBoundingClientRect().right;
-        x.style.width = x.style.height = x.style.lineHeight = cote + 'px'; x.style.fontSize = Math.round(cote * .62) + 'px';
+        var T = tete.querySelector('.qui-titre').getBoundingClientRect(), cote = tailleCroix(), droite = P.right - cols.getBoundingClientRect().right;
+        x.style.width = x.style.height = x.style.lineHeight = cote + 'px'; x.style.fontSize = (cote / 1.6) + 'px';
         x.style.right = droite + 'px'; x.style.top = (T.top + T.height / 2 - cote / 2 - P.top) + 'px';
         var XB = x.getBoundingClientRect();
         x.style.right = (droite + (XB.right - (P.right - droite))) + 'px';
@@ -649,7 +658,7 @@
     el.style.fontSize = '';
     var depart = parseFloat(getComputedStyle(el).fontSize), taille = depart;
     for (var d = 0; d < DIAPOS.length; d++) {
-      sur.innerHTML = DIAPOS[d].surtitre; titre.innerHTML = DIAPOS[d].titre; corps.innerHTML = DIAPOS[d].corps;
+      sur.innerHTML = DIAPOS[d].surtitre; titre.innerHTML = DIAPOS[d].titre; corps.innerHTML = insecables(DIAPOS[d].corps);
       el.style.fontSize = taille + 'px';
       var essais = 0;
       while (deborde(el) && taille > TAILLE_MINI_INTRO && essais < 80) { taille -= 0.25; el.style.fontSize = taille + 'px'; essais++; }
@@ -660,13 +669,15 @@
   }
 
   // Taille de texte que prend la page la plus chargée de l'introduction (mesurée une fois par taille d'écran).
-  var ECART_TEXTE_INTRO = 1.12, memoireTexte = { cle: '', taille: 0 };
+  var ECART_TEXTE_INTRO = 1.05, memoireTexte = { cle: '', taille: 0 };
   function texteMiniIntro(el, plafond) {
     var cle = window.innerWidth + 'x' + window.innerHeight + (etat.relecture ? 'r' : '') + '|' + plafond.toFixed(2);
     if (memoireTexte.cle === cle) return memoireTexte.taille;
     var sur = el.querySelector('.surtitre'), titre = el.querySelector('.grand-titre'), corps = el.querySelector('.intro-corps');
     var avant = [sur.innerHTML, titre.innerHTML, corps.innerHTML, el.style.fontSize, corps.style.lineHeight, corps.style.getPropertyValue('--ecart-p')];
     corps.style.lineHeight = ''; corps.style.removeProperty('--ecart-p');
+    var ecarts = [corps.style.gap, corps.style.paddingTop, corps.style.marginTop];
+    corps.style.gap = corps.style.paddingTop = corps.style.marginTop = '';
     var mini = plafond;
     for (var d = 0; d < DIAPOS.length; d++) {
       sur.innerHTML = DIAPOS[d].surtitre; titre.innerHTML = DIAPOS[d].titre; corps.innerHTML = DIAPOS[d].corps;
@@ -676,6 +687,10 @@
     }
     sur.innerHTML = avant[0]; titre.innerHTML = avant[1]; corps.innerHTML = avant[2]; el.style.fontSize = avant[3];
     corps.style.lineHeight = avant[4]; if (avant[5]) corps.style.setProperty('--ecart-p', avant[5]);
+    corps.style.gap = ecarts[0]; corps.style.paddingTop = ecarts[1]; corps.style.marginTop = ecarts[2];
+    // petite marge (1,5 %) : sur la vraie page, la plus chargée finit parfois un cran plus petite que mesuré ici ;
+    // ainsi l'écart entre les pages reste bien sous 5 %
+    mini = mini * 0.985;
     memoireTexte = { cle: cle, taille: mini };
     return mini;
   }
@@ -762,9 +777,9 @@
         if (nav) {
           nav.style.fontSize = commune + 'px';
         }
-        if (fermer) fermer.style.fontSize = commune + 'px';
+        if (fermer) fermer.style.fontSize = (tailleCroix() / 1.6) + 'px'; // même croix que la fenêtre Plus et « Qui suis-je ? »
         plafond = tailleTitre * 0.8; // le texte grandit pour remplir chaque page (choix de Yoann : la taille unique faisait trop vide)
-        // … mais sans trop d'écart d'une page à l'autre (27 nov. 2026 : « on voit trop la différence ») : au plus 12 %
+        // … mais sans trop d'écart d'une page à l'autre (27 nov. 2026 : « on voit trop la différence ») : au plus 5 %
         // au-dessus de la page la plus chargée ; le reste de la place est rempli en aérant les lignes (remplirPage).
         plafond = Math.min(plafond, texteMiniIntro(el, plafond) * ECART_TEXTE_INTRO);
       }
@@ -773,6 +788,9 @@
       if (plafond) el.style.fontSize = taille + 'px';
       var essais = 0, intro = el.classList.contains('panneau-intro'), mini = intro ? TAILLE_MINI_INTRO : 9;
       el.classList.remove('defile');
+      var corpsIntro = el.querySelector('.intro-corps');
+      if (corpsIntro) { corpsIntro.style.gap = ''; corpsIntro.style.paddingTop = ''; corpsIntro.style.marginTop = ''; }
+      if (intro) eviterLignesCourtes(el, false);
       while (deborde(el) && taille > mini && essais < 120) {
         taille -= 0.25;
         el.style.fontSize = taille + 'px';
@@ -780,14 +798,29 @@
       }
       // Très petit écran (téléphone de 4 pouces) : le texte ne descend pas sous 11 px pour rester lisible ;
       // s'il ne tient toujours pas, il défile dans le cadre, les boutons restent en bas (26 nov. 2026).
+      // les derniers mots liés ne doivent pas faire rapetisser le texte : si un paragraphe y gagne une ligne de trop, on le laisse tel quel
+      if (intro) eviterLignesCourtes(el, true);
+      if (intro) ajusterRythmes(el);
       if (intro && deborde(el)) el.classList.add('defile');
       // Introduction : s'il reste de la place, les lignes s'écartent doucement jusqu'à remplir la page
       // (le texte occupe toute la hauteur entre le titre et les boutons, sans grand vide en bas).
+      else if (plafond && el.querySelector('.carte-souffle, .trois-cartes, .citation-fin')) egaliserBlocs(el);
       else if (plafond) remplirPage(el);
       if (el.classList.contains('panneau-reglages')) equilibrerReglages(el);
     }
     placerMarque();
     eviterCamera();
+    var croixPlus = app.querySelector('.fenetre-plus .fermer');
+    if (croixPlus) {
+      // même taille que les autres croix ; centrée sur le titre « Mon Oxygène Plus », bord droit aligné sur le contenu de la fenêtre
+      croixPlus.style.fontSize = (tailleCroix() / 1.6) + 'px'; croixPlus.style.top = croixPlus.style.right = '';
+      var fen = croixPlus.closest('.fenetre-plus'), titre = fen.querySelector('.plus-tete h2'), corps = fen.querySelector('.plus-corps');
+      if (titre && corps) {
+        var F = fen.getBoundingClientRect(), Tt = titre.getBoundingClientRect(), C = corps.getBoundingClientRect(), X = croixPlus.getBoundingClientRect();
+        croixPlus.style.right = (F.right - C.right) + 'px';
+        croixPlus.style.top = (Tt.top + Tt.height / 2 - X.height / 2 - F.top) + 'px';
+      }
+    }
     ajusterQui();
   }
 
@@ -904,6 +937,7 @@
     if (!corps || !nav) return;
     corps.style.lineHeight = '';
     corps.style.removeProperty('--ecart-p');
+    corps.style.position = ''; corps.style.top = '';
     var taille = parseFloat(getComputedStyle(corps).fontSize);
     var interligne = parseFloat(getComputedStyle(corps).lineHeight) / taille;
     var libre = function () { return nav.getBoundingClientRect().top - corps.getBoundingClientRect().bottom; };
@@ -921,6 +955,99 @@
       if (deborde(el)) { ecart -= 0.03; corps.style.setProperty('--ecart-p', ecart.toFixed(2) + 'em'); break; }
       essais++;
     }
+    // le même espace au-dessus et au-dessous du texte (au pixel près) : le bloc glisse de la moitié de la différence
+    var titre = el.querySelector('.grand-titre'), blocs = corps.children;
+    if (titre && blocs.length) {
+      var haut = blocs[0].getBoundingClientRect().top - titre.getBoundingClientRect().bottom;
+      var bas = nav.getBoundingClientRect().top - blocs[blocs.length - 1].getBoundingClientRect().bottom;
+      if (Math.abs(haut - bas) > 0.5) { corps.style.position = 'relative'; corps.style.top = ((bas - haut) / 2).toFixed(2) + 'px'; }
+    }
+  }
+
+  // Un paragraphe dont la dernière ligne n'a qu'un ou deux mots (règle de Yoann : pas de mot seul en bout de ligne) :
+  // ses derniers mots sont liés entre eux pour descendre ensemble ; les autres lignes restent pleines.
+  // typographie française : « : ; ! ? » jamais seuls en début de ligne, et une durée « 5 s / 5 s » jamais coupée
+  function insecables(html) {
+    return html.replace(/ ([:;!?\u00bb])/g, '\u00a0$1').replace(/\u00ab /g, '\u00ab\u00a0')
+      .replace(/(\d+) s \/ (\d+) s/g, '$1\u00a0s\u00a0/\u00a0$2\u00a0s');
+  }
+  function lignesDe(p) {
+    var r = document.createRange(); r.selectNodeContents(p);
+    var lignes = [], rects = r.getClientRects();
+    for (var k = 0; k < rects.length; k++) {
+      var t = Math.round(rects[k].top), d = lignes[lignes.length - 1];
+      if (d && Math.abs(d.top - t) < 3) { d.gauche = Math.min(d.gauche, rects[k].left); d.droite = Math.max(d.droite, rects[k].right); }
+      else lignes.push({ top: t, gauche: rects[k].left, droite: rects[k].right });
+    }
+    return lignes;
+  }
+  function lierDerniersMots(html, n) {
+    var lies = 0, dansBalise = false, s = html.split('');
+    for (var k = s.length - 1; k >= 0 && lies < n; k--) {
+      if (s[k] === '>') dansBalise = true;
+      else if (s[k] === '<') dansBalise = false;
+      else if (!dansBalise && s[k] === ' ') { s[k] = ' '; lies++; }
+    }
+    return s.join('');
+  }
+  function eviterLignesCourtes(el, lier) {
+    Array.prototype.forEach.call(el.querySelectorAll('.intro-corps p'), function (p) {
+      if (p.dataset.texte === undefined) p.dataset.texte = insecables(p.innerHTML);
+      p.innerHTML = p.dataset.texte;
+      if (!lier) return;
+      var largeur = p.getBoundingClientRect().width;
+      for (var n = 1; n <= 3; n++) {
+        var lignes = lignesDe(p);
+        if (lignes.length < 2) return;
+        var der = lignes[lignes.length - 1];
+        if (der.droite - der.gauche >= largeur * 0.22) return;
+        var avantLien = p.innerHTML;
+        p.innerHTML = lierDerniersMots(p.dataset.texte, n);
+        if (deborde(el)) { p.innerHTML = avantLien; return; }
+      }
+    });
+  }
+
+  // « Choisir son juste rythme » : chaque ligne « Inspire 4 s · Expire 6 s → 4/6 » (avec son « ou ») tient dans son cadre ;
+  // sinon les lignes de ce cadre rapetissent juste assez (la marge du cadre est gardée de chaque côté)
+  function ajusterRythmes(el) {
+    Array.prototype.forEach.call(el.querySelectorAll('.trois-cartes .carte'), function (carte) {
+      var mots = carte.querySelector('.mots');
+      if (!mots) return;
+      mots.style.fontSize = '';
+      var cs = getComputedStyle(carte), r = carte.getBoundingClientRect();
+      var gauche = r.left + parseFloat(cs.paddingLeft) + parseFloat(cs.borderLeftWidth), droite = r.right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth);
+      var taille = parseFloat(getComputedStyle(mots).fontSize), essais = 0;
+      var deborde = function () {
+        var g = 1e9, d = -1e9;
+        Array.prototype.forEach.call(mots.querySelectorAll('.ligne-r, .ou'), function (x) { var q = x.getBoundingClientRect(); g = Math.min(g, q.left); d = Math.max(d, q.right); });
+        return g < gauche - 0.5 || d > droite + 0.5;
+      };
+      while (deborde() && essais < 40) { taille -= 0.25; mots.style.fontSize = taille + 'px'; essais++; }
+    });
+  }
+
+  // Pages faites de blocs (carte, citation, cadres) : le même écart sous le titre, entre chaque bloc et au-dessus des boutons.
+  function egaliserBlocs(el) {
+    var corps = el.querySelector('.intro-corps'), titre = el.querySelector('.grand-titre'), nav = el.querySelector('.intro-nav');
+    if (!corps || !titre || !nav) return;
+    corps.style.gap = ''; corps.style.paddingTop = '0px'; corps.style.marginTop = '';
+    // un dessin pas encore chargé n'a pas de hauteur : on recalcule quand il arrive
+    Array.prototype.forEach.call(corps.querySelectorAll('img'), function (im) {
+      if (!im.complete && !im.dataset.attendu) { im.dataset.attendu = '1'; im.addEventListener('load', ajusterPlusTard, { once: true }); }
+    });
+    // la page peut être en train de s'animer (agrandie ou rapetissée) : on ramène les mesures à sa vraie taille
+    var echelle = el.getBoundingClientRect().height / el.offsetHeight || 1;
+    var blocs = Array.prototype.slice.call(corps.children), hauteur = 0;
+    blocs.forEach(function (b) { hauteur += b.getBoundingClientRect().height / echelle; });
+    var bas = titre.getBoundingClientRect().bottom, depart = (corps.getBoundingClientRect().top - bas) / echelle;
+    var libre = (nav.getBoundingClientRect().top - bas) / echelle - hauteur;
+    var ecart = libre / (blocs.length + 1);
+    ecart = Math.max(0, ecart);
+    corps.style.gap = ecart.toFixed(2) + 'px';
+    // page chargée : le texte remonte un peu sous le titre pour garder le même écart partout
+    if (ecart >= depart) corps.style.paddingTop = (ecart - depart).toFixed(2) + 'px';
+    else corps.style.marginTop = (parseFloat(getComputedStyle(corps).marginTop) + ecart - depart).toFixed(2) + 'px';
   }
 
   var minuterieAjustement = 0;
