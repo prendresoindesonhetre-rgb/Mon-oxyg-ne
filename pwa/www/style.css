@@ -531,7 +531,7 @@ img.marque {
 .carte h3.avec-souffle { display: flex; align-items: center; gap: .5em; }
 .carte h3.avec-souffle img { flex: none; width: 2.7em; height: 2.1em; object-fit: contain; }
 .trois-cartes .carte { display: flex; flex-direction: column; align-items: center; text-align: center; }
-.trois-cartes .carte-dessin { width: 72%; height: 2.6em; object-fit: contain; margin-bottom: .3em; }
+.trois-cartes .carte-dessin { width: 72%; height: 2em; object-fit: contain; margin-bottom: .3em; }
 .trois-cartes b { color: #5aa9b8; font-weight: 600; }
 .bouton-nav { color: var(--encre); background: #fff; border: 1px solid var(--filet); font-weight: 500; }
 .bouton-nav.suivant { background: var(--degrade-nav); font-weight: 700; text-shadow: 0 1px 3px rgba(60, 70, 150, .3); }
@@ -759,3 +759,6 @@ img.marque {
 .mots .court { margin-left: .45em; font-weight: 600; color: #8a7fc8; }
 /* le « ou » compte dans le centrage : le bloc des deux rythmes reste au milieu du cadre */
 .mots:has(.ou) { padding-left: 1.28em; }
+
+/* Explications : le texte justifié, comme dans un livre (28 nov. 2026) ; les cadres et les cartes gardent leur texte centré */
+.panneau-intro .intro-corps > p { text-align: justify; text-wrap: wrap; } /* lignes remplies au maximum : pas de grands trous entre les mots */

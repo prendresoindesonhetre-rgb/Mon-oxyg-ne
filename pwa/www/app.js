@@ -16,12 +16,7 @@
       corps:
         '<p><strong>Respirer est la seule fonction du corps à la fois automatique et que l’on peut contrôler.<br>Lorsqu’on y met de la conscience et du sens, chaque souffle devient un retour à soi.</strong></p>' +
         '<p>Mon Oxygène est une application de respiration guidée pensée comme un espace intérieur.</p>' +
-        '<p>Un moment pour accueillir ce qui est là, et laisser un peu plus de place à ce que l’on ressent.</p>'
-    },
-    {
-      surtitre: 'Retrouver sa marge de choix',
-      titre: 'Ce que l’on ne contrôle pas',
-      corps:
+        '<p>Un moment pour accueillir ce qui est là, et laisser un peu plus de place à ce que l’on ressent.</p>' +
         '<p>Nous ne contrôlons pas ce qui nous entoure.</p>' +
         '<p>Mais nous pouvons contrôler deux choses :<br>nos actions… et nos réactions.</p>' +
         '<p class="citation"><strong>On ne respire pas pour changer le monde,</strong><br><strong>mais pour retrouver un peu plus de liberté dans la manière d’y répondre.</strong></p>'
@@ -34,7 +29,7 @@
         '<p>C’est une façon de revenir doucement à soi, de prendre un peu de recul, et de laisser les choses se poser.</p>' +
         '<p>Cela permet de reconnaître ce que l’on vit, sans se juger, et de lui redonner sa juste place.</p>' +
         '<p><strong>Dans les moments d’inconfort, la respiration devient un chemin simple pour se recentrer et retrouver un peu de sécurité intérieure.</strong></p>' +
-        '<p>Pour cela, le ventre a un rôle essentiel : il est le cerveau émotionnel, l’endroit où se logent tous les inconforts. Respirer par le ventre permet de les nettoyer.</p>' +
+        '<p>Et pour y parvenir, il est important d’engager le ventre quand on respire. C’est ici que se situe le cerveau émotionnel, l’endroit où se logent tous les inconforts. Respirer par le ventre permet de les nettoyer.</p>' +
         '<p class="citation-fin"><em>Le temps d’inspiration ou d’expiration joue également un rôle important.</em></p>'
     },
     {
@@ -42,7 +37,7 @@
       titre: 'À l’inspiration',
       corps:
         '<div class="carte carte-souffle"><img class="souffle-grand" src="./assets/souffle-inspiration.png" alt=""><div><p>Inspire doucement par le nez. Laisse le ventre se gonfler naturellement.</p></div></div>' +
-        '<p class="citation"><strong>L’inspiration active le corps : <u>elle apporte de l’énergie</u>.</strong><br>Une inspiration plus longue permet de retrouver du dynamisme.</p>' +
+        '<p class="citation"><strong>L’inspiration active le corps : <u>elle apporte de l’énergie</u>.</strong><br>Un temps d’inspiration plus long que celui de l’expiration permet de retrouver du dynamisme.</p>' +
         '<p>Si cela t’aide, tu peux imaginer que tu inspires une <strong>lumière douce</strong>, qui vient apporter un peu d’espace, de chaleur ou de calme à l’intérieur de toi.</p>'
     },
     {
@@ -50,7 +45,7 @@
       titre: 'À l’expiration',
       corps:
         '<div class="carte carte-souffle"><img class="souffle-grand" src="./assets/souffle-expiration.png" alt=""><div><p>Expire doucement par la bouche. Le ventre redescend sans effort.</p></div></div>' +
-        '<p class="citation"><strong>L’expiration apaise le corps : <u>elle ramène le calme</u>.</strong><br>Une expiration plus longue permet de retrouver de l’apaisement.</p>' +
+        '<p class="citation"><strong>L’expiration apaise le corps : <u>elle ramène le calme</u>.</strong><br>Un temps d’expiration plus long que celui de l’inspiration permet de retrouver de l’apaisement.</p>' +
         '<p>Si cela t’aide, tu peux imaginer que tu expires un <strong>petit nuage sombre</strong>, qui emporte avec lui ce qui te pèse, sans chercher à faire disparaître ce que tu ressens.</p>'
     },
     {
@@ -58,13 +53,14 @@
       titre: 'Choisir son juste rythme',
       corps:
         '<div class="trois-cartes">' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/ralentir.png" alt=""><h3>Ralentir</h3><span class="mots"><span class="ligne-r">Inspire <em>4 s</em> · Expire <em>6 s</em><span class="court">(4 / 6)</span></span><span class="ligne-r"><span class="ou">ou</span>Inspire <em>3 s</em> · Expire <em>5 s</em><span class="court">(3 / 5)</span></span></span><p>Pour retrouver le calme et relâcher progressivement.</p></div>' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/equilibre.png" alt=""><h3>Équilibre</h3><span class="mots"><span class="ligne-r">Inspire <em>5 s</em> · Expire <em>5 s</em><span class="court">(5 / 5)</span></span></span><p>Pour retrouver un équilibre intérieur afin de mieux gérer tes émotions.</p></div>' +
-          '<div class="carte"><img class="carte-dessin" src="./assets/presets/dynamiser.png" alt=""><h3>Dynamiser</h3><span class="mots"><span class="ligne-r">Inspire <em>6 s</em> · Expire <em>4 s</em><span class="court">(6 / 4)</span></span><span class="ligne-r"><span class="ou">ou</span>Inspire <em>5 s</em> · Expire <em>3 s</em><span class="court">(5 / 3)</span></span></span><p>Pour retrouver de l’énergie et te remettre en mouvement.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/ralentir.png" alt=""><h3>Ralentir</h3><span class="mots"><span class="ligne-r">Inspire <em>4 s</em> · Expire <em>6 s</em><span class="court">(4 / 6)</span></span></span><p>Pour retrouver le calme.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/equilibre.png" alt=""><h3>Équilibre</h3><span class="mots"><span class="ligne-r">Inspire <em>5 s</em> · Expire <em>5 s</em><span class="court">(5 / 5)</span></span></span><p>Pour retrouver de l’équilibre.</p></div>' +
+          '<div class="carte"><img class="carte-dessin" src="./assets/presets/dynamiser.png" alt=""><h3>Dynamiser</h3><span class="mots"><span class="ligne-r">Inspire <em>6 s</em> · Expire <em>4 s</em><span class="court">(6 / 4)</span></span></span><p>Pour retrouver de l’énergie.</p></div>' +
         '</div>' +
         '<p>Commence par écouter ton besoin du moment : t’apaiser, retrouver ton équilibre ou te dynamiser. Puis adapte la durée de ton inspiration et de ton expiration en fonction de cela, en respectant tes capacités.</p>' +
+        '<p>L’idéal est de faire la respiration Équilibre 3 fois par jour, et les autres en fonction des ressentis et des besoins.</p>' +
         '<p><strong>Il n’existe pas de bon rythme universel.</strong><br><strong>Il y a seulement celui dans lequel ta respiration reste fluide et confortable.</strong></p>' +
-        '<p>Prends le temps d’expérimenter pour trouver le tien.</p>'
+        '<p>Prends le temps d’expérimenter pour trouver ton rythme le plus juste.</p>'
     },
     {
       surtitre: 'D’un outil vers une ressource',
@@ -790,6 +786,8 @@
       el.classList.remove('defile');
       var corpsIntro = el.querySelector('.intro-corps');
       if (corpsIntro) { corpsIntro.style.gap = ''; corpsIntro.style.paddingTop = ''; corpsIntro.style.marginTop = ''; }
+      var navIntro = intro ? el.querySelector('.intro-nav') : null;
+      if (navIntro) navIntro.style.paddingTop = '';
       if (intro) eviterLignesCourtes(el, false);
       while (deborde(el) && taille > mini && essais < 120) {
         taille -= 0.25;
@@ -804,8 +802,13 @@
       if (intro && deborde(el)) el.classList.add('defile');
       // Introduction : s'il reste de la place, les lignes s'écartent doucement jusqu'à remplir la page
       // (le texte occupe toute la hauteur entre le titre et les boutons, sans grand vide en bas).
-      else if (plafond && el.querySelector('.carte-souffle, .trois-cartes, .citation-fin')) egaliserBlocs(el);
-      else if (plafond) remplirPage(el);
+      else {
+        // le blanc du bas se mesure jusqu'aux boutons eux-mêmes (pas jusqu'au cadre invisible au-dessus d'eux) :
+        // la même marge en haut (sous le titre) et en bas (au-dessus des boutons) — Yoann, 28 nov. 2026
+        if (plafond && navIntro) navIntro.style.paddingTop = '0px';
+        if (plafond && el.querySelector('.carte-souffle, .trois-cartes, .citation-fin')) egaliserBlocs(el);
+        else if (plafond) remplirPage(el);
+      }
       if (el.classList.contains('panneau-reglages')) equilibrerReglages(el);
     }
     placerMarque();
@@ -996,7 +999,9 @@
       p.innerHTML = p.dataset.texte;
       if (!lier) return;
       var largeur = p.getBoundingClientRect().width;
-      for (var n = 1; n <= 3; n++) {
+      // texte justifié : on ne lie que les deux derniers mots (en lier plus ferait de grands trous dans la ligne d'avant)
+      var maxi = getComputedStyle(p).textAlign === 'justify' ? 1 : 3;
+      for (var n = 1; n <= maxi; n++) {
         var lignes = lignesDe(p);
         if (lignes.length < 2) return;
         var der = lignes[lignes.length - 1];
@@ -1038,8 +1043,31 @@
     });
     // la page peut être en train de s'animer (agrandie ou rapetissée) : on ramène les mesures à sa vraie taille
     var echelle = el.getBoundingClientRect().height / el.offsetHeight || 1;
+    // « À l'inspiration » et « À l'expiration » : le cadre et son dessin restent exactement à la même place sur les deux pages
+    // (la phrase du cadre prend la largeur de la plus longue des deux)
+    var hauteurPaire = 0;
+    if (corps.querySelector('.carte-souffle')) {
+      var html = corps.innerHTML, largeur = 0;
+      DIAPOS.forEach(function (d) {
+        if (d.corps.indexOf('carte-souffle') < 0) return;
+        corps.innerHTML = insecables(d.corps);
+        largeur = Math.max(largeur, corps.querySelector('.carte-souffle .souffle-grand + div').getBoundingClientRect().width / echelle);
+      });
+      // … et les deux pages prennent les mêmes écarts, calculés sur la plus haute des deux
+      DIAPOS.forEach(function (d) {
+        if (d.corps.indexOf('carte-souffle') < 0) return;
+        corps.innerHTML = insecables(d.corps);
+        corps.querySelector('.carte-souffle').style.gridTemplateColumns = 'auto ' + largeur.toFixed(2) + 'px';
+        var h = 0;
+        Array.prototype.forEach.call(corps.children, function (b) { h += b.getBoundingClientRect().height / echelle; });
+        hauteurPaire = Math.max(hauteurPaire, h);
+      });
+      corps.innerHTML = html;
+      corps.querySelector('.carte-souffle').style.gridTemplateColumns = 'auto ' + largeur.toFixed(2) + 'px';
+    }
     var blocs = Array.prototype.slice.call(corps.children), hauteur = 0;
     blocs.forEach(function (b) { hauteur += b.getBoundingClientRect().height / echelle; });
+    hauteur = Math.max(hauteur, hauteurPaire);
     var bas = titre.getBoundingClientRect().bottom, depart = (corps.getBoundingClientRect().top - bas) / echelle;
     var libre = (nav.getBoundingClientRect().top - bas) / echelle - hauteur;
     var ecart = libre / (blocs.length + 1);
